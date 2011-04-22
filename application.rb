@@ -25,7 +25,7 @@ configure do
   set :views, "#{File.dirname(__FILE__)}/views"
   enable :sessions
   # All requests made from the Facebook iframe are now POST requests
-  use Rack::Facebook 
+  use Rack::Facebook, { :secret => APP_SECRET }
 end
 
 helpers do
@@ -55,12 +55,10 @@ get '/' do
 end
 
 get '/tab' do
-  # TODO: Display the subscribe form if it exists
   haml :tab
 end
 
 get '/edit' do
-  # TODO: Form for editing the subscribe form
   haml :edit
 end
 

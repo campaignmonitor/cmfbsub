@@ -1,7 +1,13 @@
-desc "Start for development"
-task :start do
-  #system 'shotgun --port=4567 application.rb'
+desc "Start redis for development"
+task :startredis do
+  system 'redis-server /usr/local/etc/redis.conf'
+end
+
+desc "Start app for development"
+task :startapp do
   system 'ruby -v -rubygems application.rb'
 end
+
+multitask :start => ['startredis', 'startapp']
 
 task :default => :start

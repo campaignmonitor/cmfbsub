@@ -1,1 +1,9 @@
-%div="This will allow an admin of the page to edit the subscribe form being used"
+%div="Enter your Campaign API key and List ID to put a subscribe form on your page."
+
+%form{:id => :subscribe, :method => :post, :action => "/edit"}
+  ="API Key:"
+  %input{:type => :text, :name => :apikey, :id => :apikey}
+  ="List ID:"
+  %input{:type => :text, :name => :listid, :id => :listid}
+  %br
+  %input{:type => :submit, :value => :save}
