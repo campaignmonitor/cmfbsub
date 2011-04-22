@@ -1,0 +1,13 @@
+%h3="This app allows you to easily add a Campaign Monitor subscribe form to your Facebook page."
+
+= session['fb_error']
+
+- if session['fb_auth']
+  %a{:href => "/logout"}
+    ="Logout"
+- else
+  %a{:href => "/auth/facebook"}
+    ="Login"
+- if session['fb_token']
+  %h3
+    ="Hey #{session['fb_auth']['user_info']['first_name']}"

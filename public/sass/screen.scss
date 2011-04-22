@@ -1,0 +1,17 @@
+@import "/reset.css";
+
+$main-bg-colour: #fff;
+$main-font-colour: #000;
+
+html, body {
+  font: {
+    family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  background: $main-bg-colour;
+  color: $main-font-colour;
+}
+
+#container {
+  margin: 0 auto;
+  padding: 0 30px;
+}
