@@ -20,7 +20,8 @@ else
 end
 
 use OmniAuth::Builder do
-  provider :facebook, APP_ID, APP_SECRET, {}
+  client_options = production? ? {:ssl => {:ca_path => "/etc/ssl/certs"}} : {}
+  provider :facebook, APP_ID, APP_SECRET, {:client_options => client_options}
 end
 
 configure :production do
