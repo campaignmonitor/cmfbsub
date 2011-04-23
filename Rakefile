@@ -5,7 +5,7 @@ end
 
 desc "Start app for development"
 task :startapp do
-  system 'ruby -v -rubygems application.rb'
+  system 'ruby -rubygems application.rb'
 end
 
 multitask :start => ['startredis', 'startapp']

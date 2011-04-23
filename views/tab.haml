@@ -1,11 +1,15 @@
 - if @sf
   %div=default_subscribe_form_message
+  - if @error_message
+    %div{:id => :subscribe_error}=@error_message
+  - if @confirmation_message
+    %div{:id => :subscribe_confirmation}=@confirmation_message
 
   %form{:id => :subscribe, :method => :post, :action => "/subscribe/#{@page_id}"}
     ="Name:"
-    %input{:type => :text, :name => :name, :id => :name}
+    %input{:type => :text, :name => :name, :id => :name, :value => (@name if @name)}
     ="Email:"
-    %input{:type => :text, :name => :email, :id => :email}
+    %input{:type => :text, :name => :email, :id => :email, :value => (@email if @email)}
     %br
     %input{:type => :submit, :value => "Subscribe"}
 - else

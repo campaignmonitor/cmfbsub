@@ -28,6 +28,7 @@ configure do
   enable :sessions
   # Custom middleware for a Facebook canvas app
   use Rack::Facebook, { :secret => APP_SECRET }
+  CreateSend.base_uri "https://api.createsend.com/api/v3"
 end
 
 helpers do
@@ -117,15 +118,14 @@ post '/page/:page_id/?' do |page_id|
     SubscribeForm.create :user_id => @user.id, :page_id => page_id,
       :api_key => params[:apikey].strip, :list_id => params[:listid].strip
   end
-  
-  redirect '/' # Maybe put the save confirmation message in the session...
-
+  redirect '/'
 end
 
 get '/tab/?' do
   @page_id = params['facebook'] ? params['facebook']['page']['id'] : ''
   @found = SubscribeForm.find(:page_id => @page_id).to_a
   @sf = @found ? @found.first : nil
+
   haml :tab
 end
 
@@ -133,14 +133,21 @@ post '/subscribe/:page_id/?' do |page_id|
   @found = SubscribeForm.find(:page_id => page_id).to_a
   @sf = @found ? @found.first : nil
   redirect '/tab' unless @sf
-  
-  # TODO: Rescue from potential errors from CM API...
 
-  CreateSend.base_uri "https://api.createsend.com/api/v3"
-  CreateSend.api_key @sf.api_key
-  CreateSend::Subscriber.add @sf.list_id, params[:email].strip, params[:name].strip, [], true
+  begin
+    CreateSend.api_key @sf.api_key
+    CreateSend::Subscriber.add @sf.list_id, params[:email].strip, params[:name].strip, [], true
+    @confirmation_message = "Thanks for subscribing to our list."
+    haml :tab
 
-  redirect '/tab' # Maybe put the thankyou message in the session...
+    rescue Exception => e
+      p "Error: #{e}"
+      @error_message = "Sorry, there was a problem subscribing you to our list."
+      @name = params[:name].strip
+      @email = params[:email].strip
+      @page_id = page_id
+      haml :tab
+  end
 end
 
 get '/auth/facebook/callback/?' do
