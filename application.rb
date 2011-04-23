@@ -124,14 +124,16 @@ post '/page/:page_id/?' do |page_id|
     if @sf
       @sf.api_key = params[:apikey].strip
       @sf.list_id = params[:listid].strip
+      @sf.save
     else
       SubscribeForm.create :user_id => @user.id, :page_id => page_id,
         :api_key => params[:apikey].strip, :list_id => params[:listid].strip
     end
     redirect '/'
 
-    rescue CreateSend::Unauthorized, CreateSend::BadRequest => br
-      p "CreateSend error: #{br}"
+    rescue CreateSend::CreateSendError, CreateSend::ClientError, 
+      CreateSend::ServerError, CreateSend::Unavailable => cse
+      p "CreateSend error: #{cse}"
       @error_message = "Sorry, your API Key/List ID combination is invalid. Please try again."
       @page_id = page_id
       haml :page
