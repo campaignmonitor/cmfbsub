@@ -23,6 +23,10 @@ use OmniAuth::Builder do
   provider :facebook, APP_ID, APP_SECRET, {}
 end
 
+configure :production do
+  Ohm.connect(:url => ENV["REDISTOGO_URL"])
+end
+
 configure do
   set :views, "#{File.dirname(__FILE__)}/views"
   enable :sessions
