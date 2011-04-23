@@ -1,6 +1,8 @@
 require 'sinatra'
 require 'haml'
 require 'omniauth/oauth'
+require 'mogli'
+require 'createsend'
 require "sinatra/reloader" if development?
 require 'yaml' if development?
 
@@ -24,7 +26,7 @@ end
 configure do
   set :views, "#{File.dirname(__FILE__)}/views"
   enable :sessions
-  # All requests made from the Facebook iframe are now POST requests
+  # Custom middleware for a Facebook canvas app
   use Rack::Facebook, { :secret => APP_SECRET }
 end
 
@@ -35,6 +37,33 @@ helpers do
   
   def partial(name, locals={})
     haml "_#{name}".to_sym, :layout => false, :locals => locals
+  end
+
+  def needs_auth
+    redirect '/auth/facebook' unless has_auth?
+  end
+
+  def has_auth?
+    !session['fb_auth'].nil?
+  end
+
+  def check_admin
+    if params['facebook']
+      session[:admin] = true if params['facebook']['page']['admin'] == true
+    end
+  end
+
+  def needs_admin
+    check_admin
+    raise not_found unless has_auth? and has_admin?
+  end
+
+  def has_admin?
+    has_auth? and session[:admin] == true
+  end
+  
+  def default_subscribe_form_message
+    "Enter your details to subscribe to our mailing list"
   end
 end
 
@@ -51,31 +80,84 @@ not_found do
 end
 
 get '/' do
+  needs_auth
+
+  # Get the user's pages
+  user = Mogli::User.find("me", Mogli::Client.new(session['fb_token']))
+  @pages = user.accounts
+
   haml :index
 end
 
-get '/tab' do
+get '/page/:page_id/?' do |page_id|
+  needs_auth
+
+  # Check for an existing subscribe form for the page
+  @found = SubscribeForm.find(:page_id => page_id).to_a
+  @sf = @found ? @found.first : nil
+  @user = Mogli::User.find("me", Mogli::Client.new(session['fb_token']))
+  @pages = @user.accounts
+  @page_id = page_id
+  haml :page
+end
+
+post '/page/:page_id/?' do |page_id|
+  needs_auth
+
+  @user = Mogli::User.find("me", Mogli::Client.new(session['fb_token']))
+
+  # Update the values of the subscribe form if it already exists
+  # otherwise, create a new subscribe form for the page
+  @found = SubscribeForm.find(:page_id => page_id).to_a
+  @sf = @found ? @found.first : nil
+  if @sf
+    @sf.api_key = params[:apikey].strip
+    @sf.list_id = params[:listid].strip
+  else
+    SubscribeForm.create :user_id => @user.id, :page_id => page_id,
+      :api_key => params[:apikey].strip, :list_id => params[:listid].strip
+  end
+  
+  redirect '/' # Maybe put the save confirmation message in the session...
+
+end
+
+get '/tab/?' do
+  @page_id = params['facebook'] ? params['facebook']['page']['id'] : ''
+  @found = SubscribeForm.find(:page_id => @page_id).to_a
+  @sf = @found ? @found.first : nil
   haml :tab
 end
 
-get '/edit' do
-  haml :edit
+post '/subscribe/:page_id/?' do |page_id|
+  @found = SubscribeForm.find(:page_id => page_id).to_a
+  @sf = @found ? @found.first : nil
+  redirect '/tab' unless @sf
+  
+  # TODO: Rescue from potential errors from CM API...
+
+  CreateSend.base_uri "https://api.createsend.com/api/v3"
+  CreateSend.api_key @sf.api_key
+  CreateSend::Subscriber.add @sf.list_id, params[:email].strip, params[:name].strip, [], true
+
+  redirect '/tab' # Maybe put the thankyou message in the session...
 end
 
-get '/auth/facebook/callback' do
+get '/auth/facebook/callback/?' do
   session['fb_auth'] = request.env['omniauth.auth']
   session['fb_token'] = session['fb_auth']['credentials']['token']
   session['fb_error'] = nil
+  session[:admin] = false
   redirect '/'
 end
 
-get '/auth/failure' do
+get '/auth/failure/?' do
   clear_session
   session['fb_error'] = 'In order to use this application you must allow us access to your Facebook basic information'
   redirect '/'
 end
 
-get '/logout' do
+get '/logout/?' do
   clear_session
   redirect '/'
 end
@@ -84,6 +166,7 @@ def clear_session
   session['fb_auth'] = nil
   session['fb_token'] = nil
   session['fb_error'] = nil
+  session[:admin] = false
 end
 
 %w(reset screen).each do |style|

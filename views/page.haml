@@ -1,0 +1,12 @@
+%div="Enter the Campaign API key and List ID to put a subscribe form on your page."
+
+%form{:id => :page, :method => :post, :action => "/page/#{@page_id}"}
+  ="Message:"
+  %input{:type => :text, :size => 60, :name => :message, :id => :message, :value => default_subscribe_form_message}
+  %br
+  ="API Key:"
+  %input{:type => :text, :name => :apikey, :id => :apikey, :value => @sf ? @sf.api_key : ''}
+  ="List ID:"
+  %input{:type => :text, :name => :listid, :id => :listid, :value => @sf ? @sf.list_id : ''}
+  %br
+  %input{:type => :submit, :value => "Save"}

@@ -1,2 +1,12 @@
-%div="This will contain the subscribe form if it has been configured"
-  
+- if @sf
+  %div=default_subscribe_form_message
+
+  %form{:id => :subscribe, :method => :post, :action => "/subscribe/#{@page_id}"}
+    ="Name:"
+    %input{:type => :text, :name => :name, :id => :name}
+    ="Email:"
+    %input{:type => :text, :name => :email, :id => :email}
+    %br
+    %input{:type => :submit, :value => "Subscribe"}
+- else
+  %div="This page hasn't had a subscribe form set up yet."

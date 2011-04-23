@@ -17,6 +17,8 @@ GEM
     httparty (0.7.7)
       crack (= 0.1.8)
     json (1.5.1)
+    mogli (0.0.28)
+      httparty (>= 0.4.3)
     monkey-lib (0.5.4)
       backports
     multi_json (0.0.5)
@@ -64,6 +66,7 @@ PLATFORMS
 DEPENDENCIES
   createsend (>= 0.3.0)
   haml (>= 3)
+  mogli
   oa-oauth (>= 0.2.3)
   ohm
   sinatra (>= 1.0)
