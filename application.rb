@@ -111,14 +111,26 @@ post '/page/:page_id/?' do |page_id|
   # otherwise, create a new subscribe form for the page
   @found = SubscribeForm.find(:page_id => page_id).to_a
   @sf = @found ? @found.first : nil
-  if @sf
-    @sf.api_key = params[:apikey].strip
-    @sf.list_id = params[:listid].strip
-  else
-    SubscribeForm.create :user_id => @user.id, :page_id => page_id,
-      :api_key => params[:apikey].strip, :list_id => params[:listid].strip
+  begin
+    # Validate input by attempting to get list details
+    CreateSend.api_key params[:apikey].strip
+    @list = CreateSend::List.new(params[:listid].strip).details
+
+    if @sf
+      @sf.api_key = params[:apikey].strip
+      @sf.list_id = params[:listid].strip
+    else
+      SubscribeForm.create :user_id => @user.id, :page_id => page_id,
+        :api_key => params[:apikey].strip, :list_id => params[:listid].strip
+    end
+    redirect '/'
+
+    rescue CreateSend::Unauthorized, CreateSend::BadRequest => br
+      p "CreateSend error: #{br}"
+      @error_message = "Sorry, your API Key/List ID combination is invalid. Please try again."
+      @page_id = page_id
+      haml :page
   end
-  redirect '/'
 end
 
 get '/tab/?' do
