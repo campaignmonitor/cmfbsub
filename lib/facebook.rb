@@ -3,6 +3,7 @@ require 'base64'
 require 'yajl'
 
 module Rack
+  # Custom middleware for a Facebook canvas app
   class Facebook
     def initialize(app, options={})
       @app = app
@@ -26,7 +27,6 @@ module Rack
           end
 
           signed_params = Yajl::Parser.new.parse(base64_url_decode(signed_params))
-
           # add JSON params to request
           request.params['facebook'] = {}
           signed_params.each do |k,v|

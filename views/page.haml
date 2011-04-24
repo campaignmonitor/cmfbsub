@@ -2,7 +2,7 @@
 
 %h3=@page.name
 
-%div="Enter your Campaign API key and List ID to put a subscribe form to <em>#{@page.name}</em>."
+%div="Enter your Campaign API key and List ID to add a subscribe form to <em>#{@page.name}</em>."
 
 - if @error_message
   %div{:id => :subscribe_error, :class => "errormessagebox messagebox"}=@error_message

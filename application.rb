@@ -19,21 +19,20 @@ else
   APP_SECRET = config['APP_SECRET']
 end
 
-use OmniAuth::Builder do
-  client_options = production? ? {:ssl => {:ca_path => "/etc/ssl/certs"}} : {}
-  provider :facebook, APP_ID, APP_SECRET, {:client_options => client_options}
+configure do
+  CreateSend.base_uri "https://api.createsend.com/api/v3"
+  set :views, "#{File.dirname(__FILE__)}/views"
+  enable :sessions
+  
+  use Rack::Facebook, { :secret => APP_SECRET }
+  use OmniAuth::Builder do
+    client_options = production? ? {:ssl => {:ca_path => "/etc/ssl/certs"}} : {}
+    provider :facebook, APP_ID, APP_SECRET, {:client_options => client_options}
+  end
 end
 
 configure :production do
   Ohm.connect(:url => ENV["REDISTOGO_URL"])
-end
-
-configure do
-  set :views, "#{File.dirname(__FILE__)}/views"
-  enable :sessions
-  # Custom middleware for a Facebook canvas app
-  use Rack::Facebook, { :secret => APP_SECRET }
-  CreateSend.base_uri "https://api.createsend.com/api/v3"
 end
 
 helpers do
@@ -129,7 +128,7 @@ post '/page/:page_id/?' do |page_id|
 
     rescue CreateSend::CreateSendError, CreateSend::ClientError, 
       CreateSend::ServerError, CreateSend::Unavailable => cse
-      p "CreateSend error: #{cse}"
+      p "Error: #{cse}"
       @error_message = "Sorry, your API Key/List ID combination is invalid. Please try again."
       @page = get_page(page_id)
       haml :page
