@@ -1,9 +1,9 @@
 - if @sf
   %div=default_subscribe_form_message
   - if @error_message
-    %div{:id => :subscribe_error}=@error_message
+    %div{:id => :subscribe_error, :class => "errormessagebox messagebox"}=@error_message
   - if @confirmation_message
-    %div{:id => :subscribe_confirmation}=@confirmation_message
+    %div{:id => :subscribe_confirmation, :class => "infomessagebox messagebox"}=@confirmation_message
 
   %form{:id => :subscribe, :method => :post, :action => "/subscribe/#{@page_id}"}
     ="Name:"
@@ -13,4 +13,4 @@
     %br
     %input{:type => :submit, :value => "Subscribe"}
 - else
-  %div="This page hasn't had a subscribe form set up yet."
+  %div{:class => "infomessagebox messagebox"}="This page hasn't had a subscribe form set up yet."

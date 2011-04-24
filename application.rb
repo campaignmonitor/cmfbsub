@@ -38,7 +38,7 @@ end
 
 helpers do
   def media_version
-    "201104221530"
+    "201104241106"
   end
   
   def partial(name, locals={})
@@ -53,21 +53,6 @@ helpers do
     !session['fb_auth'].nil?
   end
 
-  def check_admin
-    if params['facebook']
-      session[:admin] = true if params['facebook']['page']['admin'] == true
-    end
-  end
-
-  def needs_admin
-    check_admin
-    raise not_found unless has_auth? and has_admin?
-  end
-
-  def has_admin?
-    has_auth? and session[:admin] == true
-  end
-  
   def default_subscribe_form_message
     "Enter your details to subscribe to our mailing list"
   end
@@ -85,13 +70,23 @@ not_found do
   haml :not_found
 end
 
+def get_user(user_id)
+  Mogli::User.find(user_id, Mogli::Client.new(session['fb_token']))
+end
+
+def get_page(page_id)
+  Mogli::Page.find(page_id, Mogli::Client.new(session['fb_token']))
+end
+
 get '/' do
   needs_auth
 
-  # Get the user's pages
-  user = Mogli::User.find("me", Mogli::Client.new(session['fb_token']))
-  @pages = user.accounts
-
+  @user = get_user("me")
+  @pages = @user.accounts
+  if session[:confirmation_message]
+    @confirmation_message = session[:confirmation_message]
+    session[:confirmation_message] = nil
+  end
   haml :index
 end
 
@@ -101,17 +96,16 @@ get '/page/:page_id/?' do |page_id|
   # Check for an existing subscribe form for the page
   @found = SubscribeForm.find(:page_id => page_id).to_a
   @sf = @found ? @found.first : nil
-  @user = Mogli::User.find("me", Mogli::Client.new(session['fb_token']))
+  @user = get_user("me")
   @pages = @user.accounts
-  @page_id = page_id
+  @page = get_page(page_id)
   haml :page
 end
 
 post '/page/:page_id/?' do |page_id|
   needs_auth
 
-  @user = Mogli::User.find("me", Mogli::Client.new(session['fb_token']))
-
+  @user = get_user("me")
   # Update the values of the subscribe form if it already exists
   # otherwise, create a new subscribe form for the page
   @found = SubscribeForm.find(:page_id => page_id).to_a
@@ -129,13 +123,15 @@ post '/page/:page_id/?' do |page_id|
       SubscribeForm.create :user_id => @user.id, :page_id => page_id,
         :api_key => params[:apikey].strip, :list_id => params[:listid].strip
     end
+    @page = get_page(page_id)
+    session[:confirmation_message] = "Thanks, you successfully saved your subscribe form for #{@page.name}."
     redirect '/'
 
     rescue CreateSend::CreateSendError, CreateSend::ClientError, 
       CreateSend::ServerError, CreateSend::Unavailable => cse
       p "CreateSend error: #{cse}"
       @error_message = "Sorry, your API Key/List ID combination is invalid. Please try again."
-      @page_id = page_id
+      @page = get_page(page_id)
       haml :page
   end
 end
@@ -154,6 +150,7 @@ post '/subscribe/:page_id/?' do |page_id|
   redirect '/tab' unless @sf
 
   begin
+    @page_id = page_id
     CreateSend.api_key @sf.api_key
     CreateSend::Subscriber.add @sf.list_id, params[:email].strip, params[:name].strip, [], true
     @confirmation_message = "Thanks for subscribing to our list."
@@ -164,7 +161,6 @@ post '/subscribe/:page_id/?' do |page_id|
       @error_message = "Sorry, there was a problem subscribing you to our list."
       @name = params[:name].strip
       @email = params[:email].strip
-      @page_id = page_id
       haml :tab
   end
 end
@@ -179,7 +175,7 @@ end
 
 get '/auth/failure/?' do
   clear_session
-  session['fb_error'] = 'In order to use this application you must allow us access to your Facebook basic information'
+  session['fb_error'] = 'In order to use this application you must permit access to your basic information.'
   redirect '/'
 end
 

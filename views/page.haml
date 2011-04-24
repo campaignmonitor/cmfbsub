@@ -1,9 +1,13 @@
-%div="Enter the Campaign API key and List ID to put a subscribe form on your page."
+%h2="Campaign Monitor Subscribe Forms"
+
+%h3=@page.name
+
+%div="Enter your Campaign API key and List ID to put a subscribe form to <em>#{@page.name}</em>."
 
 - if @error_message
-  %div{:id => :subscribe_error}=@error_message
+  %div{:id => :subscribe_error, :class => "errormessagebox messagebox"}=@error_message
 
-%form{:id => :page, :method => :post, :action => "/page/#{@page_id}"}
+%form{:id => :page, :method => :post, :action => "/page/#{@page.id}"}
   ="Message:"
   %input{:type => :text, :size => 60, :name => :message, :id => :message, :value => default_subscribe_form_message}
   %br
