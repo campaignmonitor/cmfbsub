@@ -1,14 +1,10 @@
+require 'rubygems'
+require 'bundler/setup'
 require 'sinatra'
-require 'haml'
+require 'environment'
 require 'omniauth/oauth'
 require 'mogli'
 require 'createsend'
-require "sinatra/reloader" if development?
-require 'yaml' if development?
-
-Dir.glob('lib/*.rb') do |lib|
-  require lib
-end
 
 if production?
   APP_ID = ENV['APP_ID']
@@ -23,16 +19,13 @@ configure do
   CreateSend.base_uri "https://api.createsend.com/api/v3"
   set :views, "#{File.dirname(__FILE__)}/views"
   enable :sessions
+  DataMapper.setup(:default, (ENV["DATABASE_URL"] || "sqlite3:///#{File.expand_path(File.dirname(__FILE__))}/#{Sinatra::Base.environment}.db"))
   
   use Rack::Facebook, { :secret => APP_SECRET }
   use OmniAuth::Builder do
     client_options = production? ? {:ssl => {:ca_path => "/etc/ssl/certs"}} : {}
     provider :facebook, APP_ID, APP_SECRET, {:client_options => client_options}
   end
-end
-
-configure :production do
-  Ohm.connect(:url => ENV["REDISTOGO_URL"])
 end
 
 helpers do
@@ -81,9 +74,20 @@ def get_page(page_id)
   Mogli::Page.find(page_id, Mogli::Client.new(session['fb_token']))
 end
 
-def get_subscribe_form_by_page_id(page_id)
-  @found = SubscribeForm.find(:page_id => page_id).to_a
-  return @found ? @found.first : nil
+def get_form_by_page_id(page_id)
+  Form.first(:page_id => page_id)
+end
+
+def get_custom_fields_for_list(api_key, list_id)
+  @result = []
+  begin
+    CreateSend.api_key api_key
+    @result = CreateSend::List.new(list_id).custom_fields
+    rescue Exception => e
+      p "Error: #{e}"
+      @result = []
+  end
+  @result
 end
 
 get '/' do
@@ -102,7 +106,10 @@ get '/page/:page_id/?' do |page_id|
   needs_auth
 
   # Check for an existing subscribe form for the page
-  @sf = get_subscribe_form_by_page_id(page_id)
+  @sf = get_form_by_page_id(page_id)
+  if @sf
+    @custom_fields = get_custom_fields_for_list(@sf.api_key, @sf.list_id)
+  end
   @user = get_user("me")
   @pages = @user.accounts
   @page = get_page(page_id)
@@ -113,31 +120,21 @@ post '/page/:page_id/?' do |page_id|
   needs_auth
 
   @user = get_user("me")
-  # Update the values of the subscribe form if it already exists
-  # otherwise, create a new subscribe form for the page
-  @sf = get_subscribe_form_by_page_id(page_id)
+  @sf = get_form_by_page_id(page_id)
   @page = get_page(page_id)
-  @error_messages = []
   if @sf
     @sf.api_key = params[:apikey].strip
     @sf.list_id = params[:listid].strip
     @sf.intro_message = params[:intro_message].strip
     @sf.thanks_message = params[:thanks_message].strip
   else
-    @sf = SubscribeForm.new(:user_id => @user.id, :page_id => page_id,
+    @sf = Form.new(:user_id => @user.id, :page_id => page_id,
       :api_key => params[:apikey].strip, :list_id => params[:listid].strip,
       :intro_message => params[:intro_message].strip, 
       :thanks_message => params[:thanks_message].strip)
   end
 
-  if !@sf.valid?
-    @error_messages = @sf.errors.present do |e|
-      e.on [:intro_message, :not_present], "Intro message must be present"
-      e.on [:thanks_message, :not_present], "Thanks message must be present"
-      e.on [:api_key, :not_present], "API Key must be present"
-      e.on [:list_id, :not_present], "List ID must be present"
-    end
-  else
+  if @sf.valid?
     begin
       # Validate input by attempting to get list details
       CreateSend.api_key params[:apikey].strip
@@ -148,20 +145,58 @@ post '/page/:page_id/?' do |page_id|
       rescue CreateSend::CreateSendError, CreateSend::ClientError, 
         CreateSend::ServerError, CreateSend::Unavailable => cse
         p "Error: #{cse}"
-        @error_messages << "That doesn't appear to be a valid Campaign Monitor API Key/List ID combination."
+        @sf.errors.add(:api_key, "That doesn't appear to be a valid Campaign Monitor API Key/List ID combination.")
     end
   end
   haml :page
 end
 
+def find_cm_custom_field(input, key)
+  input.each do |cf|
+      return cf if cf.Key == key
+  end
+  nil
+end
+
+post '/page/:page_id/fields/?' do |page_id|
+  needs_auth
+
+  @user = get_user("me")
+  @sf = get_form_by_page_id(page_id)
+  @page = get_page(page_id)
+  if @sf
+    @custom_fields = get_custom_fields_for_list(@sf.api_key, @sf.list_id)
+    params.each do |i, v|
+      if i.start_with? "cf-"
+        # Surrounding square brackets are deliberately stripped in field ID
+        # see page.haml. e.g. Field with key "[field]" has param id "cf-field".
+        cmcf = find_cm_custom_field(@custom_fields, "[#{i[3..-1]}]")
+        if cmcf
+          cf = CustomField.new(
+            :name => cmcf.FieldName, :field_key => cmcf.Key,
+            :data_type => cmcf.DataType,
+            :field_options => cmcf.FieldOptions * ",")
+          @sf.custom_fields << cf
+        end
+      end
+    end
+  end
+  @sf.save
+  session[:confirmation_message] = "Thanks, you successfully saved the custom fields for #{@page.name}."
+  redirect '/'
+end
+
 get '/tab/?' do
   @page_id = params['facebook'] ? params['facebook']['page']['id'] : ''
-  @sf = get_subscribe_form_by_page_id(@page_id)
+  @sf = get_form_by_page_id(@page_id)
+  if @sf
+    @fields = @sf.custom_fields.all(:order => [:name.asc])
+  end
   haml :tab
 end
 
 post '/subscribe/:page_id/?' do |page_id|
-  @sf = get_subscribe_form_by_page_id(page_id)
+  @sf = get_form_by_page_id(page_id)
   redirect '/tab' unless @sf
 
   begin

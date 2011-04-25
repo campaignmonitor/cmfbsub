@@ -1,13 +1,22 @@
-desc "Start redis for development"
-task :startredis do
-  system 'redis-server /usr/local/etc/redis.conf'
+namespace :db do
+  desc 'Auto-migrate the database (destroys data)'
+  task :migrate => :environment do
+    DataMapper.auto_migrate!
+  end
+
+  desc 'Auto-upgrade the database (preserves data)'
+  task :upgrade => :environment do
+    DataMapper.auto_upgrade!
+  end
 end
 
 desc "Start app for development"
-task :startapp do
+task :start do
   system 'ruby -rubygems application.rb'
 end
 
-multitask :start => ['startredis', 'startapp']
+task :environment do
+  require 'environment'
+end
 
 task :default => :start

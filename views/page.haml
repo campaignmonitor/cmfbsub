@@ -2,13 +2,13 @@
 
 %h3=@page.name
 
-%div="Enter your details below to add a subscribe form to <em>#{@page.name}</em>."
+%div="Enter your subscribe form details for <em>#{@page.name}</em> below."
 
-- if @error_messages
-  %div{:id => :subscribe_error, :class => "errormessagebox messagebox"}
-    %ul
-    - @error_messages.each do |e|
-      %li=e
+- if @sf and @sf.errors.length > 0
+  %div{:id => :form_error, :class => "errormessagebox messagebox"}
+    %ul{:class => 'errors'}
+      - @sf.errors.each do |e|
+        %li=e
 
 %form{:id => :page, :method => :post, :action => "/page/#{@page.id}"}
   %p
@@ -24,4 +24,15 @@
     ="List ID:"
     %input{:type => :text, :name => :listid, :id => :listid, :value => @sf ? @sf.list_id : ''}
   %p
-    %input{:type => :submit, :value => "Save"}
+    %input{:type => :submit, :value => "Save form"}
+
+- if @custom_fields and !@custom_fields.empty?
+  %div="Select any custom fields you'd like to include in your subscribe form."
+
+  %form{:id => :custom_fields, :method => :post, :action => "/page/#{@page.id}/fields"}
+    - @custom_fields.each do |cf|
+      %p
+        %input{:id => "cf-#{cf.Key[1..-2]}", :name => "cf-#{cf.Key[1..-2]}", :type => :checkbox, :value => :false}
+        %span="#{cf.FieldName} (#{cf.DataType})"
+    %p
+      %input{:type => :submit, :value => "Save fields"}

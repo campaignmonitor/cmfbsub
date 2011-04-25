@@ -1,32 +1,25 @@
-require 'ohm'
+class Form
+  include DataMapper::Resource
 
-class SubscribeForm < Ohm::Model
+  property :id, Serial
+  property :user_id, String, :required => true
+  property :page_id, String, :required => true, :key => true
+  property :api_key, String, :required => true
+  property :list_id, String, :required => true
+  property :intro_message, String, :required => true, :length => 0..250
+  property :thanks_message, String, :required => true, :length => 0..250
 
-  attribute :user_id
-  attribute :page_id
-  attribute :api_key
-  attribute :list_id
-  attribute :intro_message
-  attribute :thanks_message
+  has n, :custom_fields
+end
 
-  index :user_id
-  index :page_id
-  index :api_key
-  index :list_id
+class CustomField
+  include DataMapper::Resource
 
-  def validate
-    assert_present :user_id
-    assert_present :page_id
-    assert_present :api_key
-    assert_present :list_id
-    assert_present :intro_message
-    assert_present :thanks_message
-  end
+  property :id, Serial
+  property :name, String, :required => true
+  property :field_key, String, :required => true
+  property :data_type, String, :required => true
+  property :field_options, String # Comma-delimited options
 
-  def to_hash
-    super.merge(:user_id => user_id, :page_id => page_id, 
-      :api_key => api_key, :list_id => list_id,
-      :intro_message => intro_message, :thanks_message => thanks_message)
-  end
-
+  belongs_to :form
 end

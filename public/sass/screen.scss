@@ -16,9 +16,9 @@ html, body {
   color: $main-font-colour;
 }
 
-h1 { font-size: 2.8em; }
-h2 { font-size: 1.6em; }
-h3 { font-size: 1.2em; }
+h1 { font-size: 2.8em; margin: 8px 0; }
+h2 { font-size: 1.6em; margin: 8px 0; }
+h3 { font-size: 1.2em; margin: 8px 0; }
 p, div { margin: 8px 0; }
 
 .messagebox {
