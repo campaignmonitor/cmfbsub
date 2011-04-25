@@ -108,7 +108,11 @@ get '/page/:page_id/?' do |page_id|
   # Check for an existing subscribe form for the page
   @sf = get_form_by_page_id(page_id)
   if @sf
-    @custom_fields = get_custom_fields_for_list(@sf.api_key, @sf.list_id)
+    @fields = get_custom_fields_for_list(@sf.api_key, @sf.list_id)
+    
+    # TODO: Use applied fields to indicate what's currently in use on the form
+    
+    @applied_fields = @sf.custom_fields.all(:order => [:name.asc])
   end
   @user = get_user("me")
   @pages = @user.accounts
@@ -166,6 +170,7 @@ post '/page/:page_id/fields/?' do |page_id|
   @page = get_page(page_id)
   if @sf
     @custom_fields = get_custom_fields_for_list(@sf.api_key, @sf.list_id)
+    @sf.custom_fields.all.destroy
     params.each do |i, v|
       if i.start_with? "cf-"
         # Surrounding square brackets are deliberately stripped in field ID
@@ -201,8 +206,18 @@ post '/subscribe/:page_id/?' do |page_id|
 
   begin
     @page_id = page_id
+    @fields = @sf.custom_fields.all(:order => [:name.asc])
     CreateSend.api_key @sf.api_key
-    CreateSend::Subscriber.add @sf.list_id, params[:email].strip, params[:name].strip, [], true
+    custom_fields = []
+    params.each do |i, v|
+      if i.start_with? "cf-"
+        key = "[#{i[3..-1]}]"
+        custom_fields << { :Key => key, :Value => v }
+      end
+    end
+    
+    CreateSend::Subscriber.add @sf.list_id, params[:email].strip, params[:name].strip,
+      custom_fields, true
     @confirmation_message = @sf.thanks_message
     haml :tab
 

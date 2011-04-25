@@ -12,14 +12,13 @@
     %p
       ="Email:"
       %input{:type => :text, :name => :email, :id => :email, :value => (@email if @email)}
-    %p
-      %input{:type => :submit, :value => "Subscribe"}
-
     - if @fields
       - @fields.each do |f|
         %p
           =f.name
-          %input{:type => :text, :name => f.field_key, :id => f.field_key}
+          %input{:name => "cf-#{f.field_key[1..-2]}", :id => "cf-#{f.field_key[1..-2]}", :type => :text}
+    %p
+      %input{:type => :submit, :value => "Subscribe"}
 
 - else
   %div{:class => "infomessagebox messagebox"}="This page hasn't had a subscribe form set up yet."

@@ -26,11 +26,11 @@
   %p
     %input{:type => :submit, :value => "Save form"}
 
-- if @custom_fields and !@custom_fields.empty?
+- if @fields and !@fields.empty?
   %div="Select any custom fields you'd like to include in your subscribe form."
 
   %form{:id => :custom_fields, :method => :post, :action => "/page/#{@page.id}/fields"}
-    - @custom_fields.each do |cf|
+    - @fields.each do |cf|
       %p
         %input{:id => "cf-#{cf.Key[1..-2]}", :name => "cf-#{cf.Key[1..-2]}", :type => :checkbox, :value => :false}
         %span="#{cf.FieldName} (#{cf.DataType})"
