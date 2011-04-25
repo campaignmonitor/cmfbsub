@@ -32,7 +32,7 @@
   %form{:id => :custom_fields, :method => :post, :action => "/page/#{@page.id}/fields"}
     - @fields.each do |cf|
       %p
-        %input{:id => "cf-#{cf.Key[1..-2]}", :name => "cf-#{cf.Key[1..-2]}", :type => :checkbox, :value => :false}
+        %input{:id => att_friendly_key(cf.Key), :name => att_friendly_key(cf.Key), :type => :checkbox, :value => att_friendly_key(cf.Key), :checked => !@applied_fields.index(att_friendly_key(cf.Key)).nil? && "checked"}
         %span="#{cf.FieldName} (#{cf.DataType})"
     %p
       %input{:type => :submit, :value => "Save fields"}

@@ -32,7 +32,11 @@ helpers do
   def media_version
     "201104241106"
   end
-  
+
+  def att_friendly_key(key)
+    "cf-#{key[1..-2]}"
+  end
+
   def partial(name, locals={})
     haml "_#{name}".to_sym, :layout => false, :locals => locals
   end
@@ -105,14 +109,11 @@ end
 get '/page/:page_id/?' do |page_id|
   needs_auth
 
-  # Check for an existing subscribe form for the page
   @sf = get_form_by_page_id(page_id)
   if @sf
     @fields = get_custom_fields_for_list(@sf.api_key, @sf.list_id)
-    
-    # TODO: Use applied fields to indicate what's currently in use on the form
-    
-    @applied_fields = @sf.custom_fields.all(:order => [:name.asc])
+    @applied_fields = @sf.custom_fields.all(
+      :order => [:name.asc]).map {|f| att_friendly_key(f.field_key)}
   end
   @user = get_user("me")
   @pages = @user.accounts

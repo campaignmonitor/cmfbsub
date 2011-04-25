@@ -16,7 +16,7 @@
       - @fields.each do |f|
         %p
           =f.name
-          %input{:name => "cf-#{f.field_key[1..-2]}", :id => "cf-#{f.field_key[1..-2]}", :type => :text}
+          %input{:name => att_friendly_key(f.field_key), :id => att_friendly_key(f.field_key), :type => :text}
     %p
       %input{:type => :submit, :value => "Subscribe"}
 
