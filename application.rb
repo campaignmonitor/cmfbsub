@@ -52,8 +52,12 @@ helpers do
     !session['fb_auth'].nil?
   end
 
-  def default_subscribe_form_message
+  def default_intro_message
     "Enter your details to subscribe to our mailing list"
+  end
+
+  def default_thanks_message
+    "Thanks for subscribing to our list"
   end
 end
 
@@ -77,6 +81,11 @@ def get_page(page_id)
   Mogli::Page.find(page_id, Mogli::Client.new(session['fb_token']))
 end
 
+def get_subscribe_form_by_page_id(page_id)
+  @found = SubscribeForm.find(:page_id => page_id).to_a
+  return @found ? @found.first : nil
+end
+
 get '/' do
   needs_auth
 
@@ -93,8 +102,7 @@ get '/page/:page_id/?' do |page_id|
   needs_auth
 
   # Check for an existing subscribe form for the page
-  @found = SubscribeForm.find(:page_id => page_id).to_a
-  @sf = @found ? @found.first : nil
+  @sf = get_subscribe_form_by_page_id(page_id)
   @user = get_user("me")
   @pages = @user.accounts
   @page = get_page(page_id)
@@ -107,52 +115,60 @@ post '/page/:page_id/?' do |page_id|
   @user = get_user("me")
   # Update the values of the subscribe form if it already exists
   # otherwise, create a new subscribe form for the page
-  @found = SubscribeForm.find(:page_id => page_id).to_a
-  @sf = @found ? @found.first : nil
-  begin
-    # Validate input by attempting to get list details
-    CreateSend.api_key params[:apikey].strip
-    @list = CreateSend::List.new(params[:listid].strip).details
-
-    if @sf
-      @sf.api_key = params[:apikey].strip
-      @sf.list_id = params[:listid].strip
-      @sf.save
-    else
-      SubscribeForm.create :user_id => @user.id, :page_id => page_id,
-        :api_key => params[:apikey].strip, :list_id => params[:listid].strip
-    end
-    @page = get_page(page_id)
-    session[:confirmation_message] = "Thanks, you successfully saved your subscribe form for #{@page.name}."
-    redirect '/'
-
-    rescue CreateSend::CreateSendError, CreateSend::ClientError, 
-      CreateSend::ServerError, CreateSend::Unavailable => cse
-      p "Error: #{cse}"
-      @error_message = "Sorry, your API Key/List ID combination is invalid. Please try again."
-      @page = get_page(page_id)
-      haml :page
+  @sf = get_subscribe_form_by_page_id(page_id)
+  @page = get_page(page_id)
+  @error_messages = []
+  if @sf
+    @sf.api_key = params[:apikey].strip
+    @sf.list_id = params[:listid].strip
+    @sf.intro_message = params[:intro_message].strip
+    @sf.thanks_message = params[:thanks_message].strip
+  else
+    @sf = SubscribeForm.new(:user_id => @user.id, :page_id => page_id,
+      :api_key => params[:apikey].strip, :list_id => params[:listid].strip,
+      :intro_message => params[:intro_message].strip, 
+      :thanks_message => params[:thanks_message].strip)
   end
+
+  if !@sf.valid?
+    @error_messages = @sf.errors.present do |e|
+      e.on [:intro_message, :not_present], "Intro message must be present"
+      e.on [:thanks_message, :not_present], "Thanks message must be present"
+      e.on [:api_key, :not_present], "API Key must be present"
+      e.on [:list_id, :not_present], "List ID must be present"
+    end
+  else
+    begin
+      # Validate input by attempting to get list details
+      CreateSend.api_key params[:apikey].strip
+      @list = CreateSend::List.new(params[:listid].strip).details
+      @sf.save
+      session[:confirmation_message] = "Thanks, you successfully saved your subscribe form for #{@page.name}."
+      redirect '/'
+      rescue CreateSend::CreateSendError, CreateSend::ClientError, 
+        CreateSend::ServerError, CreateSend::Unavailable => cse
+        p "Error: #{cse}"
+        @error_messages << "That doesn't appear to be a valid Campaign Monitor API Key/List ID combination."
+    end
+  end
+  haml :page
 end
 
 get '/tab/?' do
   @page_id = params['facebook'] ? params['facebook']['page']['id'] : ''
-  @found = SubscribeForm.find(:page_id => @page_id).to_a
-  @sf = @found ? @found.first : nil
-
+  @sf = get_subscribe_form_by_page_id(@page_id)
   haml :tab
 end
 
 post '/subscribe/:page_id/?' do |page_id|
-  @found = SubscribeForm.find(:page_id => page_id).to_a
-  @sf = @found ? @found.first : nil
+  @sf = get_subscribe_form_by_page_id(page_id)
   redirect '/tab' unless @sf
 
   begin
     @page_id = page_id
     CreateSend.api_key @sf.api_key
     CreateSend::Subscriber.add @sf.list_id, params[:email].strip, params[:name].strip, [], true
-    @confirmation_message = "Thanks for subscribing to our list."
+    @confirmation_message = @sf.thanks_message
     haml :tab
 
     rescue Exception => e
