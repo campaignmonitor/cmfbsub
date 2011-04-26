@@ -210,14 +210,17 @@ post '/subscribe/:page_id/?' do |page_id|
     @fields = @sf.custom_fields.all(:order => [:name.asc])
     CreateSend.api_key @sf.api_key
     custom_fields = []
-    
-    # TODO: Revise how these fields are parsed based on the way different
-    # field types are rendered
-    
     params.each do |i, v|
       if i.start_with? "cf-"
         key = "[#{i[3..-1]}]"
-        custom_fields << { :Key => key, :Value => v }
+        if v.kind_of?(Array)
+          # Dealing with a multi-option-select-many
+          v.each do |o|
+            custom_fields << { :Key => key, :Value => o }
+          end
+        else
+          custom_fields << { :Key => key, :Value => v }
+        end
       end
     end
     
