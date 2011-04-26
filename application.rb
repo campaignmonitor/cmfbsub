@@ -30,7 +30,7 @@ end
 
 helpers do
   def media_version
-    "201104241106"
+    "201104261235"
   end
 
   def att_friendly_key(key)
@@ -50,11 +50,11 @@ helpers do
   end
 
   def default_intro_message
-    "Enter your details to subscribe to our mailing list"
+    "Enter your details to subscribe to our mailing list."
   end
 
   def default_thanks_message
-    "Thanks for subscribing to our list"
+    "Thanks for subscribing to our list."
   end
 end
 
