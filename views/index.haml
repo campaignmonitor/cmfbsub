@@ -8,4 +8,4 @@
   %div="You can add a subscribe form to the following pages (or edit any existing subscribe forms):"
   - @pages.each do |p|
     %div
-      %a{:href => "/page/#{p.id}"}="#{p.name} (#{p.category})"
+      %a{:href => "/page/#{p.id}"}&="#{p.name} (#{p.category})"

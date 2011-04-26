@@ -1,7 +1,7 @@
 %h2="Campaign Monitor Subscribe Forms"
 %div
   %a{:href => "/"}="Back to my pages"
-%h3=@page.name
+%h3&=@page.name
 
 %div="Enter your subscribe form details for <em>#{@page.name}</em> below."
 
@@ -34,6 +34,6 @@
     - @fields.each do |cf|
       %p
         %input{:id => att_friendly_key(cf.Key), :name => att_friendly_key(cf.Key), :type => :checkbox, :value => att_friendly_key(cf.Key), :checked => !@applied_fields.index(att_friendly_key(cf.Key)).nil? && "checked"}
-        %span="#{cf.FieldName} (#{cf.DataType})"
+        %span&="#{cf.FieldName} (#{cf.DataType})"
     %p
       %input{:type => :submit, :value => "Save fields"}

@@ -1,9 +1,9 @@
 - if @sf
-  %div=@sf.intro_message
+  %div&=@sf.intro_message
   - if @error_message
-    %div{:id => :subscribe_error, :class => "errormessagebox messagebox"}=@error_message
+    %div{:id => :subscribe_error, :class => "errormessagebox messagebox"}&=@error_message
   - if @confirmation_message
-    %div{:id => :subscribe_confirmation, :class => "infomessagebox messagebox"}=@confirmation_message
+    %div{:id => :subscribe_confirmation, :class => "infomessagebox messagebox"}&=@confirmation_message
 
   %form{:id => :subscribe, :method => :post, :action => "/subscribe/#{@page_id}"}
     %p
@@ -15,7 +15,7 @@
     - if @fields
       - @fields.each do |f|
         %p
-          =f.name
+          &=f.name
           %br
           =partial :custom_field, {:type => f.data_type, :key => f.field_key, :options => f.field_options}
     %p
