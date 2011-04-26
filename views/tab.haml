@@ -16,7 +16,8 @@
       - @fields.each do |f|
         %p
           =f.name
-          %input{:name => att_friendly_key(f.field_key), :id => att_friendly_key(f.field_key), :type => :text}
+          %br
+          =partial :custom_field, {:type => f.data_type, :key => f.field_key, :options => f.field_options}
     %p
       %input{:type => :submit, :value => "Subscribe"}
 

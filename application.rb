@@ -210,6 +210,10 @@ post '/subscribe/:page_id/?' do |page_id|
     @fields = @sf.custom_fields.all(:order => [:name.asc])
     CreateSend.api_key @sf.api_key
     custom_fields = []
+    
+    # TODO: Revise how these fields are parsed based on the way different
+    # field types are rendered
+    
     params.each do |i, v|
       if i.start_with? "cf-"
         key = "[#{i[3..-1]}]"
@@ -224,6 +228,7 @@ post '/subscribe/:page_id/?' do |page_id|
 
     rescue Exception => e
       p "Error: #{e}"
+      # TODO: Be more helpful with errors...
       @error_message = "Sorry, there was a problem subscribing you to our list."
       @name = params[:name].strip
       @email = params[:email].strip
