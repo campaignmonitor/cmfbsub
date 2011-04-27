@@ -6,21 +6,18 @@ require 'omniauth/oauth'
 require 'mogli'
 require 'createsend'
 
-if production?
-  APP_ID = ENV['APP_ID']
-  APP_SECRET = ENV['APP_SECRET']
-else
-  config = YAML.load_file('config.yaml')
-  APP_ID = config['APP_ID']
-  APP_SECRET = config['APP_SECRET']
-end
-
 configure do
+  config = YAML.load_file('config.yaml') if !production?
+  APP_ID = production? ? ENV['APP_ID'] : config['APP_ID']
+  APP_API_KEY = production? ? ENV['APP_API_KEY'] : config['APP_API_KEY']
+  APP_SECRET = production? ? ENV['APP_SECRET'] : config['APP_SECRET']
+  APP_CANVAS_NAME = production? ? ENV['APP_CANVAS_NAME'] : config['APP_CANVAS_NAME']
+
   CreateSend.base_uri "https://api.createsend.com/api/v3"
   set :views, "#{File.dirname(__FILE__)}/views"
   enable :sessions
   DataMapper.setup(:default, (ENV["DATABASE_URL"] || "sqlite3:///#{File.expand_path(File.dirname(__FILE__))}/#{Sinatra::Base.environment}.db"))
-  
+
   use Rack::Facebook, { :secret => APP_SECRET }
   use OmniAuth::Builder do
     client_options = production? ? {:ssl => {:ca_path => "/etc/ssl/certs"}} : {}
@@ -60,6 +57,8 @@ end
 
 before do
   content_type :html, :charset => 'utf-8'
+  @js_conf = { :appId => APP_ID, :canvasName => APP_CANVAS_NAME,
+    :userIdOnServer => session['fb_token'] ? session['fb_auth']['uid'] : nil}.to_json
 end
 
 error do
@@ -71,7 +70,7 @@ not_found do
 end
 
 def get_user(user_id)
-  Mogli::User.find(user_id, Mogli::Client.new(session['fb_token']))
+  session['fb_token'] ? Mogli::User.find(user_id, Mogli::Client.new(session['fb_token'])) : nil
 end
 
 def get_page(page_id)
@@ -98,7 +97,7 @@ get '/' do
   needs_auth
 
   @user = get_user("me")
-  @pages = @user.accounts
+  @pages = @user.accounts if @user
   if session[:confirmation_message]
     @confirmation_message = session[:confirmation_message]
     session[:confirmation_message] = nil
@@ -116,8 +115,9 @@ get '/page/:page_id/?' do |page_id|
       :order => [:name.asc]).map {|f| att_friendly_key(f.field_key)}
   end
   @user = get_user("me")
-  @pages = @user.accounts
+  @api_key = APP_API_KEY
   @page = get_page(page_id)
+  
   haml :page
 end
 

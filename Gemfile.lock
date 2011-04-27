@@ -94,6 +94,7 @@ DEPENDENCIES
   dm-timestamps
   dm-validations
   haml (>= 3)
+  json
   mogli
   oa-oauth (>= 0.2.3)
   sinatra (>= 1.0)

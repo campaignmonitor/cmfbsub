@@ -5,7 +5,7 @@ require 'dm-validations'
 require 'dm-aggregates'
 require 'dm-migrations'
 require 'haml'
-require 'ostruct'
+require 'json'
 
 require 'sinatra' unless defined?(Sinatra)
 require "sinatra/reloader" if development?

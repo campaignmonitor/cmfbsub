@@ -1,8 +1,19 @@
 !!!
-%html
+%html{:xmlns => "http://www.w3.org/1999/xhtml", "xmlns:fb" => "http://www.facebook.com/2008/fbml"}
   %head
     %title="Campaign Monitor Subscribe Forms"
     %link{:href => "/screen.css?v=#{media_version}", :media => 'all', :rel => 'stylesheet', :type => 'text/css'}
+    %meta{:name => "description", :content => "Easily add Campaign Monitor subscribe forms to your Facebook pages"}
+    
   %body
     #container
       #content= yield
+    %script{:type => "text/javascript", :src => "/js/main.js"}
+    #fb-root
+    :javascript
+      window.fbAsyncInit = function() { facebookInit(#{@js_conf}) };
+      (function() {
+        var e = document.createElement('script');
+        e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+        document.getElementById('fb-root').appendChild(e);
+      }());    

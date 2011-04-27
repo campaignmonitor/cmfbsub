@@ -1,9 +1,17 @@
 %h2="Campaign Monitor Subscribe Forms"
+%h3&=@page.name
 %div
   %a{:href => "/"}="Back to my pages"
-%h3&=@page.name
+  =" | "
+  - if !@page.has_added_app
+    %a{:href => "http://www.facebook.com/add.php?api_key=#{@api_key}&pages=1&page=#{@page.id}", :target => "_blank"}="Add Subscribe tab"
+  - else
+    ="Subscribe tab already added"
 
-%div="Enter your subscribe form details for <em>#{@page.name}</em> below."
+%div
+  ="Enter your subscribe form details for"
+  %a{:href => @page.link, :target => "_blank"}=@page.name
+  ="below."
 
 - if @sf and @sf.errors.length > 0
   %div{:id => :form_error, :class => "errormessagebox messagebox"}
