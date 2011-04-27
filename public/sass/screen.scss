@@ -6,6 +6,7 @@ $error-bg-colour: #ffebe8;
 $error-border-colour: #dd3c10;
 $info-bg-colour: #fff9d7;
 $info-border-colour: #e2c822;
+$link-colour: #3b5998;
 
 html, body {
   font: {
@@ -14,6 +15,13 @@ html, body {
   }
   background: $main-bg-colour;
   color: $main-font-colour;
+}
+
+a {
+  cursor: pointer;
+  color: $link-colour;
+  text-decoration: none;
+  &:hover{ text-decoration:underline; }
 }
 
 h1 { font-size: 2.8em; margin: 8px 0 12px 0; }
