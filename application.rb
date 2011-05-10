@@ -38,12 +38,9 @@ helpers do
     haml "_#{name}".to_sym, :layout => false, :locals => locals
   end
 
-  def needs_auth
-    redirect '/auth/facebook' unless has_auth?
-  end
-
-  def has_auth?
-    !session['fb_auth'].nil?
+  def check_auth
+    # TODO: Check that the data in session is valid based on the data
+    # in params['facebook']
   end
 
   def default_intro_message
@@ -94,7 +91,7 @@ def get_custom_fields_for_list(api_key, list_id)
 end
 
 get '/' do
-  needs_auth
+  check_auth
 
   @user = get_user("me")
   @pages = @user.accounts if @user
@@ -106,7 +103,7 @@ get '/' do
 end
 
 get '/page/:page_id/?' do |page_id|
-  needs_auth
+  check_auth
 
   @sf = get_form_by_page_id(page_id)
   if @sf
@@ -122,7 +119,7 @@ get '/page/:page_id/?' do |page_id|
 end
 
 post '/page/:page_id/?' do |page_id|
-  needs_auth
+  check_auth
 
   @user = get_user("me")
   @sf = get_form_by_page_id(page_id)
@@ -164,7 +161,7 @@ def find_cm_custom_field(input, key)
 end
 
 post '/page/:page_id/fields/?' do |page_id|
-  needs_auth
+  check_auth
 
   @user = get_user("me")
   @sf = get_form_by_page_id(page_id)
@@ -243,7 +240,6 @@ get '/auth/facebook/callback/?' do
   session['fb_auth'] = request.env['omniauth.auth']
   session['fb_token'] = session['fb_auth']['credentials']['token']
   session['fb_error'] = nil
-  session[:admin] = false
   redirect '/'
 end
 
@@ -262,7 +258,6 @@ def clear_session
   session['fb_auth'] = nil
   session['fb_token'] = nil
   session['fb_error'] = nil
-  session[:admin] = false
 end
 
 %w(reset screen).each do |style|

@@ -21,13 +21,10 @@ module Rack
         signed_request = request.params.delete('signed_request')
         unless signed_request.nil?
           signature, signed_params = signed_request.split('.')
-
           unless signed_request_is_valid?(secret, signature, signed_params)
             return Rack::Response.new(["Invalid signature"], 400).finish
           end
-
           signed_params = Yajl::Parser.new.parse(base64_url_decode(signed_params))
-          # add JSON params to request
           request.params['facebook'] = {}
           signed_params.each do |k,v|
             request.params['facebook'][k] = v
