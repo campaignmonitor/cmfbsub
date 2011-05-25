@@ -39,8 +39,13 @@ helpers do
   end
 
   def check_auth
-    # TODO: Check that the data in session is valid based on the data
-    # in params['facebook']
+    redirect '/auth/facebook' unless !session['fb_auth'].nil?
+    # If we don't have the right user in the session, clear the session
+    if !session['fb_auth'].nil? and !params['facebook'].nil? and 
+      session['fb_auth']['uid'] != params['facebook']['user_id']
+      clear_session
+      redirect '/auth/facebook'
+    end
   end
 
   def default_intro_message
