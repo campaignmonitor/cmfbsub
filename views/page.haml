@@ -15,6 +15,7 @@
       $("#lists").hide();
       $("#clients").hide();
       $("#list-options").show();
+      $("#custom-fields").show();
     });
 - else
   :javascript
@@ -34,7 +35,7 @@
         ="Please enter your Campaign Monitor API Key:"
         %input{:type => :text, :name => :apikey, :id => :apikey, :value => @sf ? @sf.api_key : ''}
       %p
-        %a{:id => "get-clients", :href => "#"}="Get clients"
+        %a{:id => "get-clients", :class => :button, :href => "#"}="Get clients"
 
     #clients
       %p="Please select a client for whom you'd like to create your subscribe form:"
@@ -70,4 +71,4 @@
                 %input{:id => att_friendly_key(cf.Key), :name => att_friendly_key(cf.Key), :type => :checkbox, :value => att_friendly_key(cf.Key), :checked => !@applied_fields.index(att_friendly_key(cf.Key)).nil? && "checked"}
                 %span&="#{cf.FieldName} (#{cf.DataType})"
       %p
-        %a{:id => :save, :page_id => @page.id, :href => "#"}="Save Subscribe Form"
+        %a{:id => :save, :class => :button, :page_id => @page.id, :href => "#"}="Save Subscribe Form"
