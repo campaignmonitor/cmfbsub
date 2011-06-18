@@ -5,6 +5,7 @@ require 'dm-validations'
 require 'dm-aggregates'
 require 'dm-migrations'
 require 'haml'
+require 'sass'
 require 'json'
 
 require 'sinatra' unless defined?(Sinatra)

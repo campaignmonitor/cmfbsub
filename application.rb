@@ -83,6 +83,31 @@ def get_form_by_page_id(page_id)
   Form.first(:page_id => page_id)
 end
 
+def get_clients(api_key)
+  @result = []
+  begin
+    CreateSend.api_key api_key
+    cs = CreateSend::CreateSend.new
+    @result = cs.clients
+    rescue Exception => e
+      p "Error: #{e}"
+      @result = []
+  end
+  @result
+end
+
+def get_lists_for_client(api_key, client_id)
+  @result = []
+  begin
+    CreateSend.api_key api_key
+    @result = CreateSend::Client.new(client_id).lists
+    rescue Exception => e
+      p "Error: #{e}"
+      @result = []
+  end
+  @result
+end
+
 def get_custom_fields_for_list(api_key, list_id)
   @result = []
   begin
@@ -107,6 +132,28 @@ get '/' do
   haml :index
 end
 
+get '/clients/:api_key/?' do |api_key|
+  content_type 'application/json', :charset => 'utf-8'
+  [200, get_clients(api_key).to_json]
+end
+
+get '/lists/:api_key/:client_id/?' do |api_key, client_id|
+  content_type 'application/json', :charset => 'utf-8'
+  [200, get_lists_for_client(api_key, client_id).to_json]
+end
+
+get '/customfields/:api_key/:list_id/?' do |api_key, list_id|
+  content_type 'application/json', :charset => 'utf-8'
+  [200, get_custom_fields_for_list(api_key, list_id).to_json]
+end
+
+def find_cm_custom_field(input, key)
+  input.each do |cf|
+      return cf if cf.Key == key
+  end
+  nil
+end
+
 get '/page/:page_id/?' do |page_id|
   check_auth
 
@@ -125,6 +172,7 @@ end
 
 post '/page/:page_id/?' do |page_id|
   check_auth
+  content_type 'application/json', :charset => 'utf-8'
 
   @user = get_user("me")
   @sf = get_form_by_page_id(page_id)
@@ -146,52 +194,35 @@ post '/page/:page_id/?' do |page_id|
       # Validate input by attempting to get list details
       CreateSend.api_key params[:apikey].strip
       @list = CreateSend::List.new(params[:listid].strip).details
+
+      @custom_fields = get_custom_fields_for_list(@sf.api_key, @sf.list_id)
+      @sf.custom_fields.all.destroy if @sf.custom_fields.length > 0
+
+      params.each do |i, v|
+        if i.start_with? "cf-"
+          # Surrounding square brackets are deliberately stripped in field ID
+          # see page.haml. e.g. Field with key "[field]" has param id "cf-field".
+          cmcf = find_cm_custom_field(@custom_fields, "[#{i[3..-1]}]")
+          if cmcf
+            cf = CustomField.new(
+              :name => cmcf.FieldName, :field_key => cmcf.Key,
+              :data_type => cmcf.DataType,
+              :field_options => cmcf.FieldOptions * ",")
+            @sf.custom_fields << cf
+          end
+        end
+      end
       @sf.save
-      session[:confirmation_message] = "Thanks, you successfully saved your subscribe form for #{@page.name}."
-      redirect '/'
+      message = "Thanks, you successfully saved your subscribe form for #{@page.name}."
+      session[:confirmation_message] = message
+      return [200, { :status => "success", :message => message}.to_json]
       rescue CreateSend::CreateSendError, CreateSend::ClientError, 
         CreateSend::ServerError, CreateSend::Unavailable => cse
         p "Error: #{cse}"
-        @sf.errors.add(:api_key, "That doesn't appear to be a valid Campaign Monitor API Key/List ID combination.")
+        # TODO: Be more helpful with errors...
+        return [200, { :status => "failure", :message => "Sorry, something went wrong while saving your subscribe form for #{@page.name}. Please try again."}.to_json]
     end
   end
-  haml :page
-end
-
-def find_cm_custom_field(input, key)
-  input.each do |cf|
-      return cf if cf.Key == key
-  end
-  nil
-end
-
-post '/page/:page_id/fields/?' do |page_id|
-  check_auth
-
-  @user = get_user("me")
-  @sf = get_form_by_page_id(page_id)
-  @page = get_page(page_id)
-  if @sf
-    @custom_fields = get_custom_fields_for_list(@sf.api_key, @sf.list_id)
-    @sf.custom_fields.all.destroy
-    params.each do |i, v|
-      if i.start_with? "cf-"
-        # Surrounding square brackets are deliberately stripped in field ID
-        # see page.haml. e.g. Field with key "[field]" has param id "cf-field".
-        cmcf = find_cm_custom_field(@custom_fields, "[#{i[3..-1]}]")
-        if cmcf
-          cf = CustomField.new(
-            :name => cmcf.FieldName, :field_key => cmcf.Key,
-            :data_type => cmcf.DataType,
-            :field_options => cmcf.FieldOptions * ",")
-          @sf.custom_fields << cf
-        end
-      end
-    end
-  end
-  @sf.save
-  session[:confirmation_message] = "Thanks, you successfully saved the custom fields for #{@page.name}."
-  redirect '/'
 end
 
 get '/tab/?' do

@@ -27,7 +27,7 @@ a {
 h1 { font-size: 2.8em; margin: 8px 0 12px 0; }
 h2 { font-size: 1.6em; margin: 8px 0 12px 0; }
 h3 { font-size: 1.2em; margin: 8px 0; }
-p, div { margin: 8px 0; }
+p, div { margin: 8px 0 12px 0; }
 
 .messagebox {
   padding: 10px;
@@ -49,3 +49,6 @@ p, div { margin: 8px 0; }
 #container {
   margin: 0 auto;
 }
+
+#clients, #lists, #list-options, #custom-fields { display: none; }
+#message { display: none; }

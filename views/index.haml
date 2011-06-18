@@ -6,7 +6,7 @@
     %div{:id => :confirmation_message, :class => "infomessagebox messagebox"}=@confirmation_message
 
   - if @pages
-    %div="You can add a subscribe form to the following pages (or edit any existing subscribe forms):"
+    %div="You're an admin of the following pages, to which you can add a subscribe form, or edit an existing subscribe form:"
     - @pages.each do |p|
       %div
         %a{:href => "/page/#{p.id}"}&="#{p.name} (#{p.category})"
