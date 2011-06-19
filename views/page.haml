@@ -69,6 +69,6 @@
             - @fields.each do |cf|
               %p
                 %input{:id => att_friendly_key(cf.Key), :name => att_friendly_key(cf.Key), :type => :checkbox, :value => att_friendly_key(cf.Key), :checked => !@applied_fields.index(att_friendly_key(cf.Key)).nil? && "checked"}
-                %span&="#{cf.FieldName} (#{cf.DataType})"
+                %label{:for => att_friendly_key(cf.Key)}&="#{cf.FieldName} (#{cf.DataType})"
       %p
         %a{:id => :save, :class => :button, :page_id => @page.id, :href => "#"}="Save Subscribe Form"

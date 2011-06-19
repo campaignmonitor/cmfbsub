@@ -111,7 +111,7 @@ function setupListOptions(api_key, list_id, list_name) {
           var afk = attFriendlyKey(cf.Key);
           var cfui = '<p>';
           cfui += '<input id="' + afk + '" name="' + afk + '" type="checkbox" value="' + afk + '"/>';
-          cfui += '<span>' + cf.FieldName + ' (' + cf.DataType + ')</span>';
+          cfui += '<label for="' + afk + '">' + cf.FieldName + ' (' + cf.DataType + ')</label>';
           cfui += '</p>';
           $("#custom-fields-list").append(cfui);
         });
