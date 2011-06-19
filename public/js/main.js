@@ -153,4 +153,12 @@ $(document).ready(function() {
     saveSubscribeForm($(this).attr("page_id"));
     return false;
   });
+  $("a#from_scratch").click(function() {
+    $("#lists").hide();
+    $("#clients").hide();
+    $("#list-options").hide();
+    $("#custom-fields").hide();
+    $("#first-step").show();
+    return false;
+  });
 });
