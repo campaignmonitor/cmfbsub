@@ -2,11 +2,6 @@
 %h3&=@page.name
 %div
   %a{:href => "/"}="Back to my pages"
-  =" | "
-  - if !@page.has_added_app
-    %a{:href => "http://www.facebook.com/add.php?api_key=#{@api_key}&pages=1&page=#{@page.id}", :target => "_blank"}="Add Subscribe tab"
-  - else
-    ="Subscribe tab already added"
 
 - if @sf
   :javascript

@@ -133,7 +133,11 @@ function saveSubscribeForm(page_id) {
     dataType: "json",
     success: function(data) {
       if (data.status == "success") {
-        window.location = "/";
+        if (data.app_add_url == '') {
+          window.location = "/";
+        } else {
+          top.location = data.app_add_url;
+        }
       } else {
         showErrorMessage(data.message);
       }
