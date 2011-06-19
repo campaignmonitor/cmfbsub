@@ -26,7 +26,7 @@
 
   %form{:id => :page}
     #first-step
-      %p
+      %div
         ="Please enter your Campaign Monitor API Key:"
         %input{:type => :text, :name => :apikey, :id => :apikey, :value => @sf ? @sf.api_key : ''}
       %p
@@ -41,19 +41,16 @@
       #lists-list
 
     #list-options
-      - if @sf
-        %p
-          %a{:id => :from_scratch, :href => "#"}="Start building this subscribe form from scratch."
       - if @sf and @sf.errors.length > 0
         %div{:id => :form_error, :class => "errormessagebox messagebox"}
           %ul{:class => 'errors'}
             - @sf.errors.each do |e|
               %li=e
-      %p
-        ="Intro message:"
+      %div
+        %div{:class => :page_field_title}="Intro message:"
         %input{:type => :text, :size => 60, :name => :intro_message, :id => :intro_message, :value => @sf ? @sf.intro_message : default_intro_message}
-      %p
-        ="Thanks message:"
+      %div
+        %div{:class => :page_field_title}="Thanks message:"
         %input{:type => :text, :size => 60, :name => :thanks_message, :id => :thanks_message, :value => @sf ? @sf.thanks_message : default_thanks_message}
       %input{:type => :hidden, :name => :listid, :id => :listid, :value => @sf ? @sf.list_id : ''}
 
@@ -67,3 +64,6 @@
                 %label{:for => att_friendly_key(cf.Key)}&="#{cf.FieldName} (#{cf.DataType})"
       %p
         %a{:id => :save, :class => :button, :page_id => @page.id, :href => "#"}="Save Subscribe Form"
+        - if @sf
+          ="or "
+          %a{:id => :from_scratch, :href => "#"}="start from scratch"

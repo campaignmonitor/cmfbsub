@@ -67,5 +67,14 @@ p, div { margin: 8px 0 12px 0; }
   margin: 0 auto;
 }
 
+.page_field_title { width: 120px; float: left; }
+
 #clients, #lists, #list-options, #custom-fields { display: none; }
 #message { display: none; }
+
+.subscribe_field_title { width: 50px; float: left; }
+form#subscribe {
+  input#name, input#email { width: 180px; }
+}
+.custom_field {}
+.custom_field_name { margin-bottom: 8px; }
