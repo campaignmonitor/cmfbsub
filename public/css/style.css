@@ -1,0 +1,81 @@
+@import url(/reset.css);
+
+html, body {
+  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+  font-size: 13px;
+  background: red;
+  color: black; }
+
+a {
+  cursor: pointer;
+  color: #3b5998;
+  text-decoration: none; }
+  a:hover {
+    text-decoration: underline; }
+
+h1 {
+  font-size: 2.8em;
+  margin: 8px 0 12px 0; }
+
+h2 {
+  font-size: 1.6em;
+  margin: 8px 0 12px 0; }
+
+h3 {
+  font-size: 1.2em;
+  margin: 8px 0; }
+
+p, div {
+  margin: 8px 0 12px 0; }
+
+.messagebox {
+  padding: 10px;
+  border-width: 1px;
+  border-style: solid;
+  font-weight: bold; }
+
+.infomessagebox {
+  background-color: #fff9d7;
+  border-color: #e2c822; }
+
+.errormessagebox {
+  background-color: #ffebe8;
+  border-color: #dd3c10; }
+
+.button {
+  cursor: pointer;
+  background-color: #5B74A8;
+  border: 1px solid #999;
+  border-color: #29447E #29447E #1A356E;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  font-size: 11px;
+  color: #fff;
+  padding: 2px 6px; }
+  .button:hover {
+    text-decoration: none;
+    background-color: #546c9e; }
+
+#container {
+  margin: 0 auto; }
+
+.page_field_title {
+  width: 120px;
+  float: left; }
+
+#clients, #lists, #list-options, #custom-fields {
+  display: none; }
+
+#message {
+  display: none; }
+
+.subscribe_field_title {
+  width: 50px;
+  float: left; }
+
+form#subscribe input#name, form#subscribe input#email {
+  width: 180px; }
+
+.custom_field_name {
+  margin-bottom: 8px; }
