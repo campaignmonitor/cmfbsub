@@ -4,20 +4,100 @@
     <title>CM</title>
     <meta content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- links -->
-    <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
-    <!-- js -->
+    <link rel="stylesheet" type="text/css" href="css/cm.css" />
     <script src="js/jquery.js"></script>
+    <script src="js/jquery.absolutize.js"></script>
+    <script src="js/jquery-ui-core.min.js"></script>
+    <script src="js/jquery.uniform.min.js"></script>
+    <script src="js/matt.js"></script>
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
   <body>
     
-    <header>
+    <header class="clear">
+    
+      <h1>Campaign Monitor</h1>
+      <!-- Add class .selected when context box is open. -->
+      <button class="sign-in selected">Log into Campaign Monitor <!-- Alt text: Loged in as Jimmy D.--></button>
+      <menu class="context-box sign-in">
+        <!-- On error: -->
+        <div class="error hidden">Oops, you mistyped your username or password.</div>
+        <label for="site-address">Site address</label>
+        <input type="text" id="site-address"/><label class="hint">.createsend.com</label>
+        <!-- Hide .hint if a custom domain is entered. -->
+        
+        <label for="username">Username</label>
+        <input type="text" id="username" />
+        
+        <label for="password">Password</label>
+        <input type="password" id="password" />
+        <button class="primary" type="submit">Log in</button>
+        <!-- When logging in, add .disabled and change text to "Logging in&hellip;" -->
+      </menu>
+      
     </header>
         
-    <section>
+    <section id="body" style="display:none">
+    
+      <h1>Add a subscription form to:</h1>
+      
+      <!-- Classes: .arrowed, .selected --> 
+      <div class="page">
+        <figure>
+          <img/>
+        </figure>
+        <h2>Jimmy's Pistachios</h2>
+        <p>Food/Grocery &middot; San Fransisco, California</p>
+      </div>
+      
+      <div class="prefs">
+        <div class="pref arrowed">
+          <label for="clients">Which will add subscribers to:</label>
+          <div class="wrapper">
+            <!-- Hide .clients if they're a client. -->
+            <div class="clients">
+              <select id="clients">
+                <option>Sally Sparrow</option>
+              </select>
+            </div>
+            <select id="list">
+              <option>Facebook list</option>
+            </select>
+          </div>
+        </div>
+        <div class="pref arrowed">
+          <label>The form will ask for:</label>
+          <fieldset>
+            <input type="checkbox" id="name" checked /><label for="name" class="checkbox-adjacent">Name</label>
+            <br/>
+            <input type="checkbox" id="name" checked /><label for="name" class="checkbox-adjacent">Email</label>
+            <br/>
+            <input type="checkbox" id="name" /><label for="name" class="checkbox-adjacent">Custom field</label>
+          </fieldset>
+        </div>
+        <div class="pref save">
+          <button class="primary">Save Changes</button>
+          <!-- They haven't added this to the page, redirect to our App. If they have, redirect to their Page. -->
+        </div>
+      </div>
+        
+      <div class="page">
+        <figure>
+          <img/>
+        </figure>
+        <h2>Jimmy's Pistachios</h2>
+        <p>Food/Grocery &middot; San Fransisco, California</p>
+      </div>
+      <div class="page">
+        <figure>
+          <img/>
+        </figure>
+        <h2>Jimmy's Pistachios</h2>
+        <p>Food/Grocery &middot; San Fransisco, California</p>
+      </div>
+      
     </section>
     
     <footer>
