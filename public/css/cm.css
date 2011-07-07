@@ -464,6 +464,10 @@ header {
       bottom: 16px;
     }
     
+      .ie header .context-box button.primary {
+        bottom: 22px;
+      }
+    
       header .context-box button.primary:active {
         top: auto;
       }
