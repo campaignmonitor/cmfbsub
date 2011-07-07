@@ -204,3 +204,39 @@ fieldset {
       margin-top: -1px;
       z-index: 19;
     }
+
+.nav {
+  border-bottom: 1px solid #898989;
+  list-style: none;
+  margin: 0;
+  margin-bottom: 30px;
+}
+
+  .nav li {
+    display: inline;
+    padding: 2px 0 3px;
+    background: #F1F1F1 url(https://s-static.ak.facebook.com/rsrc.php/v1/zs/r/YoX0fw76s5z.gif) top left repeat-x;
+    position: relative;
+    top: 1px;
+  }
+  
+    .nav li.selected {
+      border-left: 1px solid #36538F;
+      border-right: 1px solid #5973A9;
+    }
+
+    .nav li a {
+      border: 1px solid #898989;
+      border-left: 0;
+      color: #333;
+      font-weight: bold;
+      padding: 2px 8px 3px 9px;
+      display: inline-block;
+    }
+    
+    .nav li.selected a {
+      background: #6D84B4;
+      border: 1px solid #3B5998;
+      color: white;
+      margin-right: -1px;
+    }
