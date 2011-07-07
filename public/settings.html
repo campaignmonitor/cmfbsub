@@ -23,12 +23,12 @@
       <h1>Campaign Monitor</h1>
       <!-- Add class .selected when context box is open. -->
       <button class="sign-in selected">Log into Campaign Monitor <!-- Alt text: Loged in as Jimmy D.--></button>
+      <!-- Add class .custom-domain if they type a period in #site-address. (Validate as they type.) -->
       <menu class="context-box sign-in">
         <!-- On error: -->
         <div class="error hidden">Oops, you mistyped your username or password.</div>
         <label for="site-address">Site address</label>
         <input type="text" id="site-address"/><label class="hint">.createsend.com</label>
-        <!-- Hide .hint if a custom domain is entered. -->
         
         <label for="username">Username</label>
         <input type="text" id="username" />

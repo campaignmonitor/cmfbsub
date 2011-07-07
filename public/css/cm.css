@@ -404,6 +404,10 @@ header {
     text-shadow: 0 1px 0 rgba(255,255,255,.65);
   }
   
+    .ie .context-box {
+      border: solid 1px #bbb;
+    }
+    
     header .context-box.sign-in {
       width: 320px;
       position: absolute;
@@ -451,6 +455,22 @@ header {
     header .context-box input:last-of-type {
       margin-bottom: 0;
     }
+    
+    header #site-address {
+      text-align: right;
+      padding-right: 110px;
+      width: 112px;
+    }
+    
+    header .context-box.custom-domain .hint {
+      display: none;
+    }  
+    
+    header .context-box.custom-domain #site-address {
+      text-align: left;
+      padding-right: 6px;
+      width: 216px;
+    }  
     
     header .context-box label.hint {
       float: none;
