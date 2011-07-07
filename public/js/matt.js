@@ -45,6 +45,7 @@ $(document).ready(function(){
        $(this).delay((counter*100)+500).fadeIn(300);
      });
      page.absolute.delay(500).addClass('arrowed');
+     $("#body .back").delay(300).fadeIn(1000);
    });
    
 });

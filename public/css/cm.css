@@ -503,6 +503,20 @@ section#body {
     font-weight: bold;
   }
   
+  #body .back {
+    float: right;
+    margin-top: -35px;
+    margin-right: 25px;
+    font-weight: bold;
+    background: url(../img/back.png) no-repeat left center;
+    padding-left: 19px;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+    #body .back a {
+      color: #9d9d9d;
+    }
+  
   #body h2 {
     font-size: 14.5px;
     color: #1c2a48;
