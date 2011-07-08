@@ -63,10 +63,13 @@
             <!-- Hide .clients if they're a client. -->
             <div class="clients">
               <select id="clients">
+                <option><em>Choose a client</em></option>
                 <option>Sally Sparrow</option>
               </select>
             </div>
+            <!-- Hide #list until they've selected a client. What's the feasibility of loading all list data for clients on load so they don't have to see a spinner here? -->
             <select id="list">
+              <option>Members list</option>
               <option>Facebook list</option>
             </select>
           </div>

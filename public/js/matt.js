@@ -28,9 +28,10 @@ $(document).ready(function(){
    });
    
    $("#body .page").click(function() {
-     // Highlight it
      page = $(this);
+     // Highlight it
      page.addClass('selected');
+     // Duplicate, absolutise and slide it up
      page.absolute = page.clone().insertBefore(page);
      page.absolute.addClass('absolute');
      page.absolute.absolutize();
@@ -38,14 +39,18 @@ $(document).ready(function(){
      page.firstPosition = $("#body .page:first-of-type").position().top;
      page.absolute.delay(300).animate({top: page.firstPosition+'px'}, {duration: 300, easing: 'easeOutCubic'});
      $("#body .page:not(.absolute)").delay(300).fadeOut(400);
-     // Fade in prefs
-     var counter = 0;
-     $("#body .pref").each(function() {
-       counter++;
-       $(this).delay((counter*100)+500).fadeIn(300);
-     });
+     // Show first pref
+     $($(".pref")[0]).delay(100+500).fadeIn(300);
+     // Add arrow
      page.absolute.delay(500).addClass('arrowed');
+     // Show back button
      $("#body .back").delay(300).fadeIn(1000);
+     // On choosing a specific list,
+     $("#list").change(function() {
+       // Show the rest of the prefs
+       $($(".pref")[1]).fadeIn(300);
+       $($(".pref")[2]).delay(200).fadeIn(300);
+     });
    });
    
 });
