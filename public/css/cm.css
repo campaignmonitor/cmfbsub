@@ -316,6 +316,15 @@ header {
     float: left;
   }
   
+  header h1.cs {
+    height: 28px;
+    width: 211px;
+    text-indent: -9999px;
+    background: url(../img/cm-cs.png) no-repeat;
+    margin: 15px 0;
+    float: left;
+  }
+  
   header button, header > button:hover {
     font-size: 12px;
     background-image: -moz-linear-gradient(270deg, 
