@@ -1,0 +1,55 @@
+!!!
+%html#sub{:xmlns => "http://www.w3.org/1999/xhtml", "xmlns:fb" => "http://www.facebook.com/2008/fbml"}
+  %head
+    %title CM
+    %meta{:content => "text/html; charset=utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %link{:href => "/fb.css?v=#{media_version}", :rel => "stylesheet", :type => "text/css"}/
+    %script{:type => "text/javascript", :src => "//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.js"}
+    %script{:type => "text/javascript", :src => "/js/jquery-ui-core.min.js"}
+    /[if lt IE 9]
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    :javascript
+      $(document).ready(function(){
+         $("button").click(function () {
+           $(".success").show().fadeTo(0,0).animate({top:'10%',opacity:1}, 1500, 'easeOutExpo');
+         $('body > *:not(.success)').fadeOut(800);
+       });
+      });
+  %body
+    %ul.nav
+      %li.selected
+        %a What it looks like to others
+      / No whitespace
+      %li
+        %a Form settings
+    .success
+      %h2 Thanks. You're signed up!
+      %p
+        / If confirmation emails are on:
+        We've just sent you a quick email where you can confirm your subscription.
+        / else
+        You'll receive updates and newsletters straight to your inbox.
+        / end if
+        You can always unsubscribe instantly from a link in any email you receive.
+    %label Email address
+    %input{:type => "text"}/
+    .error Type your email address. We'll use it to send you information about Jimmy's Pistachios.
+    %label Name
+    %input{:type => "text"}/
+    %label Custom field
+    %fieldset
+      %select
+        %option asd
+    %label.adjacent-checkboxes Custom field
+    %fieldset
+      %input#name{:checked => "", :type => "checkbox"}/
+      %label.checkbox-adjacent{:for => "name"} Name
+      %br/
+      %input#name{:checked => "", :type => "checkbox"}/
+      %label.checkbox-adjacent{:for => "name"} Email
+      %br/
+      %input#name{:type => "checkbox"}/
+      %label.checkbox-adjacent{:for => "name"} Custom field
+    %button{:type => "submit"} Subscribe to Jimmy's Pistachios
+    / Submit the form in the background. No spinners!

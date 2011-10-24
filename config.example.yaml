@@ -1,0 +1,4 @@
+APP_ID: 'your_app_id'
+APP_API_KEY: 'your_app_api_key'
+APP_SECRET: 'your_app_secret'
+APP_CANVAS_NAME: 'your_canvas_name'

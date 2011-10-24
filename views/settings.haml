@@ -1,0 +1,89 @@
+!!!
+/[if lt IE 9 ] <html class="ie">
+/ [if gt IE 8]><!
+%html{:xmlns => "http://www.w3.org/1999/xhtml", "xmlns:fb" => "http://www.facebook.com/2008/fbml"}
+  / <![endif]
+  %head
+    %title CM
+    %meta{:content => "text/html; charset=utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %meta{:name => "description", :content => "Easily add Campaign Monitor subscribe forms to your Facebook pages"}
+    %link{:href => "/cm.css?v=#{media_version}", :rel => "stylesheet", :type => "text/css"}/
+    %script{:type => "text/javascript", :src => "//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.js"}
+    %script{:type => "text/javascript", :src => "/js/jquery.absolutize.js"}
+    %script{:type => "text/javascript", :src => "/js/jquery-ui-core.min.js"}
+    %script{:type => "text/javascript", :src => "/js/jquery.uniform.min.js"}
+    %script{:type => "text/javascript", :src => "/js/settings.js?v=#{media_version}"}
+    :javascript
+      $(function () { cmfbsub.settings.ready(); });
+    /[if lt IE 9]
+      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  %body
+    %header.clear
+      %h1 Campaign Monitor
+      %button.sign-in
+        Log into Campaign Monitor
+        / Alt text: Logged in as Jimmy D.
+      / Add class .custom-domain if they type a period in #site-address. (Validate as they type.)
+      %menu.context-box.sign-in
+        / On error:
+        .error.hidden Oops, you mistyped your username or password.
+        %form#loginform
+          %label{:for => "site-address"} Site address
+          %label.hint .createsend.com
+          %input#site-address{:type => "text", :name => "site_url_prefix"}/
+          %input#site-address-full{:type => "hidden", :name => "site_url"}/
+          %label{:for => "username"} Username
+          %input#username{:type => "text", :name => "username"}/
+          %label{:for => "password"} Password
+          %input#password{:type => "password", :name => "password"}/
+          %button.primary{:type => "submit"} Log in
+    %section#body{:style => "display:none"}
+      %h1 Add a subscription form to:
+      %span.back{:style => "display:none"}
+        %a Other Pages
+      / Classes: .arrowed, .selected
+      .page
+        %figure
+          %img/
+        %h2 Jimmy's Pistachios
+        %p Food/Grocery · San Fransisco, California
+      .prefs
+        .pref.arrowed
+          %label{:for => "clients"} Which will add subscribers to:
+          .wrapper
+            / Hide .clients if they're a client.
+            .clients
+              %select#clients
+                %option
+                  %em Choose a client
+                %option Sally Sparrow
+            / Hide #list until they've selected a client. What's the feasibility of loading all list data for clients on load so they don't have to see a spinner here?
+            %select#list
+              %option Members list
+              %option Facebook list
+        .pref.arrowed
+          %label The form will ask for:
+          %fieldset
+            %input#name{:checked => "", :type => "checkbox"}/
+            %label.checkbox-adjacent{:for => "name"} Name
+            %br/
+            %input#name{:checked => "", :type => "checkbox"}/
+            %label.checkbox-adjacent{:for => "name"} Email
+            %br/
+            %input#name{:type => "checkbox"}/
+            %label.checkbox-adjacent{:for => "name"} Custom field
+        .pref.save
+          %button.primary Save Changes
+          / They haven't added this to the page, redirect to our App. If they have, redirect to their Page.
+      .page
+        %figure
+          %img/
+        %h2 Jimmy's Pistachios
+        %p Food/Grocery · San Fransisco, California
+      .page
+        %figure
+          %img/
+        %h2 Jimmy's Pistachios
+        %p Food/Grocery · San Fransisco, California
+    %footer

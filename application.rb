@@ -27,7 +27,7 @@ end
 
 helpers do
   def media_version
-    "201104261235"
+    "20111024"
   end
 
   def att_friendly_key(key)
@@ -83,6 +83,19 @@ def get_form_by_page_id(page_id)
   Form.first(:page_id => page_id)
 end
 
+def get_api_key(site_url, username, password)
+  @result = nil
+  begin
+    CreateSend.api_key ''
+    cs = CreateSend::CreateSend.new
+    @result = cs.apikey site_url, username, password
+    rescue Exception => e
+      p "Error: #{e}"
+      @result = nil
+  end
+  @result
+end
+
 def get_clients(api_key)
   @result = []
   begin
@@ -129,7 +142,18 @@ get '/' do
     @confirmation_message = session[:confirmation_message]
     session[:confirmation_message] = nil
   end
-  haml :index
+  haml :settings, :layout => false
+end
+
+post '/apikey/?' do
+  content_type 'application/json', :charset => 'utf-8'
+  result = get_api_key(params['site_url'], params['username'], params['password'])
+  if !result.nil?
+    # TODO: Save the API key for the user.
+    [200, result.to_json]
+  else
+    [400, {:message => "Error geting API key..."}.to_json]
+  end
 end
 
 get '/clients/:api_key/?' do |api_key|
@@ -149,7 +173,7 @@ end
 
 def find_cm_custom_field(input, key)
   input.each do |cf|
-      return cf if cf.Key == key
+    return cf if cf.Key == key
   end
   nil
 end
@@ -166,7 +190,7 @@ get '/page/:page_id/?' do |page_id|
   @user = get_user("me")
   @page = get_page(page_id)
   
-  haml :page
+  haml :settings, :layout => false
 end
 
 post '/page/:page_id/?' do |page_id|
@@ -232,7 +256,7 @@ get '/tab/?' do
   if @sf
     @fields = @sf.custom_fields.all(:order => [:name.asc])
   end
-  haml :tab
+  haml "subscription-form".to_sym, :layout => false
 end
 
 post '/subscribe/:page_id/?' do |page_id|
@@ -261,7 +285,7 @@ post '/subscribe/:page_id/?' do |page_id|
     CreateSend::Subscriber.add @sf.list_id, params[:email].strip, params[:name].strip,
       custom_fields, true
     @confirmation_message = @sf.thanks_message
-    haml :tab
+    haml "subscription-form".to_sym, :layout => false
 
     rescue Exception => e
       p "Error: #{e}"
@@ -269,7 +293,7 @@ post '/subscribe/:page_id/?' do |page_id|
       @error_message = "Sorry, there was a problem subscribing you to our list."
       @name = params[:name].strip
       @email = params[:email].strip
-      haml :tab
+      haml "subscription-form".to_sym, :layout => false
   end
 end
 
@@ -282,7 +306,7 @@ end
 
 get '/auth/failure/?' do
   clear_session
-  session['fb_error'] = 'In order to use this application you must permit access to your basic information.'
+  session['fb_error'] = 'To use this application you must permit access to your basic information.'
   redirect '/'
 end
 
@@ -297,10 +321,10 @@ def clear_session
   session['fb_error'] = nil
 end
 
-%w(reset screen).each do |style|
+%w(reset cm fb).each do |style|
   get "/#{style}.css" do
     content_type :css, :charset => 'utf-8'
-    path = "public/sass/#{style}.scss"
+    path = "public/scss/#{style}.scss"
     last_modified File.mtime(path)
     scss File.read(path)
   end

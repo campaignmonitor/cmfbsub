@@ -6,7 +6,7 @@ gem 'haml', '>= 3', :require => ['haml', 'sass']
 gem 'oa-oauth', '>= 0.2.3'
 gem 'yajl-ruby'
 gem 'mogli'
-gem 'createsend', '>= 0.3.0'
+gem 'createsend'
 gem 'dm-core'
 gem 'dm-sqlite-adapter'
 gem 'dm-postgres-adapter'

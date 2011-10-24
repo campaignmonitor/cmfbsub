@@ -85,7 +85,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  createsend (>= 0.3.0)
+  createsend
   dm-aggregates
   dm-core
   dm-migrations
