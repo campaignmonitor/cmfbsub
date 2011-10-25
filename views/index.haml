@@ -2,9 +2,6 @@
 %p="Easily add Campaign Monitor subscribe forms to your Facebook pages"
 
 - if @user
-  - if @confirmation_message
-    %div{:id => :confirmation_message, :class => "infomessagebox messagebox"}=@confirmation_message
-
   - if @pages
     %div="You're an admin of the following pages, to which you can add a subscribe form, or edit an existing subscribe form:"
     - @pages.each do |p|

@@ -1,3 +1,13 @@
+class Account
+  include DataMapper::Resource
+  
+  property :id, Serial
+  property :api_key, String, :required => true, :key => true
+  property :user_id, String, :required => true
+
+  has n, :forms
+end
+
 class Form
   include DataMapper::Resource
 
@@ -9,6 +19,7 @@ class Form
   property :intro_message, String, :required => true, :length => 0..250
   property :thanks_message, String, :required => true, :length => 0..250
 
+  belongs_to :account
   has n, :custom_fields
 end
 

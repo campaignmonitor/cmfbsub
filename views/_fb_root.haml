@@ -1,0 +1,9 @@
+#fb-root
+%script{:type => "text/javascript", :src => "/js/fb.js?v=#{media_version}"}
+:javascript
+  window.fbAsyncInit = function() { facebookInit(#{@js_conf}) };
+  (function() {
+    var e = document.createElement('script');
+    e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+    document.getElementById('fb-root').appendChild(e);
+  }());

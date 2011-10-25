@@ -53,3 +53,4 @@
       %label.checkbox-adjacent{:for => "name"} Custom field
     %button{:type => "submit"} Subscribe to Jimmy's Pistachios
     / Submit the form in the background. No spinners!
+    = partial :fb_root, {:js_conf => @js_conf}

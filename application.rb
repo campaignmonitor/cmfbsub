@@ -13,7 +13,6 @@ configure do
   APP_SECRET = production? ? ENV['APP_SECRET'] : config['APP_SECRET']
   APP_CANVAS_NAME = production? ? ENV['APP_CANVAS_NAME'] : config['APP_CANVAS_NAME']
 
-  CreateSend.base_uri "https://api.createsend.com/api/v3"
   set :views, "#{File.dirname(__FILE__)}/views"
   enable :sessions
   DataMapper.setup(:default, (ENV["DATABASE_URL"] || "sqlite3:///#{File.expand_path(File.dirname(__FILE__))}/#{Sinatra::Base.environment}.db"))
@@ -21,8 +20,10 @@ configure do
   use Rack::Facebook, { :secret => APP_SECRET }
   use OmniAuth::Builder do
     client_options = production? ? {:ssl => {:ca_path => "/etc/ssl/certs"}} : {}
-    provider :facebook, APP_ID, APP_SECRET, {:client_options => client_options, :scope => ''}
+    provider :facebook, APP_ID, APP_SECRET, {:client_options => client_options, :scope => 'manage_pages'}
   end
+
+  disable :protection
 end
 
 helpers do
@@ -86,7 +87,6 @@ end
 def get_api_key(site_url, username, password)
   @result = nil
   begin
-    CreateSend.api_key ''
     cs = CreateSend::CreateSend.new
     @result = cs.apikey site_url, username, password
     rescue Exception => e
@@ -137,11 +137,8 @@ get '/' do
   check_auth
 
   @user = get_user("me")
+  @account = Account.first(:user_id => @user.id) if @user
   @pages = @user.accounts if @user
-  if session[:confirmation_message]
-    @confirmation_message = session[:confirmation_message]
-    session[:confirmation_message] = nil
-  end
   haml :settings, :layout => false
 end
 
@@ -149,8 +146,9 @@ post '/apikey/?' do
   content_type 'application/json', :charset => 'utf-8'
   result = get_api_key(params['site_url'], params['username'], params['password'])
   if !result.nil?
-    # TODO: Save the API key for the user.
-    [200, result.to_json]
+    @user = get_user("me")
+    #@account = Account.first_or_create(:api_key => result.ApiKey, :user_id => @user.id)
+    [200, {}.to_json]
   else
     [400, {:message => "Error geting API key..."}.to_json]
   end
@@ -239,7 +237,6 @@ post '/page/:page_id/?' do |page_id|
       end
       @sf.save
       message = "Thanks, you successfully saved your subscribe form for #{@page.name}."
-      session[:confirmation_message] = message if @page.has_added_app
       return [200, { :status => "success", :message => message, :app_add_url => @app_add_url}.to_json]
       rescue CreateSend::CreateSendError, CreateSend::ClientError, 
         CreateSend::ServerError, CreateSend::Unavailable => cse
@@ -284,7 +281,6 @@ post '/subscribe/:page_id/?' do |page_id|
     
     CreateSend::Subscriber.add @sf.list_id, params[:email].strip, params[:name].strip,
       custom_fields, true
-    @confirmation_message = @sf.thanks_message
     haml "subscription-form".to_sym, :layout => false
 
     rescue Exception => e
