@@ -34,3 +34,5 @@ class CustomField
 
   belongs_to :form
 end
+
+DataMapper.finalize

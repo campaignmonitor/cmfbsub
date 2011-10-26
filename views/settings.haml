@@ -1,5 +1,5 @@
 !!!
-/[if lt IE 9 ] <html class="ie">
+/[if lt IE 9 ] <html class="ie" xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
 / [if gt IE 8]><!
 %html{:xmlns => "http://www.w3.org/1999/xhtml", "xmlns:fb" => "http://www.facebook.com/2008/fbml"}
   / <![endif]
@@ -13,15 +13,17 @@
     %script{:type => "text/javascript", :src => "/js/jquery.absolutize.js"}
     %script{:type => "text/javascript", :src => "/js/jquery-ui-core.min.js"}
     %script{:type => "text/javascript", :src => "/js/jquery.uniform.min.js"}
+    %script{:type => "text/javascript", :src => "/js/handlebars.1.0.0.beta.3.js"}
     %script{:type => "text/javascript", :src => "/js/settings.js?v=#{media_version}"}
+    = erb :_settings_templates
     :javascript
-      $(function () { cmfbsub.settings.ready(); });
+      $(function () { cmfbsub.settings.ready(#{@js_data}); });
     /[if lt IE 9]
       <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   %body
     %header.clear
       %h1 Campaign Monitor
-      -if !@account
+      - unless @account
         %button.sign-in
           Log into Campaign Monitor
         / Add class .custom-domain if they type a period in #site-address. (Validate as they type.)
@@ -39,48 +41,48 @@
             %input#password{:type => "password", :name => "password"}/
             %button.primary{:type => "submit"} Log in
     %section#body{:style => "display:none"}
-      - if @pages
-        %h1 Add a subscription form to:
-        %span.back{:style => "display:none"}
-          %a Other Pages
-      
-        - @pages.each do |p|
-          %div
-            .page
-              %figure
-                %img/
-              %h2="#{p.name}"
-              %p="#{p.category}"
-            .prefs
-              .pref.arrowed
-                %label{:for => "clients"} Which will add subscribers to:
-                .wrapper
-                  / Hide .clients if they're a client.
-                  .clients
-                    %select#clients
-                      %option
-                        %em Choose a client
-                      %option Sally Sparrow
-                  / Hide #list until they've selected a client. What's the feasibility of loading all list data for clients on load so they don't have to see a spinner here?
-                  %select#list
-                    %option Members list
-                    %option Facebook list
-              .pref.arrowed
-                %label The form will ask for:
-                %fieldset
-                  %input#name{:checked => "", :type => "checkbox"}/
-                  %label.checkbox-adjacent{:for => "name"} Name
-                  %br/
-                  %input#name{:checked => "", :type => "checkbox"}/
-                  %label.checkbox-adjacent{:for => "name"} Email
-                  %br/
-                  %input#name{:type => "checkbox"}/
-                  %label.checkbox-adjacent{:for => "name"} Custom field
-              .pref.save
-                %button.primary Save Changes
-                / They haven't added this to the page, redirect to our App. If they have, redirect to their Page.
+      - if @user
+        - if @pages and !@pages.empty?
+          %h1 Add a subscription form to:
+          %span.back{:style => "display:none"}
+            %a Other Pages
+          - @pages.each do |p|
+            %div
+              .page
+                %figure
+                  %img/
+                %h2="#{p.name}"
+                %p="#{p.category}"
+              .prefs
+                .pref.arrowed
+                  %label{:for => "clients"} Which will add subscribers to:
+                  .wrapper
+                    .clients
+                      %select{:id => "clients-#{p.id}"}
+                        %option{:value => "nothing"}
+                          %em Choose a client
+                        - @clients.each do |c|
+                          %option{:value => c.ClientID}=c.Name
+                    %select{:style => "display:none", :class => "list", :id => "lists-#{p.id}"}
+                .pref.arrowed
+                  %label The form will ask for:
+                  %fieldset
+                    %input#name{:checked => "", :type => "checkbox"}/
+                    %label.checkbox-adjacent{:for => "name"} Name
+                    %br/
+                    %input#name{:checked => "", :type => "checkbox"}/
+                    %label.checkbox-adjacent{:for => "name"} Email
+                    %br/
+                    %input#name{:type => "checkbox"}/
+                    %label.checkbox-adjacent{:for => "name"} Custom field
+                .pref.save
+                  %button.primary Save Changes
+                  / They haven't added this to the page, redirect to our App. If they have, redirect to their Page.
+        - else
+          %h1="Sorry, you need to be an admin of a Facebook page before you can add a subscribe form to the page."
       - else
-        %p="You aren't an admin for any Facebook pages. To add a subscribe form to a page, you need to be an admin of the page."
+        %p
+          <fb:login-button show-faces="true"></fb:login-button>
 
     %footer
     = partial :fb_root, {:js_conf => @js_conf}

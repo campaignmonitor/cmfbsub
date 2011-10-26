@@ -28,7 +28,7 @@ end
 
 helpers do
   def media_version
-    "20111024"
+    "ni89qw8ud9ww12e212e2ewwwwws09i0i0sqsqswww78yq8w7d"
   end
 
   def att_friendly_key(key)
@@ -40,7 +40,7 @@ helpers do
   end
 
   def check_auth
-    redirect '/auth/facebook' unless !session['fb_auth'].nil?
+    redirect '/auth/facebook' if session['fb_auth'].nil?
     # If we don't have the right user in the session, clear the session
     if !session['fb_auth'].nil? and !params['facebook'].nil? and 
       session['fb_auth']['uid'] != params['facebook']['user_id']
@@ -49,13 +49,6 @@ helpers do
     end
   end
 
-  def default_intro_message
-    "Enter your details to subscribe to our mailing list."
-  end
-
-  def default_thanks_message
-    "Thanks for subscribing to our list."
-  end
 end
 
 before do
@@ -137,8 +130,12 @@ get '/' do
   check_auth
 
   @user = get_user("me")
-  @account = Account.first(:user_id => @user.id) if @user
-  @pages = @user.accounts if @user
+  @pages = @user ? @user.accounts : []
+  @account = @user ? Account.first(:user_id => @user.id) : nil
+  @clients = @account ? get_clients(@account.api_key) : []
+  @js_data = @account ? {
+      :account => {:api_key => @account.api_key, :user_id => @user.id}
+    }.to_json : ''
   haml :settings, :layout => false
 end
 
@@ -147,8 +144,8 @@ post '/apikey/?' do
   result = get_api_key(params['site_url'], params['username'], params['password'])
   if !result.nil?
     @user = get_user("me")
-    #@account = Account.first_or_create(:api_key => result.ApiKey, :user_id => @user.id)
-    [200, {}.to_json]
+    @account = Account.first_or_create(:api_key => result.ApiKey, :user_id => @user.id)
+    [200, {:account => {:api_key => @account.api_key, :user_id => @user.id}}.to_json]
   else
     [400, {:message => "Error geting API key..."}.to_json]
   end
