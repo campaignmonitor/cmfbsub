@@ -4,3 +4,10 @@
   <option value="{{ListID}}">{{Name}}</option>
   {{/each}}
 </script>
+<script id="list-fields-template" type="text/x-handlebars-template">
+  {{#each fields}}
+  <input type="checkbox" id="{{attFriendlyKey Key}}" name="{{attFriendlyKey Key}}" value="{{attFriendlyKey Key}}">
+  <label class="checkbox-adjacent" for="{{attFriendlyKey Key}}">{{FieldName}} ({{DataType}})</label>
+  <br/>
+  {{/each}}
+</script>

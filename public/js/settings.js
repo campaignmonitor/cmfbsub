@@ -1,7 +1,8 @@
 (function (cmfbsub, $) {
   
   var account = {},
-      renderListOptions;
+      renderListOptions,
+      renderListFields;
 
   function showPages() {
     $("#body").find(".pref, h1, .page").hide();
@@ -66,11 +67,32 @@
     $("#body .back").hide();
     showPages();
   }
-  
-  function showListOptions($lists) {
+
+  function loadListCustomFields($lists, list_id) {
+    var $fields = $($lists.closest(".prefs").find(".pref")[1]).find("fieldset");
+    $.ajax({
+      type: "GET",
+      url: "/customfields/" + account.api_key + "/" + list_id,
+      dataType: "json",
+      success: function(fields) {
+        if (fields && fields.length > 0) {
+          $fields.html(renderListFields({ fields: fields }));
+          showListOptions($lists, true);
+        } else {
+          showListOptions($lists, false);
+        }
+      }
+    });
+  }
+
+  function showListOptions($lists, show_fields) {
     var $prefs = $lists.closest('.prefs').find('.pref');
-    $($prefs[1]).fadeIn(300); // Options
-    $($prefs[2]).delay(200).fadeIn(300); // Save
+    if (show_fields) {
+      $($prefs[1]).fadeIn(200); // Fields
+    } else {
+      $($prefs[1]).hide();
+    }
+    $($prefs[2]).fadeIn(200); // Save
   }
   
   function hideListOptions($lists) {
@@ -82,7 +104,8 @@
   function setupLists($lists) {
     $lists.change(function() {
       if ($(this).val() !== "nothing") {
-        showListOptions($lists);
+        var list_id = $(this).attr("value");
+        loadListCustomFields($lists, list_id);
       } else {
         hideListOptions($lists);
       }
@@ -125,7 +148,11 @@
   }
 
   function setupRenderers() {
+    Handlebars.registerHelper('attFriendlyKey', function(key) {
+      return "cf-" + key.substring(1, key.length - 1);
+    });
     renderListOptions = Handlebars.compile($("#list-options-template").html());
+    renderListFields = Handlebars.compile($("#list-fields-template").html());
   }
 
   function ready(data) {

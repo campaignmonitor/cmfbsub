@@ -66,15 +66,7 @@
                     %select{:style => "display:none", :class => "list", :id => "lists-#{p.id}"}
                 .pref.arrowed
                   %label The form will ask for:
-                  %fieldset
-                    %input#name{:checked => "", :type => "checkbox"}/
-                    %label.checkbox-adjacent{:for => "name"} Name
-                    %br/
-                    %input#name{:checked => "", :type => "checkbox"}/
-                    %label.checkbox-adjacent{:for => "name"} Email
-                    %br/
-                    %input#name{:type => "checkbox"}/
-                    %label.checkbox-adjacent{:for => "name"} Custom field
+                  %fieldset{:id => "fields-#{p.id}"}
                 .pref.save
                   %button.primary Save Changes
                   / They haven't added this to the page, redirect to our App. If they have, redirect to their Page.
