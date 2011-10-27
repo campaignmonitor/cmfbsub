@@ -67,20 +67,40 @@
     $("#body .back").hide();
     showPages();
   }
+  
+  function showListOptions($lists) {
+    var $prefs = $lists.closest('.prefs').find('.pref');
+    $($prefs[1]).fadeIn(300); // Options
+    $($prefs[2]).delay(200).fadeIn(300); // Save
+  }
+  
+  function hideListOptions($lists) {
+    var $prefs = $lists.closest('.prefs').find('.pref');
+    $($prefs[1]).hide(); // Options
+    $($prefs[2]).hide(); // Save
+  }
+
+  function setupLists($lists) {
+    $lists.change(function() {
+      if ($(this).val() !== "nothing") {
+        showListOptions($lists);
+      } else {
+        hideListOptions($lists);
+      }
+    });
+  }
 
   function loadListsForClient($lists, client_id) {
+    $lists.hide();
     $.ajax({
       type: "GET",
       url: "/lists/" + account.api_key + "/" + client_id,
       dataType: "json",
       success: function(lists) {
-        if (!lists) { return; }
+        if (!lists || lists.length === 0) { return; }
         $lists.html(renderListOptions({ lists: lists }));
         $lists.fadeIn(200)
-        // Show the rest of the prefs
-        var $prefs = $(this).closest('.prefs').find('.pref');
-        $($prefs[1]).fadeIn(300);
-        $($prefs[2]).delay(200).fadeIn(300);
+        setupLists($lists);
       }
     });
   }
@@ -100,6 +120,7 @@
         loadListsForClient($lists, client_id);
       } else {
         $lists.empty().hide();
+        hideListOptions($lists);
       }
     });
   }

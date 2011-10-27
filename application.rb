@@ -28,7 +28,7 @@ end
 
 helpers do
   def media_version
-    "ni89qwwdwdwdw09du0jsijs09qsww9u90e2e2"
+    "j9ddwqdqw0"
   end
 
   def att_friendly_key(key)
