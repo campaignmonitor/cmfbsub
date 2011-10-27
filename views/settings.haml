@@ -44,7 +44,7 @@
       - if @user
         - if @pages and !@pages.empty?
           %h1 Add a subscription form to:
-          %span.back{:style => "display:none"}
+          %span#otherpages{:class => "back", :style => "display:none"}
             %a Other Pages
           - @pages.each do |p|
             %div

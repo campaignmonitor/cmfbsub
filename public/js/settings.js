@@ -1,6 +1,7 @@
 (function (cmfbsub, $) {
   
-  var account = {};
+  var account = {},
+      renderListOptions;
 
   function showPages() {
     $("#body").find(".pref, h1, .page").hide();
@@ -47,7 +48,7 @@
     $page.absolute = $page.clone().insertBefore($page);
     $page.absolute.addClass('absolute');
     $page.absolute.absolutize();
-    $page.fadeTo(0,0);
+    $page.fadeOut();
     $page.firstPosition = $("#body .page:first-of-type").position().top;
     $page.absolute.delay(300).animate({ top: $page.firstPosition + 'px' }, { duration: 300, easing: 'easeOutCubic' });
     $("#body .page:not(.absolute)").delay(300).fadeOut(400);
@@ -58,7 +59,15 @@
     // Show back button
     $("#body .back").delay(300).fadeIn(1000);
   }
-  
+
+  function deselectPage() {
+    $("#body .page.absolute").remove();
+    $("#body .page").removeClass("selected arrowed");
+    $(".pref").hide();
+    $("#body .back").hide();
+    showPages();
+  }
+
   function loadListsForClient($lists, client_id) {
     $.ajax({
       type: "GET",
@@ -66,8 +75,7 @@
       dataType: "json",
       success: function(lists) {
         if (!lists) { return; }
-        var template = Handlebars.compile($("#list-options-template").html());
-        $lists.html(template({ lists: lists }));
+        $lists.html(renderListOptions({ lists: lists }));
         $lists.fadeIn(200)
         // Show the rest of the prefs
         var $prefs = $(this).closest('.prefs').find('.pref');
@@ -80,6 +88,7 @@
   function setupPages() {
     // Page selection behaviour
     $("#body .page").click(function() { selectPage($(this)); });
+    $("span#otherpages a").click(function() { deselectPage(); });
     
     // Client selection behaviour
     $('select[id^="clients-"]').change(function() {
@@ -95,8 +104,12 @@
     });
   }
 
+  function setupRenderers() {
+    renderListOptions = Handlebars.compile($("#list-options-template").html());
+  }
+
   function ready(data) {
-    //$('select[id^="clients-"]').uniform();
+    setupRenderers();
     setupSignin();
     setupPages();
     if (data) {
