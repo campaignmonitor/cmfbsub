@@ -52,8 +52,7 @@
     $page.firstPosition = $("#body .page:first-of-type").position().top;
     $page.absolute.delay(300).animate({ top: $page.firstPosition + 'px' }, { duration: 300, easing: 'easeOutCubic' });
     $("#body .page:not(.absolute)").delay(300).fadeOut(400);
-    // Show first pref
-    $($(".pref")[0]).delay(100+500).fadeIn(300);
+    $($page.parent().find(".prefs .pref")[0]).delay(100+500).fadeIn(300);
     // Add arrow
     $page.absolute.delay(500).addClass('arrowed');
     // Show back button
@@ -113,6 +112,7 @@
     // Client selection behaviour
     $('select[id^="clients-"]').change(function() {
       var $lists = $(this).closest(".wrapper").find("select.list");
+      hideListOptions($lists);
       if ($(this).val() !== "nothing") {
         var page_id = $(this).attr("id").substring(8);
         var client_id = $(this).attr("value");
@@ -120,7 +120,6 @@
         loadListsForClient($lists, client_id);
       } else {
         $lists.empty().hide();
-        hideListOptions($lists);
       }
     });
   }

@@ -8,13 +8,13 @@
     %meta{:content => "text/html; charset=utf-8"}/
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
     %meta{:name => "description", :content => "Easily add Campaign Monitor subscribe forms to your Facebook pages"}
-    %link{:href => "/cm.css?v=#{media_version}", :rel => "stylesheet", :type => "text/css"}/
+    %link{:href => versioned_stylesheet('cm'), :rel => "stylesheet", :type => "text/css"}/
     %script{:type => "text/javascript", :src => "//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.js"}
     %script{:type => "text/javascript", :src => "/js/jquery.absolutize.js"}
     %script{:type => "text/javascript", :src => "/js/jquery-ui-core.min.js"}
     %script{:type => "text/javascript", :src => "/js/jquery.uniform.min.js"}
     %script{:type => "text/javascript", :src => "/js/handlebars.1.0.0.beta.3.js"}
-    %script{:type => "text/javascript", :src => "/js/settings.js?v=#{media_version}"}
+    %script{:type => "text/javascript", :src => versioned_javascript('settings')}
     = erb :_settings_templates
     :javascript
       $(function () { cmfbsub.settings.ready(#{@js_data}); });

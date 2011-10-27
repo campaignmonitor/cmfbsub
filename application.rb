@@ -27,8 +27,12 @@ configure do
 end
 
 helpers do
-  def media_version
-    "j9ddwqdqw0"
+  def versioned_stylesheet(style)
+    "/#{style}.css?" + File.mtime(File.join(settings.public_folder, "scss", "#{style}.scss")).to_i.to_s
+  end
+
+  def versioned_javascript(js)
+    "/js/#{js}.js?" + File.mtime(File.join(settings.public_folder, "js", "#{js}.js")).to_i.to_s
   end
 
   def att_friendly_key(key)

@@ -1,5 +1,5 @@
 #fb-root
-%script{:type => "text/javascript", :src => "/js/fb.js?v=#{media_version}"}
+%script{:type => "text/javascript", :src => versioned_javascript('fb')}
 :javascript
   window.fbAsyncInit = function() { facebookInit(#{@js_conf}) };
   (function() {
