@@ -1,5 +1,6 @@
 source :rubygems
 
+gem 'rake'
 gem 'sinatra', '>= 1.0'
 gem 'sinatra-reloader', '>= 0.5.0'
 gem 'haml'
