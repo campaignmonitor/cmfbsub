@@ -180,6 +180,7 @@ def find_cm_custom_field(input, key)
   nil
 end
 
+=begin
 get '/page/:page_id/?' do |page_id|
   check_auth
 
@@ -194,41 +195,36 @@ get '/page/:page_id/?' do |page_id|
   
   haml :settings, :layout => false
 end
+=end
 
 post '/page/:page_id/?' do |page_id|
   check_auth
   content_type 'application/json', :charset => 'utf-8'
 
   @user = get_user("me")
-  @sf = get_form_by_page_id(page_id)
+  @account = Account.first(:api_key => params[:api_key], :user_id => @user.id)
+  @sf = @account.forms.first(:page_id => page_id)
   @page = get_page(page_id)
   @app_add_url = @page.has_added_app ? '' : "http://www.facebook.com/add.php?api_key=#{APP_API_KEY}&pages=1&page=#{@page.id}"
   
   if @sf
-    @sf.api_key = params[:apikey].strip
-    @sf.list_id = params[:listid].strip
-    @sf.intro_message = params[:intro_message].strip
-    @sf.thanks_message = params[:thanks_message].strip
+    @sf.list_id = params[:list_id].strip
   else
-    @sf = Form.new(:user_id => @user.id, :page_id => page_id,
-      :api_key => params[:apikey].strip, :list_id => params[:listid].strip,
-      :intro_message => params[:intro_message].strip, 
-      :thanks_message => params[:thanks_message].strip)
+    @sf = Form.new(:account => @account, :page_id => page_id, :list_id => params[:list_id].strip)
   end
 
   if @sf.valid?
     begin
       # Validate input by attempting to get list details
-      CreateSend.api_key params[:apikey].strip
-      @list = CreateSend::List.new(params[:listid].strip).details
-
-      @custom_fields = get_custom_fields_for_list(@sf.api_key, @sf.list_id)
+      CreateSend.api_key params[:api_key].strip
+      @list = CreateSend::List.new(params[:list_id].strip).details
+      @custom_fields = get_custom_fields_for_list(@account.api_key, @sf.list_id)
       @sf.custom_fields.all.destroy if @sf.custom_fields.length > 0
 
       params.each do |i, v|
         if i.start_with? "cf-"
           # Surrounding square brackets are deliberately stripped in field ID
-          # see page.haml. e.g. Field with key "[field]" has param id "cf-field".
+          # see settings.haml. e.g. Field with key "[field]" has param id "cf-field".
           cmcf = find_cm_custom_field(@custom_fields, "[#{i[3..-1]}]")
           if cmcf
             cf = CustomField.new(

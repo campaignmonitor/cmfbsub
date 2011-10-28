@@ -78,12 +78,11 @@
       url: "/customfields/" + account.api_key + "/" + list_id,
       dataType: "json",
       success: function(fields) {
-        if (fields && fields.length > 0) {
+        var has_fields = (fields && fields.length > 0);
+        if (has_fields) {
           $fields.html(renderListFields({ fields: fields }));
-          showListOptions($lists, true);
-        } else {
-          showListOptions($lists, false);
         }
+        showListOptions($lists, has_fields);
       }
     });
   }
@@ -129,6 +128,54 @@
       }
     });
   }
+
+  function getFormData($save) {
+    var $prefs = $save.closest("div.prefs");
+    var $clients = $prefs.find('select[id^="clients-"]'),
+        $lists = $prefs.find('select[id^="lists-"]'),
+        $fields = $prefs.find('select[id^="fields-"]');
+    var page_id = $clients.attr("id").substring(8),
+        list_id = $lists.val();
+
+    var form_data = {
+      api_key: account.api_key,
+      page_id: page_id,
+      list_id: list_id
+      // TODO: Add custom fields...
+    };
+    return form_data;
+  }
+
+  function saveSubscribeForm(form_data) {
+    $.ajax({
+      type: "POST",
+      url: "/page/" + form_data.page_id,
+      data: $.param(form_data),
+      dataType: "json",
+      success: function(data) {
+        if (data.status == "success") {
+          if (data.app_add_url == '') {
+            window.location = "/";
+          } else {
+            top.location = data.app_add_url;
+          }
+        } else {
+          // TODO: Communicate error...
+        }
+      },
+      error: function() {
+        // TODO: Communicate error...
+      }
+    });
+  }
+
+  function setupSaveForm() {
+    var $save = $("#body .prefs .save button");
+    $save.click(function() {
+      var form_data = getFormData($(this));
+      saveSubscribeForm(form_data);
+    });
+  }
   
   function setupPages() {
     // Page selection behaviour
@@ -150,6 +197,10 @@
         $lists.empty().hide();
       }
     });
+    setupSaveForm();
+
+    // A CM account has already been saved for this user
+    if (account.api_key) { showPages(); }
   }
 
   function setupRenderers() {
@@ -164,11 +215,8 @@
   function ready(data) {
     setupRenderers();
     setupSignin();
+    if (data) { account = data.account; }
     setupPages();
-    if (data) {
-      account = data.account;
-      showPages(); // A CM account has already been saved for this user
-    }
   }
 
   cmfbsub.settings = {
