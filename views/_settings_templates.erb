@@ -1,3 +1,9 @@
+<script id="client-options-template" type="text/x-handlebars-template">
+  <option value="nothing"><em>Choose a client</em></option>
+  {{#each clients}}
+  <option value="{{ClientID}}">{{Name}}</option>
+  {{/each}}
+</script>
 <script id="list-options-template" type="text/x-handlebars-template">
   <option value="nothing">Choose a list</option>
   {{#each lists}}

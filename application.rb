@@ -138,8 +138,8 @@ get '/' do
   @account = @user ? Account.first(:user_id => @user.id) : nil
   @clients = @account ? get_clients(@account.api_key) : []
   @js_data = @account ? {
-      :account => {:api_key => @account.api_key, :user_id => @user.id}
-    }.to_json : ''
+    :account => {:api_key => @account.api_key, :user_id => @user.id,
+      :clients => @clients}}.to_json : ''
   haml :settings, :layout => false
 end
 
@@ -149,7 +149,10 @@ post '/apikey/?' do
   if !result.nil?
     @user = get_user("me")
     @account = Account.first_or_create(:api_key => result.ApiKey, :user_id => @user.id)
-    [200, {:account => {:api_key => @account.api_key, :user_id => @user.id}}.to_json]
+    @clients = @account ? get_clients(@account.api_key) : []
+    [200, {:account => {
+      :api_key => @account.api_key, :user_id => @user.id,
+        :clients => @clients}}.to_json]
   else
     [400, {:message => "Error geting API key..."}.to_json]
   end

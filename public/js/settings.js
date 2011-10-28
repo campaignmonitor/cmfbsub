@@ -1,6 +1,7 @@
 (function (cmfbsub, $) {
-  
+
   var account = {},
+      renderClientOptions,
       renderListOptions,
       renderListFields;
 
@@ -26,6 +27,8 @@
         $(".sign-in.context-box").fadeOut(200, function() {
           $("button.sign-in").removeClass('selected').hide();
           account = data.account;
+          $('select[id^="clients-"]').html(
+            renderClientOptions({ clients: account.clients}));
           showPages();
         });
       },
@@ -133,6 +136,8 @@
     $("span#otherpages a").click(function() { deselectPage(); });
     
     // Client selection behaviour
+    $('select[id^="clients-"]').html(
+      renderClientOptions({ clients: account.clients}));
     $('select[id^="clients-"]').change(function() {
       var $lists = $(this).closest(".wrapper").find("select.list");
       hideListOptions($lists);
@@ -151,6 +156,7 @@
     Handlebars.registerHelper('attFriendlyKey', function(key) {
       return "cf-" + key.substring(1, key.length - 1);
     });
+    renderClientOptions = Handlebars.compile($("#client-options-template").html());
     renderListOptions = Handlebars.compile($("#list-options-template").html());
     renderListFields = Handlebars.compile($("#list-fields-template").html());
   }

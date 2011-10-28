@@ -59,10 +59,6 @@
                   .wrapper
                     .clients
                       %select{:id => "clients-#{p.id}"}
-                        %option{:value => "nothing"}
-                          %em Choose a client
-                        - @clients.each do |c|
-                          %option{:value => c.ClientID}=c.Name
                     %select{:style => "display:none", :class => "list", :id => "lists-#{p.id}"}
                 .pref.arrowed
                   %label The form will ask for:
