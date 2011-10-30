@@ -133,16 +133,19 @@
     var $prefs = $save.closest("div.prefs");
     var $clients = $prefs.find('select[id^="clients-"]'),
         $lists = $prefs.find('select[id^="lists-"]'),
-        $fields = $prefs.find('select[id^="fields-"]');
+        $fields = $prefs.find('fieldset[id^="fields-"]');
     var page_id = $clients.attr("id").substring(8),
         list_id = $lists.val();
-
     var form_data = {
       api_key: account.api_key,
       page_id: page_id,
       list_id: list_id
-      // TODO: Add custom fields...
     };
+    $fields.find("input").each(function(i, e) {
+      if ($(e).is(":checked") === true) {
+        form_data[$(e).attr("id")] = "checked";
+      }
+    });
     return form_data;
   }
 
