@@ -11,6 +11,6 @@
   %label.adjacent-checkboxes&=name
   %fieldset
     - options.split(',').each do |o|
-      %input{:name => "#{att_friendly_key(key)}", :value => o, :type => :checkbox}/
+      %input{:name => "#{att_friendly_key(key)}[]", :value => o, :type => :checkbox}/
       %label.checkbox-adjacent{:for => "#{att_friendly_key(key)}"}&=o
       %br/
