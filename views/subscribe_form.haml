@@ -13,34 +13,22 @@
     /[if lt IE 9]
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
   %body
-    .success
-      %h2 Thanks. You're signed up!
-      %p
-        / If confirmation emails are on:
-        We've just sent you a quick email where you can confirm your subscription.
-        / else
-        You'll receive updates and newsletters straight to your inbox.
-        / end if
-        You can always unsubscribe instantly from a link in any email you receive.
-    %label Email address
-    %input{:type => "text"}/
-    .error Type your email address. We'll use it to send you information about Jimmy's Pistachios.
-    %label Name
-    %input{:type => "text"}/
-    %label Custom field
-    %fieldset
-      %select
-        %option asd
-    %label.adjacent-checkboxes Custom field
-    %fieldset
-      %input#name{:checked => "", :type => "checkbox"}/
-      %label.checkbox-adjacent{:for => "name"} Name
-      %br/
-      %input#name{:checked => "", :type => "checkbox"}/
-      %label.checkbox-adjacent{:for => "name"} Email
-      %br/
-      %input#name{:type => "checkbox"}/
-      %label.checkbox-adjacent{:for => "name"} Custom field
-    %button{:type => "submit"} Subscribe to Jimmy's Pistachios
-    / Submit the form in the background. No spinners!
+    - if @sf
+      .success
+        %h2 Thanks. You're signed up!
+        %p.info
+      .subscribe-error
+        %h2 Sorry!
+        %p.info
+      %form{:id => :subscribeform}
+        %label Email address
+        %input{:type => :text, :name => :email, :id => :email}/
+        %label Name
+        %input{:type => :text, :name => :name, :id => :name}/
+        - if @fields
+          - @fields.each do |f|
+            =partial :custom_field, {:name => f.name, :type => f.data_type, :key => f.field_key, :options => f.field_options}
+        %button#subscribe{:type => "submit"} Subscribe
+    - else
+      %h2 This page hasn't had a subscribe form set up yet.
     = partial :fb_root, {:js_conf => @js_conf}

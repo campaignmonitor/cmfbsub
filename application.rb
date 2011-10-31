@@ -180,23 +180,6 @@ def find_cm_custom_field(input, key)
   nil
 end
 
-=begin
-get '/page/:page_id/?' do |page_id|
-  check_auth
-
-  @sf = get_form_by_page_id(page_id)
-  if @sf
-    @fields = get_custom_fields_for_list(@sf.api_key, @sf.list_id)
-    @applied_fields = @sf.custom_fields.all(
-      :order => [:name.asc]).map {|f| att_friendly_key(f.field_key)}
-  end
-  @user = get_user("me")
-  @page = get_page(page_id)
-  
-  haml :settings, :layout => false
-end
-=end
-
 post '/page/:page_id/?' do |page_id|
   check_auth
   content_type 'application/json', :charset => 'utf-8'
@@ -206,10 +189,6 @@ post '/page/:page_id/?' do |page_id|
   @sf = @account.forms.first(:page_id => page_id)
   @page = get_page(page_id)
   @app_add_url = @page.has_added_app ? '' : "http://www.facebook.com/add.php?api_key=#{APP_API_KEY}&pages=1&page=#{@page.id}"
-  
-  p @page.has_added_app
-  p @app_add_url
-  
   if @sf
     @sf.list_id = params[:list_id].strip
   else
@@ -245,7 +224,9 @@ post '/page/:page_id/?' do |page_id|
         CreateSend::ServerError, CreateSend::Unavailable => cse
         p "Error: #{cse}"
         # TODO: Be more helpful with errors...
-        return [200, { :status => "failure", :message => "Sorry, something went wrong while saving your subscribe form for #{@page.name}. Please try again.", :app_add_url => @app_add_url}.to_json]
+        return [200, { :status => "failure", 
+          :message => "Sorry, something went wrong while saving your subscribe form for #{@page.name}. Please try again.",
+          :app_add_url => @app_add_url}.to_json]
     end
   end
 end
@@ -256,17 +237,20 @@ get '/tab/?' do
   if @sf
     @fields = @sf.custom_fields.all(:order => [:name.asc])
   end
+  @js_data = { :page_id => @page_id}.to_json
   haml :subscribe_form, :layout => false
 end
 
 post '/subscribe/:page_id/?' do |page_id|
-  @sf = get_form_by_page_id(page_id)
-  redirect '/tab' unless @sf
+  content_type 'application/json', :charset => 'utf-8'
 
+  @sf = get_form_by_page_id(page_id)
   begin
+    CreateSend.api_key @sf.account.api_key
     @page_id = page_id
     @fields = @sf.custom_fields.all(:order => [:name.asc])
-    CreateSend.api_key @sf.api_key
+    @list = CreateSend::List.new(@sf.list_id).details
+
     custom_fields = []
     params.each do |i, v|
       if i.start_with? "cf-"
@@ -284,15 +268,16 @@ post '/subscribe/:page_id/?' do |page_id|
     
     CreateSend::Subscriber.add @sf.list_id, params[:email].strip, params[:name].strip,
       custom_fields, true
-    haml :subscribe_form, :layout => false
+    @message = @list.ConfirmedOptIn ?
+      "We've just sent you a quick email where you can confirm your subscription." :
+      "You'll receive updates and newsletters straight to your inbox."
+    @message += " You can always unsubscribe instantly from a link in any email you receive."
+    return [200, {:status => "success", :message => @message}.to_json]
 
     rescue Exception => e
-      p "Error: #{e}"
-      # TODO: Be more helpful with errors...
-      @error_message = "Sorry, there was a problem subscribing you to our list."
-      @name = params[:name].strip
-      @email = params[:email].strip
-      haml :subscribe_form, :layout => false
+      p "Error: #{e}" # TODO: Be more helpful with errors...
+      return [200, {:status => "error", 
+        :message => "Sorry, there was a problem subscribing you to our list."}.to_json]
   end
 end
 

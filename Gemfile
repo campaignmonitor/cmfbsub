@@ -1,8 +1,8 @@
 source :rubygems
 
 gem 'rake'
-gem 'sinatra', '>= 1.0'
-gem 'sinatra-reloader', '>= 0.5.0'
+gem 'sinatra', '~> 1.3.1'
+gem 'sinatra-reloader'
 gem 'haml'
 gem 'sass'
 gem 'oa-oauth', '>= 0.2.3'

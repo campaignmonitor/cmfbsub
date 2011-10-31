@@ -1,11 +1,16 @@
 - if ["Text", "Date"].include? type
+  %label&=name
   %input{:name => att_friendly_key(key), :id => att_friendly_key(key), :type => :text}
 - elsif type == "MultiSelectOne"
-  %select{:name => att_friendly_key(key), :id => att_friendly_key(key)}
-    - options.split(',').each do |o|
-      %option{:value => o}=o
+  %label&=name
+  %fieldset
+    %select{:name => att_friendly_key(key), :id => att_friendly_key(key)}
+      - options.split(',').each do |o|
+        %option{:value => o}&=o
 - elsif type == "MultiSelectMany"
-  - options.split(',').each do |o|
-    %input{:name => "#{att_friendly_key(key)}[]", :value => o, :type => :checkbox}
-      &=o
-    %br
+  %label.adjacent-checkboxes&=name
+  %fieldset
+    - options.split(',').each do |o|
+      %input{:name => "#{att_friendly_key(key)}", :value => o, :type => :checkbox}/
+      %label.checkbox-adjacent{:for => "#{att_friendly_key(key)}"}&=o
+      %br/
