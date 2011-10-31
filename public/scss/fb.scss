@@ -13,7 +13,7 @@ label {
   vertical-align: text-top;
   margin-right: 2%;
   text-align: right;
-  width: 30%;
+  width: 20%;
   display: inline-block;
   zoom: 1;
   *display: inline;
@@ -39,7 +39,7 @@ input {
     padding: 3px;
     -webkit-appearance: none;
     -webkit-border-radius: 0;
-    width: 65%;
+    width: 75%;
     margin-bottom: 11px; } }
 
 select {
@@ -59,7 +59,7 @@ button {
   padding: 2px 15px 3px 15px;
   text-align: center;
   font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
-  margin-left: 32.5%;
+  margin-left: 22.5%;
   background-image: url(https://s-static.ak.facebook.com/rsrc.php/v1/zg/r/wBBYAgOjf8k.png);
   background-repeat: no-repeat;
   background-position: 0 0;
@@ -71,13 +71,14 @@ button {
     background: #3c5293; } }
 
 .error {
+  display: none;
   background-color: #fbe5b9;
   color: #a48b5e;
   padding: 7px 9px;
   margin-bottom: 13px;
   font-weight: 500;
   text-shadow: none;
-  margin-left: 32.5%;
+  margin-left: 22.5%;
   position: relative;
   margin-top: -4px;
   &:before {

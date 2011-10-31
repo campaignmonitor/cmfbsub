@@ -207,6 +207,9 @@ post '/page/:page_id/?' do |page_id|
   @page = get_page(page_id)
   @app_add_url = @page.has_added_app ? '' : "http://www.facebook.com/add.php?api_key=#{APP_API_KEY}&pages=1&page=#{@page.id}"
   
+  p @page.has_added_app
+  p @app_add_url
+  
   if @sf
     @sf.list_id = params[:list_id].strip
   else
@@ -253,7 +256,7 @@ get '/tab/?' do
   if @sf
     @fields = @sf.custom_fields.all(:order => [:name.asc])
   end
-  haml "subscription-form".to_sym, :layout => false
+  haml :subscribe_form, :layout => false
 end
 
 post '/subscribe/:page_id/?' do |page_id|
@@ -281,7 +284,7 @@ post '/subscribe/:page_id/?' do |page_id|
     
     CreateSend::Subscriber.add @sf.list_id, params[:email].strip, params[:name].strip,
       custom_fields, true
-    haml "subscription-form".to_sym, :layout => false
+    haml :subscribe_form, :layout => false
 
     rescue Exception => e
       p "Error: #{e}"
@@ -289,7 +292,7 @@ post '/subscribe/:page_id/?' do |page_id|
       @error_message = "Sorry, there was a problem subscribing you to our list."
       @name = params[:name].strip
       @email = params[:email].strip
-      haml "subscription-form".to_sym, :layout => false
+      haml :subscribe_form, :layout => false
   end
 end
 

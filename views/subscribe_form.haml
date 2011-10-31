@@ -7,22 +7,12 @@
     %link{:href => versioned_stylesheet('fb'), :rel => "stylesheet", :type => "text/css"}/
     %script{:type => "text/javascript", :src => "//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.js"}
     %script{:type => "text/javascript", :src => "/js/jquery-ui-core.min.js"}
+    %script{:type => "text/javascript", :src => versioned_javascript('subscribe_form')}
+    :javascript
+      $(function () { cmfbsub.subscribe_form.ready(#{@js_data}); });
     /[if lt IE 9]
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    :javascript
-      $(document).ready(function(){
-         $("button").click(function () {
-           $(".success").show().fadeTo(0,0).animate({top:'10%',opacity:1}, 1500, 'easeOutExpo');
-         $('body > *:not(.success)').fadeOut(800);
-       });
-      });
   %body
-    %ul.nav
-      %li.selected
-        %a What it looks like to others
-      / No whitespace
-      %li
-        %a Form settings
     .success
       %h2 Thanks. You're signed up!
       %p
