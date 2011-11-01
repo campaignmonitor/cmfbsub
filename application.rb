@@ -20,8 +20,9 @@ configure do
   use Rack::Facebook, { :secret => APP_SECRET }
   use OmniAuth::Builder do
     client_options = production? ? {:ssl => {:ca_path => "/etc/ssl/certs"}} : {}
-    provider :facebook, APP_ID, APP_SECRET, {:client_options => client_options, :scope => 'manage_pages'}
+    provider :facebook, APP_ID, APP_SECRET, {:iframe => true, :client_options => client_options, :scope => 'manage_pages,offline_access'}
   end
+  OmniAuth.config.full_host = "http://apps.facebook.com/#{APP_CANVAS_NAME}/"
 
   disable :protection
 end

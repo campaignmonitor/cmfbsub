@@ -1,6 +1,6 @@
-- if ["Text", "Date"].include? type
+- if ["Text", "Number", "Date"].include? type
   %label&=name
-  %input{:name => att_friendly_key(key), :id => att_friendly_key(key), :type => :text}
+  %input{:name => att_friendly_key(key), :id => att_friendly_key(key), :type => :text, :class => "number"}
 - elsif type == "MultiSelectOne"
   %label&=name
   %fieldset
