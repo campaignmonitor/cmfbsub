@@ -189,7 +189,8 @@ post '/page/:page_id/?' do |page_id|
   @account = Account.first(:api_key => params[:api_key], :user_id => @user.id)
   @sf = @account.forms.first(:page_id => page_id)
   @page = get_page(page_id)
-  @app_add_url = @page.has_added_app ? '' : "http://www.facebook.com/add.php?api_key=#{APP_API_KEY}&pages=1&page=#{@page.id}"
+  @app_add_url = @page.has_added_app ? @page.link :
+    "http://www.facebook.com/add.php?api_key=#{APP_API_KEY}&pages=1&page=#{@page.id}"
   if @sf
     @sf.list_id = params[:list_id].strip
   else
