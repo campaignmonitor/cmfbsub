@@ -367,8 +367,11 @@ section#body {}
       -webkit-transition-duration: .1s;
       z-index: 5; }
     figure {
-      width: 87px;
-      height: 54px;
+      img {
+        width: 50px;
+        height: 50px; }
+      width: 50px;
+      height: 50px;
       overflow: hidden;
       background-color: #c4cde0;
       position: relative;
