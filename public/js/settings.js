@@ -149,7 +149,8 @@
     return form_data;
   }
 
-  function saveSubscribeForm(form_data) {
+  function saveSubscribeForm($save, form_data) {
+    $save.addClass('disabled').html('Saving Changes&hellip;');
     $.ajax({
       type: "POST",
       url: "/page/" + form_data.page_id,
@@ -163,10 +164,12 @@
             top.location = data.app_add_url;
           }
         } else {
+          $save.removeClass('disabled').html('Save Changes');
           // TODO: Communicate error...
         }
       },
       error: function() {
+        $save.removeClass('disabled').html('Save Changes');
         // TODO: Communicate error...
       }
     });
@@ -176,7 +179,7 @@
     var $save = $("#body .prefs .save button");
     $save.click(function() {
       var form_data = getFormData($(this));
-      saveSubscribeForm(form_data);
+      saveSubscribeForm($(this), form_data);
     });
   }
   
