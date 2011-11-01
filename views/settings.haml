@@ -7,7 +7,7 @@
     %title CM
     %meta{:content => "text/html; charset=utf-8"}/
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
-    %meta{:name => "description", :content => "Easily add Campaign Monitor subscribe forms to your Facebook pages"}
+    %meta{:name => "description", :content => "Easily add subscribe forms to your Facebook pages"}
     %link{:href => versioned_stylesheet('cm'), :rel => "stylesheet", :type => "text/css"}/
     %script{:type => "text/javascript", :src => "//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.js"}
     %script{:type => "text/javascript", :src => "/js/jquery.absolutize.js"}
@@ -22,10 +22,10 @@
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
   %body
     %header.clear
-      %h1 Campaign Monitor
+      %h1 Settings
       - unless @account
         %button.sign-in
-          Log into Campaign Monitor
+          Log in
         / Add class .custom-domain if they type a period in #site-address. (Validate as they type.)
         %menu.context-box.sign-in
           / On error:

@@ -1,4 +1,4 @@
-%h2="Campaign Monitor Subscribe Forms"
+%h2="Subscribe Forms"
 %h3&=@page.name
 %div
   %a{:href => "/"}="Back to my pages"
@@ -27,7 +27,7 @@
   %form{:id => :page}
     #first-step
       %div
-        ="Please enter your Campaign Monitor API Key:"
+        ="Please enter your API Key:"
         %input{:type => :text, :name => :apikey, :id => :apikey, :value => @sf ? @sf.api_key : ''}
       %p
         %a{:id => "get-clients", :class => :button, :href => "#"}="Get clients"
