@@ -7,6 +7,7 @@
     %link{:href => versioned_stylesheet('fb'), :rel => "stylesheet", :type => "text/css"}/
     %script{:type => "text/javascript", :src => "//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.js"}
     %script{:type => "text/javascript", :src => "/js/jquery-ui-core.min.js"}
+    %script{:type => "text/javascript", :src => "/js/jquery.validate.min.js"}
     %script{:type => "text/javascript", :src => versioned_javascript('subscribe_form')}
     :javascript
       $(function () { cmfbsub.subscribe_form.ready(#{@js_data}); });
@@ -17,18 +18,18 @@
       .success
         %h2 Thanks. You're signed up!
         %p.info
-      .subscribe-error
-        %h2 Sorry!
-        %p.info
       %form{:id => :subscribeform}
         %label Email address
-        %input{:type => :text, :name => :email, :id => :email}/
+        %input{:type => :text, :name => :email, :id => :email, :class => "required email"}/
         %label Name
         %input{:type => :text, :name => :name, :id => :name}/
         - if @fields
           - @fields.each do |f|
             =partial :custom_field, {:name => f.name, :type => f.data_type, :key => f.field_key, :options => f.field_options}
-        %button#subscribe{:type => "submit"} Subscribe
+        %button#subscribe{:type => :submit} Subscribe
+      .subscribe-error
+        %h2 Sorry!
+        %p.info
     - else
       %h2 This page hasn't had a subscribe form set up yet.
     = partial :fb_root, {:js_conf => @js_conf}

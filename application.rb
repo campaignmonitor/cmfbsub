@@ -277,7 +277,7 @@ post '/subscribe/:page_id/?' do |page_id|
     rescue Exception => e
       p "Error: #{e}" # TODO: Be more helpful with errors...
       return [200, {:status => "error", 
-        :message => "Sorry, there was a problem subscribing you to our list."}.to_json]
+        :message => "Sorry, there was a problem subscribing you to our list. Please try again."}.to_json]
   end
 end
 

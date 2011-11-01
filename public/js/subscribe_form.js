@@ -1,10 +1,12 @@
 (function (cmfbsub, $) {
   
   var config = {};
-  
+
   function setupSubscribe() {
+    $("form#subscribeform").validate({errorElement: "div"});
     $("form#subscribeform").submit(function() { return false; });
     $("button#subscribe").click(function() {
+      if (!$("form#subscribeform").valid()) { return; }
       $.ajax({
         type: "POST",
         url: "/subscribe/" + config.page_id,
