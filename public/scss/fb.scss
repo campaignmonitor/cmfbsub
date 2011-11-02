@@ -1,4 +1,4 @@
-@import url(/reset.css);
+@import url('/reset.css');
 
 html, body {
   font-size: 11px;
@@ -121,7 +121,7 @@ fieldset {
   width: 66%; }
 
 .success {
-  background: #d4e2c3 url(/img/small-green-tick.png) no-repeat 15px 12px;
+  background: #d4e2c3 url('/img/small-green-tick.png') no-repeat 15px 12px;
   color: #72904c;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
   padding: 12px 14px 16px;
@@ -217,7 +217,7 @@ fieldset {
   li {
     display: inline;
     padding: 2px 0 3px;
-    background: #f1f1f1 url(https://s-static.ak.facebook.com/rsrc.php/v1/zs/r/YoX0fw76s5z.gif) top left repeat-x;
+    background: #f1f1f1 url('https://s-static.ak.facebook.com/rsrc.php/v1/zs/r/YoX0fw76s5z.gif') top left repeat-x;
     position: relative;
     top: 1px;
     &.selected {

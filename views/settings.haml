@@ -22,7 +22,7 @@
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
   %body
     %header.clear
-      %h1 Settings
+      %h1{:class => white_label ? "cs" : ""} Settings
       - unless @account
         %button.sign-in
           Log into your account
