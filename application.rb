@@ -206,12 +206,8 @@ post '/page/:page_id/?' do |page_id|
 
   if @sf.valid?
     begin
-      # Validate input by attempting to get list details
-      CreateSend.api_key params[:api_key]
-      @list = CreateSend::List.new(params[:list_id]).details
       @custom_fields = get_custom_fields_for_list(@account.api_key, @sf.list_id)
       @sf.custom_fields.all.destroy if @sf.custom_fields.length > 0
-
       params.each do |i, v|
         if i.start_with? "cf-"
           # Surrounding square brackets are deliberately stripped in field ID
