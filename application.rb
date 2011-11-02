@@ -135,6 +135,16 @@ def get_custom_fields_for_list(api_key, list_id)
   @result
 end
 
+def get_saved_forms(account)
+  @saved_forms = {} # To be indexed by page id
+  if account
+    account.forms.each do |f|
+      @saved_forms[f.page_id] = f
+    end
+  end
+  @saved_forms
+end
+
 get '/' do
   check_auth
 
@@ -142,9 +152,10 @@ get '/' do
   @pages = @user ? @user.accounts : []
   @account = @user ? Account.first(:user_id => @user.id) : nil
   @clients = @account ? get_clients(@account.api_key) : []
+  @saved_forms = get_saved_forms(@account)
   @js_data = @account ? {
     :account => {:api_key => @account.api_key, :user_id => @user.id,
-      :clients => @clients}}.to_json : ''
+      :clients => @clients, :saved_forms => @saved_forms}}.to_json : ''
   haml :settings, :layout => false
 end
 
@@ -197,10 +208,12 @@ post '/page/:page_id/?' do |page_id|
     "http://www.facebook.com/add.php?api_key=#{APP_API_KEY}&pages=1&page=#{@page.id}"
   if @sf
     @sf.list_id = params[:list_id]
+    @sf.client_id = params[:client_id]
     @sf.intro_message = params[:intro_message].strip
     @sf.thanks_message = params[:thanks_message].strip
   else
-    @sf = Form.new(:account => @account, :page_id => page_id, :list_id => params[:list_id],
+    @sf = Form.new(
+      :account => @account, :page_id => page_id, :client_id => params[:client_id], :list_id => params[:list_id],
       :intro_message => params[:intro_message].strip, :thanks_message => params[:thanks_message].strip)
   end
 

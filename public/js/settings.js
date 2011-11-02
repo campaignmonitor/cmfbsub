@@ -138,12 +138,14 @@
         $intro = $prefs.find('input[id^="intromessage-"]'),
         $thanks = $prefs.find('input[id^="thanksmessage-"]');
     var page_id = $clients.attr("id").substring(8),
+        client_id = $clients.val(),
         list_id = $lists.val(),
         intro_message = $intro.val(),
         thanks_message = $thanks.val();
     var form_data = {
       api_key: account.api_key,
       page_id: page_id,
+      client_id: client_id,
       list_id: list_id,
       intro_message: intro_message,
       thanks_message: thanks_message
