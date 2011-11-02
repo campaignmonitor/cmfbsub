@@ -37,7 +37,7 @@ helpers do
   end
 
   def white_label
-    return (APP_CANVAS_NAME =~ /csfbsub$/ ? true : false)
+    return (APP_CANVAS_NAME =~ /createsend$/ ? true : false)
   end
 
   def att_friendly_key(key)
