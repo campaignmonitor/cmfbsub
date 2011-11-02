@@ -6,6 +6,13 @@ html, body {
   color: #333;
   line-height: 16px; }
 
+h1 {
+  font-size: 1.2em;
+  margin-bottom: 0.8em; }
+h2 {
+  font-size: 1.1em;
+  margin-bottom: 0.8em; }
+
 label {
   cursor: pointer;
   color: #666;
@@ -66,7 +73,7 @@ button {
   background-color: #5B74A8;
   border-color: #29447E #29447E #1A356E;
   font-weight: bold;
-  margin-top: 20px;
+  margin-top: 10px;
   &:active {
     background: #3c5293; } }
 

@@ -521,6 +521,9 @@ section#body {}
     input[type=checkbox] {
       position: relative;
       top: -2px; }
+    input.message {
+      margin-bottom: 8px;
+      width: 380px; }
     fieldset {
       display: inline-block;
       width: 45%; }
@@ -536,6 +539,32 @@ section#body {}
         margin-top: 5px; }
       vertical-align: top;
       margin-top: 4px; }
+    div.error {
+      background-color: #FBE5B9;
+      color: #A48B5E;
+      padding: 7px 9px;
+      margin-bottom: 2px;
+      font-weight: 500;
+      text-shadow: none;
+      margin-left: 212px;
+      position: relative;
+      margin-top: -2px;
+      width: 378px;
+      &:before {
+        content: "";
+        display: block;
+        /* reduce the damage in FF3.0 */
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-color: #fbe5b9 transparent;
+        border-width: 0 3px 3px;
+        /* vary these values to change the angle of the vertex */
+        top: -3px;
+        left: 20px;
+        margin-left: -10px;
+        z-index: 20; } }
     .wrapper {
       display: inline-block;
       width: 48%;

@@ -14,16 +14,16 @@
         dataType: "json",
         success: function(data) {
           if (data.status == "success") {
-            $(".success p.info").html(data.message);
-            $(".success").show().fadeTo(0,0).animate({top:'5%',opacity:1}, 1500, 'easeOutExpo');
+            $(".success p.info").text(data.message);
+            $(".success").show().fadeTo(0,0).animate({top:'2%',opacity:1}, 1500, 'easeOutExpo');
             $('body > *:not(.success)').fadeOut(800);
           } else {
-            $(".subscribe-error p.info").html(data.message);
+            $(".subscribe-error p.info").text(data.message);
             $(".subscribe-error").show().fadeTo(0,0).animate({opacity:1}, 1500, 'easeOutExpo');
           }
         },
         error: function() {
-          $(".subscribe-error p.info").html(data.message);
+          $(".subscribe-error p.info").text(data.message);
           $(".subscribe-error").show().fadeTo(0,0).animate({opacity:1}, 1500, 'easeOutExpo');
         }
       });

@@ -1,7 +1,7 @@
 !!!
 %html#sub{:xmlns => "http://www.w3.org/1999/xhtml", "xmlns:fb" => "http://www.facebook.com/2008/fbml"}
   %head
-    %title CM
+    %title Subscribe!
     %meta{:content => "text/html; charset=utf-8"}/
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
     %link{:href => versioned_stylesheet('fb'), :rel => "stylesheet", :type => "text/css"}/
@@ -15,8 +15,9 @@
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
   %body
     - if @sf
+      %h1&=@sf.intro_message
       .success
-        %h2 Thanks. You're signed up!
+        %h2 Thanks!
         %p.info
       %form{:id => :subscribeform}
         %label Email address

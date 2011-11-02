@@ -14,8 +14,8 @@ class Form
   property :id, Serial
   property :page_id, String, :required => true, :key => true
   property :list_id, String, :required => true
-  property :intro_message, String, :required => true, :length => 0..250, :default => 'Enter your details to subscribe to our list.'
-  property :thanks_message, String, :required => true, :length => 0..250, :default => 'Thanks for subscribing to our list.'
+  property :intro_message, String, :required => true, :length => 0..250
+  property :thanks_message, String, :required => true, :length => 0..250
 
   belongs_to :account
   has n, :custom_fields

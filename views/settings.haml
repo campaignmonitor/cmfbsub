@@ -4,7 +4,7 @@
 %html{:xmlns => "http://www.w3.org/1999/xhtml", "xmlns:fb" => "http://www.facebook.com/2008/fbml"}
   / <![endif]
   %head
-    %title CM
+    %title Subscribe Settings
     %meta{:content => "text/html; charset=utf-8"}/
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
     %meta{:name => "description", :content => "Easily add subscribe forms to your Facebook pages"}
@@ -12,7 +12,7 @@
     %script{:type => "text/javascript", :src => "//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.js"}
     %script{:type => "text/javascript", :src => "/js/jquery.absolutize.js"}
     %script{:type => "text/javascript", :src => "/js/jquery-ui-core.min.js"}
-    %script{:type => "text/javascript", :src => "/js/jquery.uniform.min.js"}
+    %script{:type => "text/javascript", :src => "/js/jquery.validate.min.js"}
     %script{:type => "text/javascript", :src => "/js/handlebars.1.0.0.beta.3.js"}
     %script{:type => "text/javascript", :src => versioned_javascript('settings')}
     = erb :_settings_templates
@@ -25,10 +25,8 @@
       %h1 Settings
       - unless @account
         %button.sign-in
-          Log in
-        / Add class .custom-domain if they type a period in #site-address. (Validate as they type.)
+          Log into your account
         %menu.context-box.sign-in
-          / On error:
           .error.hidden Oops, you mistyped your username or password.
           %form#loginform
             %label{:for => "site-address"} Site address
@@ -61,11 +59,17 @@
                       %select{:id => "clients-#{p.id}"}
                     %select{:style => "display:none", :class => "list", :id => "lists-#{p.id}"}
                 .pref.arrowed
+                  %form{:id => "messages-#{p.id}"}
+                    %label{:for => "intromessage-#{p.id}"} Intro message:
+                    %input{:type => :text, :id => "intromessage-#{p.id}", :class => 'required message', :name => "intromessage-#{p.id}", :maxlength => 250, :value => "Please enter your details to subscribe to our list."}
+                    %br/
+                    %label{:for => "thanksmessage-#{p.id}"} Thanks message:
+                    %input{:type => :text, :id => "thanksmessage-#{p.id}", :class => 'required message', :name => "thanksmessage-#{p.id}", :maxlength => 250, :value => "Thank you for subscribing to our list. You'll be hearing from us soon."}
+                    %br/
                   %label The form will ask for:
                   %fieldset{:id => "fields-#{p.id}"}
                 .pref.save
                   %button.primary Save Changes
-                  / They haven't added this to the page, redirect to our App. If they have, redirect to their Page.
         - else
           %h1="Sorry, you need to be an admin of a Facebook page before you can add a subscribe form to the page."
       - else

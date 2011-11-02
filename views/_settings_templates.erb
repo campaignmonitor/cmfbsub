@@ -11,9 +11,17 @@
   {{/each}}
 </script>
 <script id="list-fields-template" type="text/x-handlebars-template">
-  {{#each fields}}
-  <input type="checkbox" id="{{attFriendlyKey Key}}" name="{{attFriendlyKey Key}}" value="{{attFriendlyKey Key}}">
-  <label class="checkbox-adjacent" for="{{attFriendlyKey Key}}">{{FieldName}} ({{DataType}})</label>
+  <input type="checkbox" id="email" name="email" value="email" checked="checked" disabled="disabled" />
+  <label class="checkbox-adjacent" for="email">Email address</label>
   <br/>
-  {{/each}}
+  <input type="checkbox" id="name" name="name" value="name" checked="checked" disabled="disabled" />
+  <label class="checkbox-adjacent" for="name">Name</label>
+  <br/>
+  {{#if fields}}
+    {{#each fields}}
+    <input type="checkbox" id="{{attFriendlyKey Key}}" name="{{attFriendlyKey Key}}" value="{{attFriendlyKey Key}}"/>
+    <label class="checkbox-adjacent" for="{{attFriendlyKey Key}}">{{FieldName}} ({{DataType}})</label>
+    <br/>
+    {{/each}}
+  {{/if}}
 </script>

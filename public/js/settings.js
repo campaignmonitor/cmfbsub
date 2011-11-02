@@ -71,32 +71,22 @@
     showPages();
   }
 
-  function loadListCustomFields($lists, list_id) {
-    var $fields = $($lists.closest(".prefs").find(".pref")[1]).find("fieldset");
+  function showListOptions($lists, list_id) {
+    // Attempt to Load custom fields
     $.ajax({
       type: "GET",
       url: "/customfields/" + account.api_key + "/" + list_id,
       dataType: "json",
       success: function(fields) {
-        var has_fields = (fields && fields.length > 0);
-        if (has_fields) {
-          $fields.html(renderListFields({ fields: fields }));
-        }
-        showListOptions($lists, has_fields);
+        var $fields = $($lists.closest(".prefs").find(".pref")[1]).find("fieldset");
+        $fields.html(renderListFields({ fields: fields }));
+        var $prefs = $lists.closest('.prefs').find('.pref');
+        $($prefs[1]).fadeIn(200); // List options
+        $($prefs[2]).fadeIn(200); // Save
       }
     });
   }
 
-  function showListOptions($lists, show_fields) {
-    var $prefs = $lists.closest('.prefs').find('.pref');
-    if (show_fields) {
-      $($prefs[1]).fadeIn(200); // Fields
-    } else {
-      $($prefs[1]).hide();
-    }
-    $($prefs[2]).fadeIn(200); // Save
-  }
-  
   function hideListOptions($lists) {
     var $prefs = $lists.closest('.prefs').find('.pref');
     $($prefs[1]).hide(); // Options
@@ -107,7 +97,7 @@
     $lists.change(function() {
       if ($(this).val() !== "nothing") {
         var list_id = $(this).attr("value");
-        loadListCustomFields($lists, list_id);
+        showListOptions($lists, list_id);
       } else {
         hideListOptions($lists);
       }
@@ -133,13 +123,19 @@
     var $prefs = $save.closest("div.prefs");
     var $clients = $prefs.find('select[id^="clients-"]'),
         $lists = $prefs.find('select[id^="lists-"]'),
-        $fields = $prefs.find('fieldset[id^="fields-"]');
+        $fields = $prefs.find('fieldset[id^="fields-"]'),
+        $intro = $prefs.find('input[id^="intromessage-"]'),
+        $thanks = $prefs.find('input[id^="thanksmessage-"]');
     var page_id = $clients.attr("id").substring(8),
-        list_id = $lists.val();
+        list_id = $lists.val(),
+        intro_message = $intro.val(),
+        thanks_message = $thanks.val();
     var form_data = {
       api_key: account.api_key,
       page_id: page_id,
-      list_id: list_id
+      list_id: list_id,
+      intro_message: intro_message,
+      thanks_message: thanks_message
     };
     $fields.find("input").each(function(i, e) {
       if ($(e).is(":checked") === true) {
@@ -158,11 +154,7 @@
       dataType: "json",
       success: function(data) {
         if (data.status == "success") {
-          if (data.app_add_url == '') {
-            window.location = "/";
-          } else {
-            top.location = data.app_add_url;
-          }
+          top.location = data.next_url;
         } else {
           $save.removeClass('disabled').html('Save Changes');
           // TODO: Communicate error...
@@ -176,8 +168,12 @@
   }
 
   function setupSaveForm() {
+    $('form[id^="messages-"]').validate({errorElement: "div"});
+    $('form[id^="messages-"]').submit(function() { return false; });
     var $save = $("#body .prefs .save button");
+    var $prefs = $save.closest("div.prefs");
     $save.click(function() {
+      if (!$(this).closest(".prefs").find('form[id^="messages-"]').valid()) { return; }
       var form_data = getFormData($(this));
       saveSubscribeForm($(this), form_data);
     });
@@ -205,7 +201,7 @@
     });
     setupSaveForm();
 
-    // A CM account has already been saved for this user
+    // They've already saved their API key
     if (account.api_key) { showPages(); }
   }
 
