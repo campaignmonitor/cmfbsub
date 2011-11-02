@@ -16,7 +16,11 @@
   }
 
   function signIn() {
-    $("#site-address-full").val($("#site-address").val() + ".createsend.com");
+    $("#site-address-full").val(
+      $("#site-address").val().indexOf(".") != -1 ?
+        $("#site-address").val() : // Custom domain
+        $("#site-address").val() + ".createsend.com"
+    );
     $(".sign-in button").addClass('disabled').html('Logging in&hellip;');
     $.ajax({
       type: "POST",
@@ -35,12 +39,19 @@
       error: function() {
         $(".sign-in .error.hidden").removeClass("hidden");
         $(".sign-in button").removeClass('disabled').html('Log in');
-      },
+      }
     });
   }
 
   function setupSignin() {
     $("#loginform").submit(function() { return false; });
+    $("#site-address").bind("keyup change", function() {
+      if ($(this).val().indexOf(".") != -1) {
+        $("menu.context-box").addClass("custom-domain");
+      } else {
+        $("menu.context-box").removeClass("custom-domain");
+      }
+    });
     $(".sign-in button").click(function() {
       signIn();
     });
