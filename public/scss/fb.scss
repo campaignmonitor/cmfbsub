@@ -67,7 +67,7 @@ button {
   text-align: center;
   font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
   margin-left: 22.5%;
-  background-image: url(https://s-static.ak.facebook.com/rsrc.php/v1/zg/r/wBBYAgOjf8k.png);
+  background-image: url('https://s-static.ak.facebook.com/rsrc.php/v1/zg/r/wBBYAgOjf8k.png');
   background-repeat: no-repeat;
   background-position: 0 0;
   background-color: #5B74A8;
@@ -75,7 +75,18 @@ button {
   font-weight: bold;
   margin-top: 10px;
   &:active {
-    background: #3c5293; } }
+    background: #3c5293; }
+  &[disabled], &.disabled {
+    background-color: #ddd !important;
+    background-image: none !important;
+    border-color: #c4c4c4 !important;
+    -webkit-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.65) !important;
+    -moz-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.65) !important;
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.65) !important;
+    color: #acacac !important;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+    -webkit-animation: none !important;
+    -webkit-transition-duration: 0 !important; } }
 
 div.error {
   background-color: #fbe5b9;

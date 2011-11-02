@@ -7,6 +7,7 @@
     $("form#subscribeform").submit(function() { return false; });
     $("button#subscribe").click(function() {
       if (!$("form#subscribeform").valid()) { return; }
+      $("button#subscribe").addClass('disabled').html('Subscribing&hellip;');
       $.ajax({
         type: "POST",
         url: "/subscribe/" + config.page_id,
@@ -21,8 +22,10 @@
             $(".subscribe-error p.info").text(data.message);
             $(".subscribe-error").show().fadeTo(0,0).animate({opacity:1}, 1500, 'easeOutExpo');
           }
+          $("button#subscribe").removeClass('disabled').html('Subscribe');
         },
         error: function() {
+          $("button#subscribe").removeClass('disabled').html('Subscribe');
           $(".subscribe-error p.info").text(data.message);
           $(".subscribe-error").show().fadeTo(0,0).animate({opacity:1}, 1500, 'easeOutExpo');
         }
