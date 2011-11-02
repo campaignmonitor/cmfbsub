@@ -7,7 +7,7 @@
 <script id="list-options-template" type="text/x-handlebars-template">
   <option value="nothing">Choose a list</option>
   {{#each lists}}
-  <option value="{{ListID}}">{{Name}}</option>
+  <option value="{{ListID}}"{{#if selected}} selected="selected"{{/if}}>{{Name}}</option>
   {{/each}}
 </script>
 <script id="list-fields-template" type="text/x-handlebars-template">
@@ -19,7 +19,7 @@
   <br/>
   {{#if fields}}
     {{#each fields}}
-    <input type="checkbox" id="{{attFriendlyKey Key}}" name="{{attFriendlyKey Key}}" value="{{attFriendlyKey Key}}"/>
+    <input type="checkbox" id="{{attFriendlyKey Key}}" name="{{attFriendlyKey Key}}" value="{{attFriendlyKey Key}}"{{#if checked}} checked="checked"{{/if}}/>
     <label class="checkbox-adjacent" for="{{attFriendlyKey Key}}">{{FieldName}} ({{DataType}})</label>
     <br/>
     {{/each}}

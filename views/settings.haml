@@ -46,7 +46,7 @@
             %a Other Pages
           - @pages.each do |p|
             %div
-              .page
+              .page{:id => "page-#{p.id}"}
                 %figure
                   %img{:src => p.image_url}/
                 %h2="#{p.name}"

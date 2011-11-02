@@ -137,12 +137,14 @@ end
 
 def get_saved_forms(account)
   @saved_forms = {} # To be indexed by page id
+  @form_fields = {} # To be indexed by form id
   if account
     account.forms.each do |f|
       @saved_forms[f.page_id] = f
+      @form_fields[f.id] = f.custom_fields
     end
   end
-  @saved_forms
+  { :forms => @saved_forms, :fields => @form_fields }
 end
 
 get '/' do

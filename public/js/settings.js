@@ -56,8 +56,37 @@
       signIn();
     });
   }
-  
+
+  function loadSavedForm($page, page_id) {
+    if (!account.saved_forms || !account.saved_forms.forms || 
+      !account.saved_forms.forms[page_id]) { return; }
+    var sf = account.saved_forms.forms[page_id];
+    var fields = account.saved_forms.fields[sf.id];
+    var $prefs = $page.parent().find("div.prefs");
+    var $clients = $prefs.find('select[id^="clients-"]'),
+        $lists = $prefs.find('select[id^="lists-"]'),
+        $fields = $prefs.find('fieldset[id^="fields-"]'),
+        $intro = $prefs.find('input[id^="intromessage-"]'),
+        $thanks = $prefs.find('input[id^="thanksmessage-"]');
+
+    $clients.val(sf.client_id); // Select client
+    loadListsForClient($lists, sf.client_id, function(lists) { // Load lists, and select
+      if (!lists || lists.length === 0) { return; }
+      // Indicate which list should be selected
+      $.each(lists, function(i,l) { if (l.ListID === sf.list_id) { l.selected = true; }});
+      $lists.html(renderListOptions({ lists: lists, selected: sf.list_id}));
+      $lists.fadeIn(200)
+      // Load list fields
+      setupLists($lists);
+      showListOptions($lists, sf.list_id, fields);
+      // Set messages
+      $intro.val(sf.intro_message);
+      $thanks.val(sf.thanks_message);
+    });
+  }
+
   function selectPage($page) {
+    var page_id = $page.attr("id").substring(5);
     $page.addClass('selected'); // Highlight it
     // Duplicate, absolutise and slide it up
     $page.absolute = $page.clone().insertBefore($page);
@@ -68,10 +97,13 @@
     $page.absolute.delay(300).animate({ top: $page.firstPosition + 'px' }, { duration: 300, easing: 'easeOutCubic' });
     $("#body .page:not(.absolute)").delay(300).fadeOut(400);
     $($page.parent().find(".prefs .pref")[0]).delay(100+500).fadeIn(300);
-    // Add arrow
     $page.absolute.delay(500).addClass('arrowed');
     // Show back button
     $("#body .back").delay(300).fadeIn(1000);
+
+    if (account.saved_forms && account.saved_forms.forms && account.saved_forms.forms[page_id]) {
+      loadSavedForm($page, page_id);
+    }
   }
 
   function deselectPage() {
@@ -82,13 +114,26 @@
     showPages();
   }
 
-  function showListOptions($lists, list_id) {
+  function showListOptions($lists, list_id, saved_fields) {
     // Attempt to Load custom fields
     $.ajax({
       type: "GET",
       url: "/customfields/" + account.api_key + "/" + list_id,
       dataType: "json",
       success: function(fields) {
+        if (saved_fields) {
+          // Indicate which fields should be checked
+          $.each(fields, function(i,f) {
+            var checked = false;
+            $.each(saved_fields, function(j,sf) {
+              if (f.Key === sf.field_key) {
+                checked = true;
+                return;
+              }
+            });
+            f.checked = checked;
+          });
+        }
         var $fields = $($lists.closest(".prefs").find(".pref")[1]).find("fieldset");
         $fields.html(renderListFields({ fields: fields }));
         var $prefs = $lists.closest('.prefs').find('.pref');
@@ -115,18 +160,13 @@
     });
   }
 
-  function loadListsForClient($lists, client_id) {
+  function loadListsForClient($lists, client_id, successCallback) {
     $lists.hide();
     $.ajax({
       type: "GET",
       url: "/lists/" + account.api_key + "/" + client_id,
       dataType: "json",
-      success: function(lists) {
-        if (!lists || lists.length === 0) { return; }
-        $lists.html(renderListOptions({ lists: lists }));
-        $lists.fadeIn(200)
-        setupLists($lists);
-      }
+      success: successCallback
     });
   }
 
@@ -207,7 +247,12 @@
         var page_id = $(this).attr("id").substring(8);
         var client_id = $(this).attr("value");
         $lists.empty();
-        loadListsForClient($lists, client_id);
+        loadListsForClient($lists, client_id, function(lists) {
+          if (!lists || lists.length === 0) { return; }
+          $lists.html(renderListOptions({ lists: lists, selected: '' }));
+          $lists.fadeIn(200)
+          setupLists($lists);
+        });
       } else {
         $lists.empty().hide();
       }
