@@ -71,7 +71,9 @@
                 .pref.save
                   %button.primary Save Changes
         - else
-          %h1 Sorry, you need to have a <a href="http://www.facebook.com/pages/create.php" target="_blank">Facebook page</a> before you can add a subscribe form to the page.
+          %h1 Before we begin, you'll need to create a <a href="http://www.facebook.com/pages/create.php" target="_blank">Facebook Page</a>
+          %a{:id => "page-create", :href => "http://www.facebook.com/pages/create.php", :target => "_blank"}
+          
       - else
         %p
           <fb:login-button show-faces="true"></fb:login-button>
