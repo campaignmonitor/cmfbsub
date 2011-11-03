@@ -7,6 +7,7 @@ require 'mogli'
 require 'createsend'
 
 configure do
+  require 'newrelic_rpm' if production?
   config = YAML.load_file('config.yaml') if !production?
   APP_ID = production? ? ENV['APP_ID'] : config['APP_ID']
   APP_API_KEY = production? ? ENV['APP_API_KEY'] : config['APP_API_KEY']
