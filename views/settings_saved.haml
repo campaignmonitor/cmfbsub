@@ -1,0 +1,25 @@
+!!!
+/[if lt IE 9 ] <html class="ie" xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+/ [if gt IE 8]><!
+%html{:xmlns => "http://www.w3.org/1999/xhtml", "xmlns:fb" => "http://www.facebook.com/2008/fbml"}
+  / <![endif]
+  %head
+    %title Subscribe form saved!
+    %meta{:content => "text/html; charset=utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %meta{:name => "description", :content => "Easily add subscribe forms to your Facebook pages"}
+    %link{:href => versioned_stylesheet('cm'), :rel => "stylesheet", :type => "text/css"}/
+    %script{:type => "text/javascript", :src => "//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.js"}
+    /[if lt IE 9]
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    :javascript
+      $(document).ready(function() {
+        $("#settings-saved").click(function(e) {
+          e.preventDefault();
+          top.location = "#{@next_url}";
+        });
+      });
+  %body
+    %section#body
+      %h1 Congratulations, your subscribe form has been created
+      %a{:id => "settings-saved", :href => "#"}

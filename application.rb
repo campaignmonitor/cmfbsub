@@ -161,6 +161,14 @@ get '/' do
   haml :settings, :layout => false
 end
 
+get '/saved/:page_id/?' do |page_id|
+  @page = get_page(page_id)
+  @next_url = @page.has_added_app ? @page.link :
+    "http://www.facebook.com/add.php?api_key=#{APP_API_KEY}&pages=1&page=#{@page.id}"
+
+  haml :settings_saved, :layout => false
+end
+
 post '/apikey/?' do
   content_type 'application/json', :charset => 'utf-8'
   result = get_api_key(params['site_url'], params['username'], params['password'])
@@ -206,8 +214,6 @@ post '/page/:page_id/?' do |page_id|
   @account = Account.first(:api_key => params[:api_key], :user_id => @user.id)
   @sf = @account.forms.first(:page_id => page_id)
   @page = get_page(page_id)
-  @next_url = @page.has_added_app ? @page.link :
-    "http://www.facebook.com/add.php?api_key=#{APP_API_KEY}&pages=1&page=#{@page.id}"
   if @sf
     @sf.list_id = params[:list_id]
     @sf.client_id = params[:client_id]
@@ -239,14 +245,13 @@ post '/page/:page_id/?' do |page_id|
       end
       @sf.save
       message = "Thanks, you successfully saved your subscribe form for #{@page.name}."
-      return [200, { :status => "success", :message => message, :next_url => @next_url}.to_json]
+      return [200, { :status => "success", :message => message}.to_json]
       rescue CreateSend::CreateSendError, CreateSend::ClientError, 
         CreateSend::ServerError, CreateSend::Unavailable => cse
         p "Error: #{cse}"
         # TODO: Be more helpful with errors...
         return [200, { :status => "failure", 
-          :message => "Sorry, something went wrong while saving your subscribe form for #{@page.name}. Please try again.",
-          :next_url => @next_url}.to_json]
+          :message => "Sorry, something went wrong while saving your subscribe form for #{@page.name}. Please try again."}.to_json]
     end
   end
 end

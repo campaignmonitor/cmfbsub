@@ -199,7 +199,7 @@
   }
 
   function saveSubscribeForm($save, form_data) {
-    $save.addClass('disabled').html('Saving Changes&hellip;');
+    $save.addClass('disabled').html('Saving&hellip;');
     $.ajax({
       type: "POST",
       url: "/page/" + form_data.page_id,
@@ -207,14 +207,14 @@
       dataType: "json",
       success: function(data) {
         if (data.status == "success") {
-          top.location = data.next_url;
+          window.location = '/saved/' + form_data.page_id;
         } else {
-          $save.removeClass('disabled').html('Save Changes');
+          $save.removeClass('disabled').html('Save Form');
           // TODO: Communicate error...
         }
       },
       error: function() {
-        $save.removeClass('disabled').html('Save Changes');
+        $save.removeClass('disabled').html('Save Form');
         // TODO: Communicate error...
       }
     });
