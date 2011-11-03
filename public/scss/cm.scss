@@ -326,7 +326,9 @@ section#body {}
     margin-left: 25px;
     margin-bottom: 20px;
     font-size: 14px;
-    font-weight: bold; }
+    font-weight: bold;
+    &.center {
+      text-align: center; } }
   .back {
     float: right;
     margin-top: -35px;
