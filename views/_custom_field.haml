@@ -1,4 +1,7 @@
-- if ["Text", "Number", "Date"].include? type
+- if type == "Date"
+  %label&=name
+  %input{:name => att_friendly_key(key), :id => att_friendly_key(key), :type => :text, :class => "subscribeformdate"}
+- elsif ["Text", "Number"].include? type
   %label&=name
   %input{:name => att_friendly_key(key), :id => att_friendly_key(key), :type => :text, :class => type == "Number" ? "number" : ""}
 - elsif type == "MultiSelectOne"

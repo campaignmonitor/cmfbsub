@@ -32,9 +32,33 @@
       });
     });
   }
+  
+  function addValidators() {
+    $.validator.addMethod(
+    	"subscribeformdate", function(value, element) {
+    		var check = false,
+    		    re = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+    		if( re.test(value)){
+    			var adata = value.split('/'),
+    			    gg = parseInt(adata[0],10),
+    			    mm = parseInt(adata[1],10),
+    			    aaaa = parseInt(adata[2],10),
+    			    xdata = new Date(aaaa,mm-1,gg);
+    			if ( ( xdata.getFullYear() == aaaa ) && ( xdata.getMonth () == mm - 1 ) && ( xdata.getDate() == gg ) )
+    				check = true;
+    			else
+    				check = false;
+    		} else
+    			check = false;
+    		return this.optional(element) || check;
+    	},
+    	"Please enter a valid date (dd/mm/yyyy)"
+    );
+  }
 
   function ready(data) {
     config = data;
+    addValidators();
     setupSubscribe();
   }
 

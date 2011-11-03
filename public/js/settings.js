@@ -271,7 +271,7 @@
     renderListOptions = Handlebars.compile($("#list-options-template").html());
     renderListFields = Handlebars.compile($("#list-fields-template").html());
   }
-
+  
   function ready(data) {
     setupRenderers();
     setupSignin();
