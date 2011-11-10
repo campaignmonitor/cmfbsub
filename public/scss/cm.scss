@@ -498,25 +498,10 @@ section#body {}
       display: inline-block;
       zoom: 1;
       *display: inline;
-      padding-right: 30px;
-      position: relative;
-      &:before {
-        content: "";
-        display: block;
-        /* reduce the damage in FF3.0 */
-        position: absolute;
-        width: 0;
-        height: 0;
-        border-width: 2px 4px;
-        border-style: solid;
-        border-color: transparent;
-        border-left-color: #ccc;
-        top: 35%;
-        right: 6px;
-        margin-top: -1px;
-        z-index: 19; } }
+      padding-right: 15px;
+      position: relative; }
     select {
-      display: inline-block; }
+      display: block; }
     .selector {
       color: #434343;
       margin-bottom: 10px; }

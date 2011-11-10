@@ -31,8 +31,7 @@
         $(".sign-in.context-box").fadeOut(200, function() {
           $("button.sign-in").removeClass('selected').hide();
           account = data.account;
-          $('select[id^="clients-"]').html(
-            renderClientOptions({ clients: account.clients}));
+          setupClientOptions();
           showPages();
         });
       },
@@ -232,14 +231,36 @@
     });
   }
   
+  function setupClientOptions() {
+    $('select[id^="clients-"]').html(
+      renderClientOptions({ clients: account.clients}));
+
+    if (account && account.clients && account.clients.length == 1) {
+      // If there's only one client, skip client selection
+      $('select[id^="clients-"]').each(function(i, e) {
+        var $lists = $(e).closest(".wrapper").find("select.list");
+        $(e).val(account.clients[0].ClientID); // Select the client
+        var client_id = $(e).attr("value");
+        $lists.empty(); // Then load the client's lists
+        loadListsForClient($lists, client_id, function(lists) {
+          if (!lists || lists.length === 0) { return; }
+          $lists.html(renderListOptions({ lists: lists, selected: '' }));
+          $lists.fadeIn(200)
+          setupLists($lists);
+          $(e).hide();
+        });
+      });
+    }
+  }
+  
   function setupPages() {
     // Page selection behaviour
     $("#body .page").click(function() { selectPage($(this)); });
     $("span#otherpages a").click(function() { deselectPage(); });
     
     // Client selection behaviour
-    $('select[id^="clients-"]').html(
-      renderClientOptions({ clients: account.clients}));
+    setupClientOptions();
+
     $('select[id^="clients-"]').change(function() {
       var $lists = $(this).closest(".wrapper").find("select.list");
       hideListOptions($lists);
