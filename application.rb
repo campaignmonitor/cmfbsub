@@ -301,6 +301,14 @@ post '/subscribe/:page_id/?' do |page_id|
   end
 end
 
+post '/ondeauth/?' do
+  
+  p params
+  
+  [200]
+  
+end
+
 get '/auth/facebook/callback/?' do
   session['fb_auth'] = request.env['omniauth.auth']
   session['fb_token'] = session['fb_auth']['credentials']['token']
