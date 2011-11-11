@@ -301,6 +301,15 @@ post '/subscribe/:page_id/?' do |page_id|
   end
 end
 
+get '/ondeauth/?' do
+  fb = params['facebook']
+  if fb && fb['user_id']
+    @accounts = Account.all(:user_id => fb['user_id'])
+    @accounts.destroy if @accounts
+  end
+  [200]
+end
+
 get '/auth/facebook/callback/?' do
   session['fb_auth'] = request.env['omniauth.auth']
   session['fb_token'] = session['fb_auth']['credentials']['token']

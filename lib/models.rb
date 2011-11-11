@@ -5,7 +5,7 @@ class Account
   property :api_key, String, :required => true, :key => true
   property :user_id, String, :required => true
 
-  has n, :forms
+  has n, :forms, :constraint => :destroy
 end
 
 class Form
@@ -19,7 +19,7 @@ class Form
   property :thanks_message, String, :required => true, :length => 0..250
 
   belongs_to :account
-  has n, :custom_fields
+  has n, :custom_fields, :constraint => :destroy
 end
 
 class CustomField
