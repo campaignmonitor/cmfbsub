@@ -311,11 +311,13 @@ get '/ondeauth/?' do
     
     puts fb['user_id']
     
-    @account = Account.first(:user_id => fb['user_id'])
+    @accounts = Account.all(:user_id => fb['user_id'])
     
-    puts @account
+    puts @accounts
     
-    @account.destroy if @account
+    @accounts.each do |a|
+      a.destroy
+    end
     
     puts '@account destroyed'
     
