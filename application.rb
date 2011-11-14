@@ -302,25 +302,10 @@ post '/subscribe/:page_id/?' do |page_id|
 end
 
 get '/ondeauth/?' do
-  
   fb = params['facebook']
-  
-  puts fb
-  
   if fb && fb['user_id']
-    
-    puts fb['user_id']
-    
     @accounts = Account.all(:user_id => fb['user_id'])
-    
-    puts @accounts
-    
-    @accounts.each do |a|
-      puts a.destroy
-    end
-    
-    puts '@account destroyed'
-    
+    @accounts.destroy if @accounts
   end
   [200]
 end
