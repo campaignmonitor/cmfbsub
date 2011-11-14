@@ -301,9 +301,9 @@ post '/subscribe/:page_id/?' do |page_id|
   end
 end
 
-get '/ondeauth/?' do
-  if session['fb_auth']['uid']
-    @account = Account.first(:user_id => session['fb_auth']['uid'])
+post '/ondeauth/?' do
+  if params['facebook'] && params['facebook']['user_id']
+    @account = Account.first(:user_id => params['facebook']['user_id'])
     @account.destroy if @account
   end
   [200]
