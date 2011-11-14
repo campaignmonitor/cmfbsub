@@ -301,7 +301,7 @@ post '/subscribe/:page_id/?' do |page_id|
   end
 end
 
-post '/ondeauth/?' do
+get '/ondeauth/?' do
   
   fb = params['facebook']
   

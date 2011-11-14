@@ -17,7 +17,7 @@ module Rack
     def call(env)
       request = Rack::Request.new(env)
       if request.POST['signed_request']
-        env["REQUEST_METHOD"] = 'GET' unless env['SCRIPT_NAME'] == '/ondeauth'
+        env["REQUEST_METHOD"] = 'GET'
         signed_request = request.POST.delete('signed_request')
         unless signed_request.nil?
           signature, signed_params = signed_request.split('.')
