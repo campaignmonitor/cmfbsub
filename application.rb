@@ -301,12 +301,12 @@ post '/subscribe/:page_id/?' do |page_id|
   end
 end
 
-post '/ondeauth/?' do
-  
-  p params
-  
+get '/ondeauth/?' do
+  if session['fb_auth']['uid']
+    @account = Account.first(:user_id => session['fb_auth']['uid'])
+    @account.destroy if @account
+  end
   [200]
-  
 end
 
 get '/auth/facebook/callback/?' do
