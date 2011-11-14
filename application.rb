@@ -258,9 +258,6 @@ post '/page/:page_id/?' do |page_id|
 end
 
 get '/tab/?' do
-  
-  p params['facebook']
-  
   @page_id = params['facebook'] ? params['facebook']['page']['id'] : ''
   @sf = get_form_by_page_id(@page_id)
   if @sf
@@ -305,7 +302,11 @@ post '/subscribe/:page_id/?' do |page_id|
 end
 
 post '/ondeauth/?' do
+  
   fb = params['facebook']
+  
+  puts fb
+  
   if fb && fb['user_id']
     @account = Account.first(:user_id => fb['user_id'])
     @account.destroy if @account
