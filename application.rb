@@ -316,7 +316,7 @@ get '/ondeauth/?' do
     puts @accounts
     
     @accounts.each do |a|
-      a.destroy
+      puts a.destroy
     end
     
     puts '@account destroyed'
