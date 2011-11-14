@@ -308,8 +308,17 @@ get '/ondeauth/?' do
   puts fb
   
   if fb && fb['user_id']
+    
+    puts fb['user_id']
+    
     @account = Account.first(:user_id => fb['user_id'])
+    
+    puts @account
+    
     @account.destroy if @account
+    
+    puts '@account destroyed'
+    
   end
   [200]
 end
