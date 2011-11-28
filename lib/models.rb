@@ -29,7 +29,7 @@ class CustomField
   property :name, String, :required => true
   property :field_key, String, :required => true
   property :data_type, String, :required => true
-  property :field_options, String, :length => 0..5000 # Comma-delimited options
+  property :field_options, String, :length => 0..5000 # ^ delimited options
 
   belongs_to :form
 end

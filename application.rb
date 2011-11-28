@@ -239,7 +239,7 @@ post '/page/:page_id/?' do |page_id|
             cf = CustomField.new(
               :name => cmcf.FieldName, :field_key => cmcf.Key,
               :data_type => cmcf.DataType,
-              :field_options => cmcf.FieldOptions * ",")
+              :field_options => cmcf.FieldOptions * "^")
             @sf.custom_fields << cf
           end
         end
