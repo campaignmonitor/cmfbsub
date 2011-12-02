@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'sinatra'
-require 'environment'
+require './environment'
 require 'omniauth/oauth'
 require 'mogli'
 require 'createsend'
@@ -175,7 +175,7 @@ post '/apikey/?' do
   result = get_api_key(params['site_url'], params['username'], params['password'])
   if !result.nil?
     @user = get_user("me")
-    @account = Account.first_or_create(:api_key => result.ApiKey, :user_id => @user.id)
+    @account = Account.first_or_create({:api_key => result.ApiKey, :user_id => @user.id})
     @clients = @account ? get_clients(@account.api_key) : []
     [200, {:account => {
       :api_key => @account.api_key, :user_id => @user.id,
