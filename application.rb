@@ -173,19 +173,18 @@ end
 post '/apikey/?' do
   content_type 'application/json', :charset => 'utf-8'
   result = get_api_key(params['site_url'], params['username'], params['password'])
-  if !result.nil?
-    @user = get_user("me")
-    
+  @user = get_user("me")
+  if !result.nil? && @user
+
     # Logging to try and find bug where account user_id is strangely saved as "4"
-    puts "From /apikey - User ID is: #{@user.id}" if @user
-    puts "From /apikey - User ID was 4!" if @user && @user.id == "4"
+    puts "From /apikey - User ID is: #{@user.id}"
+    puts "From /apikey - User ID was 4!" if @user.id == "4"
     
     @account = Account.first_or_create({:api_key => result.ApiKey, :user_id => @user.id})
     
     # Logging to try and find bug where account user_id is strangely saved as "4"
     puts "From /apikey - Account User ID is: #{@account.user_id}" if @account
     puts "From /apikey - Account User ID was 4!" if @account && @account.user_id == "4"
-    
     
     @clients = @account ? get_clients(@account.api_key) : []
     [200, {:account => {
