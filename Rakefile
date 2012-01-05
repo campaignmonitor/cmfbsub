@@ -16,7 +16,7 @@ task :start do
 end
 
 task :environment do
-  require 'environment'
+  require './environment'
 end
 
 task :default => :start

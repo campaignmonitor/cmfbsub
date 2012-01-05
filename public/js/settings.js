@@ -235,7 +235,7 @@
     $('select[id^="clients-"]').html(
       renderClientOptions({ clients: account.clients}));
 
-    if (account && account.clients && account.clients.length == 1) {
+    if (account && account.clients && account.clients.length === 1) {
       // If there's only one client, skip client selection
       $('select[id^="clients-"]').each(function(i, e) {
         var $lists = $(e).closest(".wrapper").find("select.list");
