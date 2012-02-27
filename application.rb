@@ -220,7 +220,7 @@ post '/page/:page_id/?' do |page_id|
     @sf.client_id = params[:client_id]
     @sf.intro_message = params[:intro_message].strip
     @sf.thanks_message = params[:thanks_message].strip
-    @sf.include_name = params[:include_name]
+    @sf.include_name = params[:include_name] == "true"
   else
     @sf = Form.new(
       :account => @account, :page_id => page_id, :client_id => params[:client_id], :list_id => params[:list_id],

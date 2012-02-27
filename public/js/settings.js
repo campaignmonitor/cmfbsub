@@ -35,7 +35,7 @@
           showPages();
         });
       },
-      error: function() {
+      error: function(xhr, status, error) {
         $(".sign-in .error.hidden").removeClass("hidden");
         $(".sign-in button").removeClass('disabled').html('Log in');
       }
@@ -218,7 +218,7 @@
           // TODO: Communicate error...
         }
       },
-      error: function() {
+      error: function(xhr, status, error) {
         $save.removeClass('disabled').html('Save Form');
         // TODO: Communicate error...
       }
