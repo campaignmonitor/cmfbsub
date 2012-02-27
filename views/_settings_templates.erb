@@ -14,8 +14,8 @@
   <input type="checkbox" id="email" name="email" value="email" checked="checked" disabled="disabled" />
   <label class="checkbox-adjacent" for="email">Email address</label>
   <br/>
-  <input type="checkbox" id="name" name="name" value="name" checked="checked" disabled="disabled" />
-  <label class="checkbox-adjacent" for="name">Name</label>
+  <input type="checkbox" id="name-{{page_id}}" name="name-{{page_id}}" value="name"{{#if include_name}} checked="checked"{{/if}} />
+  <label class="checkbox-adjacent" for="name-{{page_id}}">Name</label>
   <br/>
   {{#if fields}}
     {{#each fields}}

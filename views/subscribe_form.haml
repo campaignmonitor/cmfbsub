@@ -22,8 +22,9 @@
       %form{:id => :subscribeform}
         %label Email address
         %input{:type => :text, :name => :email, :id => :email, :class => "required email"}/
-        %label Name
-        %input{:type => :text, :name => :name, :id => :name}/
+        - if @sf.include_name
+          %label Name
+          %input{:type => :text, :name => :name, :id => :name}/
         - if @fields
           - @fields.each do |f|
             =partial :custom_field, {:name => f.name, :type => f.data_type, :key => f.field_key, :options => f.field_options}

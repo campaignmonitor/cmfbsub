@@ -15,6 +15,7 @@ class Form
   property :page_id, String, :required => true, :key => true
   property :client_id, String, :required => true
   property :list_id, String, :required => true
+  property :include_name, Boolean, :required => false, :default => true
   property :intro_message, String, :required => true, :length => 0..250
   property :thanks_message, String, :required => true, :length => 0..250
 

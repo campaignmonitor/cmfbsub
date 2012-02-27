@@ -66,7 +66,8 @@
         $lists = $prefs.find('select[id^="lists-"]'),
         $fields = $prefs.find('fieldset[id^="fields-"]'),
         $intro = $prefs.find('input[id^="intromessage-"]'),
-        $thanks = $prefs.find('input[id^="thanksmessage-"]');
+        $thanks = $prefs.find('input[id^="thanksmessage-"]'),
+        $name = $prefs.find('input[id^="name-"]');
 
     $clients.val(sf.client_id); // Select client
     loadListsForClient($lists, sf.client_id, function(lists) { // Load lists, and select
@@ -77,7 +78,7 @@
       $lists.fadeIn(200)
       // Load list fields
       setupLists($lists);
-      showListOptions($lists, sf.list_id, fields);
+      showListOptions($lists, sf.list_id, sf.include_name, fields);
       // Set messages
       $intro.val(sf.intro_message);
       $thanks.val(sf.thanks_message);
@@ -113,8 +114,9 @@
     showPages();
   }
 
-  function showListOptions($lists, list_id, saved_fields) {
-    // Attempt to Load custom fields
+  function showListOptions($lists, list_id, include_name, saved_fields) {
+    include_name = typeof include_name !== 'undefined' ? include_name : true; // Include name by default
+    // Attempt to load custom fields
     $.ajax({
       type: "GET",
       url: "/customfields/" + account.api_key + "/" + list_id,
@@ -133,8 +135,9 @@
             f.checked = checked;
           });
         }
-        var $fields = $($lists.closest(".prefs").find(".pref")[1]).find("fieldset");
-        $fields.html(renderListFields({ fields: fields }));
+        var $fields = $($lists.closest(".prefs").find(".pref")[1]).find("fieldset"),
+            page_id = $lists.attr("id").substring(6);
+        $fields.html(renderListFields({page_id: page_id, include_name: include_name, fields: fields }));
         var $prefs = $lists.closest('.prefs').find('.pref');
         $($prefs[1]).fadeIn(200); // List options
         $($prefs[2]).fadeIn(200); // Save
@@ -175,19 +178,22 @@
         $lists = $prefs.find('select[id^="lists-"]'),
         $fields = $prefs.find('fieldset[id^="fields-"]'),
         $intro = $prefs.find('input[id^="intromessage-"]'),
-        $thanks = $prefs.find('input[id^="thanksmessage-"]');
+        $thanks = $prefs.find('input[id^="thanksmessage-"]'),
+        $name = $prefs.find('input[id^="name-"]');
     var page_id = $clients.attr("id").substring(8),
         client_id = $clients.val(),
         list_id = $lists.val(),
         intro_message = $intro.val(),
-        thanks_message = $thanks.val();
+        thanks_message = $thanks.val(),
+        include_name = $name.is(":checked") === true;
     var form_data = {
       api_key: account.api_key,
       page_id: page_id,
       client_id: client_id,
       list_id: list_id,
       intro_message: intro_message,
-      thanks_message: thanks_message
+      thanks_message: thanks_message,
+      include_name: include_name
     };
     $fields.find("input").each(function(i, e) {
       if ($(e).is(":checked") === true) {

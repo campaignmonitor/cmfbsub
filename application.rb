@@ -220,10 +220,12 @@ post '/page/:page_id/?' do |page_id|
     @sf.client_id = params[:client_id]
     @sf.intro_message = params[:intro_message].strip
     @sf.thanks_message = params[:thanks_message].strip
+    @sf.include_name = params[:include_name]
   else
     @sf = Form.new(
       :account => @account, :page_id => page_id, :client_id => params[:client_id], :list_id => params[:list_id],
-      :intro_message => params[:intro_message].strip, :thanks_message => params[:thanks_message].strip)
+      :intro_message => params[:intro_message].strip, :thanks_message => params[:thanks_message].strip,
+      :include_name => params[:include_name])
   end
 
   if @sf.valid?
@@ -276,6 +278,7 @@ post '/subscribe/:page_id/?' do |page_id|
     @page_id = page_id
     @fields = @sf.custom_fields.all(:order => [:name.asc])
 
+    name = !params[:name].nil? ? params[:name].strip : ""
     custom_fields = []
     params.each do |i, v|
       if i.start_with? "cf-"
@@ -290,7 +293,7 @@ post '/subscribe/:page_id/?' do |page_id|
         end
       end
     end
-    CreateSend::Subscriber.add @sf.list_id, params[:email].strip, params[:name].strip,
+    CreateSend::Subscriber.add @sf.list_id, params[:email].strip, name,
       custom_fields, true
     return [200, {:status => "success", :message => @sf.thanks_message}.to_json]
 
