@@ -1,6 +1,16 @@
 - if type == "Date"
   %label&=name
-  %input{:name => att_friendly_key(key), :id => att_friendly_key(key), :type => :text, :class => "subscribeformdate"}
+  %fieldset{:class => "date-fieldset"}
+    %select{:name => "month-#{att_friendly_key(key)}", :id => "month-#{att_friendly_key(key)}"}
+      - get_months.each do |m|
+        %option{:value => m[:index]}=m[:name]
+    %select{:name => "day-#{att_friendly_key(key)}", :id => "day-#{att_friendly_key(key)}"}
+      - get_days.each do |d|
+        %option{:value => d}=d
+    %select{:name => "year-#{att_friendly_key(key)}", :id => "year-#{att_friendly_key(key)}"}
+      - get_years.each do |y|
+        %option{:value => y}=y
+    %input{:name => att_friendly_key(key), :id => att_friendly_key(key), :type => :hidden}
 - elsif ["Text", "Number"].include? type
   %label&=name
   %input{:name => att_friendly_key(key), :id => att_friendly_key(key), :type => :text, :class => type == "Number" ? "number" : ""}
