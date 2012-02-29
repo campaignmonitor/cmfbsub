@@ -100,7 +100,20 @@ not_found do
 end
 
 def get_user(user_id)
-  session['fb_token'] ? Mogli::User.find(user_id, Mogli::Client.new(session['fb_token'])) : nil
+  @user = nil
+  if session['fb_token']
+    @user = Mogli::User.find(user_id, Mogli::Client.new(session['fb_token']))
+  else
+    puts "-------------------------"
+    puts "-------------------------"
+    puts "-------------------------"
+    puts "attention: attempted to access session and FAILED. here's the session: "
+    puts session
+    puts "-------------------------"
+    puts "-------------------------"
+    puts "-------------------------"
+  end
+  @user
 end
 
 def get_page(page_id)
@@ -205,7 +218,7 @@ post '/apikey/?' do
       :api_key => @account.api_key, :user_id => @user.id,
         :clients => @clients}}.to_json]
   else
-    [400, {:message => "Error geting API key..."}.to_json]
+    [400, {:message => "Error getting API key..."}.to_json]
   end
 end
 
