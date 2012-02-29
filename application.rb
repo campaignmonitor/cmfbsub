@@ -205,7 +205,7 @@ post '/apikey/?' do
       :api_key => @account.api_key, :user_id => @user.id,
         :clients => @clients}}.to_json]
   else
-    [400, {:message => "Error geting API key..."}.to_json]
+    [400, {:message => "Error getting API key..."}.to_json]
   end
 end
 

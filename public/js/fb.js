@@ -11,5 +11,5 @@ function facebookInit(config) {
 }
 
 function goHome() {
-  top.location = 'http://apps.facebook.com/' + Config.canvasName + '/';
+  top.location = 'https://apps.facebook.com/' + Config.canvasName + '/';
 }
