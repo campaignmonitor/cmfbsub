@@ -103,15 +103,6 @@ def get_user(user_id)
   @user = nil
   if session['fb_token']
     @user = Mogli::User.find(user_id, Mogli::Client.new(session['fb_token']))
-  else
-    puts "-------------------------"
-    puts "-------------------------"
-    puts "-------------------------"
-    puts "attention: attempted to access session and FAILED. here's the session: "
-    puts session
-    puts "-------------------------"
-    puts "-------------------------"
-    puts "-------------------------"
   end
   @user
 end
