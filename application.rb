@@ -344,13 +344,11 @@ end
 get '/auth/facebook/callback/?' do
   session['fb_auth'] = request.env['omniauth.auth']
   session['fb_token'] = session['fb_auth']['credentials']['token']
-  session['fb_error'] = nil
   redirect '/'
 end
 
 get '/auth/failure/?' do
   clear_session
-  session['fb_error'] = 'To use this application you must permit access to your basic information.'
   redirect '/'
 end
 
@@ -362,7 +360,6 @@ end
 def clear_session
   session['fb_auth'] = nil
   session['fb_token'] = nil
-  session['fb_error'] = nil
 end
 
 %w(reset cm fb).each do |style|
