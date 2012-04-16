@@ -42,6 +42,10 @@ helpers do
     return (APP_CANVAS_NAME =~ /createsend$/ ? true : false)
   end
 
+  def app_name
+    white_label ? "Subscribe Form" : "Campaign Monitor Subscribe Form"
+  end
+
   def att_friendly_key(key)
     "cf-#{key[1..-2]}"
   end
@@ -361,6 +365,10 @@ end
 def clear_session
   session['fb_auth'] = nil
   session['fb_token'] = nil
+end
+
+get '/privacy/?' do
+  haml :privacy
 end
 
 %w(reset cm fb).each do |style|

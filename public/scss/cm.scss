@@ -2,7 +2,18 @@
 
 body {
   font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
-  font-size: 12px; }
+  font-size: 12px;
+  // #content is used by layout.haml
+  #content {
+    margin: 20px;
+    h2.title {
+      font-size: 3em;
+    }
+    p {
+      font-size: 1.2em;
+      margin: 6px 0 8px 0; }
+  }
+}
 
 html {
   font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
