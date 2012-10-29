@@ -1,7 +1,6 @@
 source :rubygems
 
 gem 'thin'
-gem 'pg'
 gem 'rake'
 gem 'sinatra', '~> 1.3.1'
 gem 'sinatra-reloader'
@@ -12,7 +11,14 @@ gem 'yajl-ruby'
 gem 'mogli', '~> 0.0.36'
 gem 'createsend'
 gem 'data_mapper'
-gem 'dm-sqlite-adapter'
-gem 'dm-postgres-adapter'
 gem 'json'
-gem 'newrelic_rpm'
+
+group :development, :test do
+  gem 'dm-sqlite-adapter'
+end
+
+group :production do
+  gem 'dm-postgres-adapter'
+  gem 'pg'
+  gem 'newrelic_rpm'
+end
