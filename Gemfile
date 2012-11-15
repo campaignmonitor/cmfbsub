@@ -1,7 +1,7 @@
 source :rubygems
 
-gem 'thin'
 gem 'rake'
+gem 'rack', '1.3.6'
 gem 'sinatra', '~> 1.3.1'
 gem 'sinatra-reloader'
 gem 'haml'
