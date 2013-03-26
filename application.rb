@@ -135,8 +135,7 @@ end
 def get_clients(api_key)
   @result = []
   begin
-    CreateSend.api_key api_key
-    cs = CreateSend::CreateSend.new
+    cs = CreateSend::CreateSend.new({:api_key => api_key})
     @result = cs.clients
     rescue Exception => e
       p "Error: #{e}"
@@ -148,8 +147,7 @@ end
 def get_lists_for_client(api_key, client_id)
   @result = []
   begin
-    CreateSend.api_key api_key
-    @result = CreateSend::Client.new(client_id).lists
+    @result = CreateSend::Client.new({:api_key => api_key}, client_id).lists
     rescue Exception => e
       p "Error: #{e}"
       @result = []
@@ -160,8 +158,7 @@ end
 def get_custom_fields_for_list(api_key, list_id)
   @result = []
   begin
-    CreateSend.api_key api_key
-    @result = CreateSend::List.new(list_id).custom_fields
+    @result = CreateSend::List.new({:api_key => api_key}, list_id).custom_fields
     rescue Exception => e
       p "Error: #{e}"
       @result = []
@@ -307,7 +304,6 @@ post '/subscribe/:page_id/?' do |page_id|
 
   @sf = get_form_by_page_id(page_id)
   begin
-    CreateSend.api_key @sf.account.api_key
     @page_id = page_id
     @fields = @sf.custom_fields.all(:order => [:name.asc])
 
@@ -326,8 +322,8 @@ post '/subscribe/:page_id/?' do |page_id|
         end
       end
     end
-    CreateSend::Subscriber.add @sf.list_id, params[:email].strip, name,
-      custom_fields, true
+    CreateSend::Subscriber.add({:api_key => @sf.account.api_key}, @sf.list_id,
+      params[:email].strip, name, custom_fields, true)
     return [200, {:status => "success", :message => @sf.thanks_message}.to_json]
 
     rescue Exception => e
