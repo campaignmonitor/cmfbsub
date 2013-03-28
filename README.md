@@ -26,13 +26,40 @@ Install dependencies:
 bundle install
 ```
 
-Run the app locally (runs at [http://localhost:4567/](http://localhost:4567/)):
+There are a few config settings required to run the app. When working locally, config settings are read from a config file `config.yaml` (which is obviously entered into `.gitignore`) and on Heroku, config settings are read from environment variables.
+
+Create a `config.yaml` file based on `config.example.yaml`:
 
 ```
-rake
+cp config.example.yaml config.yaml
 ```
 
-There is a Facebook app set up at http://apps.facebook.com/ldevcampaignmonitor/ for testing locally, which will load [http://localhost:4567/](http://localhost:4567/) into the Facebook chrome.
+Edit `config.yaml` to include the config settings found on the _Local Dev Campaign Monitor Subscribe_ [admin page](https://developers.facebook.com/apps/195059907238783). You might like to reference the config settings for the development app _devcmfbsub_ on Heroku:
+
+```
+heroku config --app devcmfbsub
+```
+
+Which will show you something like:
+
+```
+=== devcmfbsub Config Vars
+APP_API_KEY:                  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+APP_CANVAS_NAME:              devcampaignmonitor
+APP_DOMAIN:                   devcmfbsub.heroku.com
+APP_ID:                       111111111111111
+APP_NAME:                     devcmfbsub
+APP_SECRET:                   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+...
+```
+
+Finally, run the app locally (runs at [http://localhost:4567/](http://localhost:4567/)):
+
+```
+bundle exec rake
+```
+
+Then visit the _ldevcmfbsub_ Facebook app at http://apps.facebook.com/ldevcampaignmonitor/ for testing locally, which will load [http://localhost:4567/](http://localhost:4567/) in the iframe inside the Facebook chrome.
 
 ### Deploying
 
@@ -47,7 +74,3 @@ git remote add csfbsub git@heroku.com:csfbsub.git
 ```
 
 So, you would now push to `devcmfbsub` to deploy the development version of the app, and push to `cmfbsub` and `csfbsub` to deploy both the Campaign Monitor branded and white-label versions of the app.
-
-## Configuration
-
-TODO: Explain Heroku config.
