@@ -6,7 +6,7 @@ function facebookInit(config) {
     appId: Config.appId,
     xfbml: true
   });
-  FB.Canvas.setAutoResize();
+  FB.Canvas.setAutoGrow();
   if (window == top) { goHome(); }
 }
 
