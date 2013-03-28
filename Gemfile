@@ -9,7 +9,7 @@ gem 'sass'
 gem 'oa-oauth', '>= 0.2.3'
 gem 'yajl-ruby'
 gem 'mogli', '~> 0.0.36'
-gem 'createsend', '~> 3.0'
+gem 'createsend', '~> 3.1'
 gem 'data_mapper'
 gem 'json'
 
