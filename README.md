@@ -26,15 +26,15 @@ Install dependencies:
 bundle install
 ```
 
-There are a few config settings required to run the app. When working locally, config settings are read from a config file `config.yaml` (which is obviously entered into `.gitignore`) and on Heroku, config settings are read from environment variables.
+There are a few config settings required to run the app which are stored in environment variables. When working locally, config settings are read from a `.env` file (which is obviously entered into `.gitignore`).
 
-Create a `config.yaml` file based on `config.example.yaml`:
+Create a `.env` file based on `.env.example`:
 
 ```
-cp config.example.yaml config.yaml
+cp .env.example .env
 ```
 
-Edit `config.yaml` to include the config settings found on the _Local Dev Campaign Monitor Subscribe_ [admin page](https://developers.facebook.com/apps/195059907238783). You might like to reference the config settings for the development app _devcmfbsub_ on Heroku:
+Edit `.env` to include the config settings found on the _Local Dev Campaign Monitor Subscribe_ [admin page](https://developers.facebook.com/apps/195059907238783). You might like to reference the config settings for the development app _devcmfbsub_ on Heroku:
 
 ```
 heroku config --app devcmfbsub
