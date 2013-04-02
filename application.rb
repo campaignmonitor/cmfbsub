@@ -8,23 +8,17 @@ require 'createsend'
 
 configure do
   require 'newrelic_rpm' if production?
-  config = YAML.load_file('config.yaml') if !production?
-  APP_ID = production? ? ENV['APP_ID'] : config['APP_ID']
-  APP_API_KEY = production? ? ENV['APP_API_KEY'] : config['APP_API_KEY']
-  APP_SECRET = production? ? ENV['APP_SECRET'] : config['APP_SECRET']
-  APP_CANVAS_NAME = production? ? ENV['APP_CANVAS_NAME'] : config['APP_CANVAS_NAME']
-
   set :views, "#{File.dirname(__FILE__)}/views"
   enable :sessions
-  set :session_secret, APP_SECRET
+  set :session_secret, ENV['APP_SECRET']
   DataMapper.setup(:default, (ENV["DATABASE_URL"] || "sqlite3:///#{File.expand_path(File.dirname(__FILE__))}/#{Sinatra::Base.environment}.db"))
 
-  use Rack::Facebook, { :secret => APP_SECRET }
+  use Rack::Facebook, { :secret => ENV['APP_SECRET'] }
   use OmniAuth::Builder do
     client_options = production? ? {:ssl => {:ca_path => "/etc/ssl/certs"}} : {}
-    provider :facebook, APP_ID, APP_SECRET, {:iframe => true, :client_options => client_options, :scope => 'manage_pages,offline_access'}
+    provider :facebook, ENV['APP_ID'], ENV['APP_SECRET'], {:iframe => true, :client_options => client_options, :scope => 'manage_pages,offline_access'}
   end
-  OmniAuth.config.full_host = "https://apps.facebook.com/#{APP_CANVAS_NAME}"
+  OmniAuth.config.full_host = "https://apps.facebook.com/#{ENV['APP_CANVAS_NAME']}"
 
   disable :protection
 end
@@ -39,7 +33,7 @@ helpers do
   end
 
   def white_label
-    return (APP_CANVAS_NAME =~ /createsend$/ ? true : false)
+    return (ENV['APP_CANVAS_NAME'] =~ /createsend$/ ? true : false)
   end
 
   def app_name
@@ -92,7 +86,7 @@ end
 
 before do
   content_type :html, :charset => 'utf-8'
-  @js_conf = { :appId => APP_ID, :canvasName => APP_CANVAS_NAME,
+  @js_conf = { :appId => ENV['APP_ID'], :canvasName => ENV['APP_CANVAS_NAME'],
     :userIdOnServer => session['fb_token'] ? session['fb_auth']['uid'] : nil}.to_json
 end
 
@@ -195,7 +189,7 @@ end
 get '/saved/:page_id/?' do |page_id|
   @page = get_page(page_id)
   @next_url = @page.has_added_app ? @page.link :
-    "http://www.facebook.com/add.php?api_key=#{APP_API_KEY}&pages=1&page=#{@page.id}"
+    "http://www.facebook.com/add.php?api_key=#{ENV['APP_API_KEY']}&pages=1&page=#{@page.id}"
 
   haml :settings_saved, :layout => false
 end

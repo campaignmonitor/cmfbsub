@@ -14,6 +14,7 @@ gem 'data_mapper'
 gem 'json'
 
 group :development, :test do
+  gem 'dotenv'
   gem 'dm-sqlite-adapter'
 end
 

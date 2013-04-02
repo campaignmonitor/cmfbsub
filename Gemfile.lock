@@ -61,6 +61,7 @@ GEM
       data_objects (= 0.10.10)
     do_sqlite3 (0.10.10)
       data_objects (= 0.10.10)
+    dotenv (0.6.0)
     eventmachine (1.0.0)
     faraday (0.7.6)
       addressable (~> 2.2)
@@ -132,6 +133,7 @@ DEPENDENCIES
   data_mapper
   dm-postgres-adapter
   dm-sqlite-adapter
+  dotenv
   haml
   json
   mogli (~> 0.0.36)
