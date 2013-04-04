@@ -50,8 +50,11 @@ helpers do
 
   def check_auth
 
-    logger.info "Checking auth... Contents of session:"
+    logger.info "Checking auth..."
+    logger.info "Contents of session:"
     logger.info session
+    logger.info "Contents of params:"
+    logger.info params
 
     redirect '/auth/facebook' if session['fb_auth'].nil?
     # If we don't have the right user in the session, clear the session
