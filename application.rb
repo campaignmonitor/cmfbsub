@@ -49,6 +49,10 @@ helpers do
   end
 
   def check_auth
+
+    logger.info "Checking auth... Contents of session:"
+    logger.info session
+
     redirect '/auth/facebook' if session['fb_auth'].nil?
     # If we don't have the right user in the session, clear the session
     if !session['fb_auth'].nil? and !params['facebook'].nil? and 
