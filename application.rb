@@ -348,6 +348,7 @@ end
 
 get '/auth/facebook/callback/?' do
   session['fb_auth'] = request.env['omniauth.auth']
+  session['fb_auth'].delete('extra') if session['fb_auth']
   session['fb_token'] = session['fb_auth']['credentials']['token']
   logger.info "Redirecting from Facebook callback..."
   logger.info "Contents of session:"
