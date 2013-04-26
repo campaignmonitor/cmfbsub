@@ -12,7 +12,7 @@ end
 
 desc "Start app for development"
 task :start do
-  system 'ruby -rubygems application.rb'
+  system 'foreman start'
 end
 
 task :environment do
