@@ -12,7 +12,7 @@ gem 'mogli', '~> 0.0.36'
 gem 'createsend', '~> 3.1'
 gem 'data_mapper'
 gem 'json'
-gem 'unicorn'
+gem 'thin'
 
 group :development, :test do
   gem 'dm-sqlite-adapter'
