@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rake'
 gem 'rack', '~> 1.3'
-gem 'sinatra', '~> 1.3'
+gem 'sinatra', '1.3.3'
 gem 'sinatra-reloader'
 gem 'haml'
 gem 'sass'

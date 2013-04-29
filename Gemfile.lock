@@ -147,7 +147,7 @@ DEPENDENCIES
   rack (~> 1.3)
   rake
   sass
-  sinatra (~> 1.3)
+  sinatra (= 1.3.3)
   sinatra-reloader
   unicorn
   yajl-ruby
