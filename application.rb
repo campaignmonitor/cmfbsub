@@ -7,7 +7,7 @@ require 'mogli'
 require 'createsend'
 
 configure do
-  require 'newrelic_rpm' if production?
+  #require 'newrelic_rpm' if production?
   set :views, "#{File.dirname(__FILE__)}/views"
   enable :sessions
   set :session_secret, ENV['APP_SECRET']
