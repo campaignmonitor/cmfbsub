@@ -8,7 +8,7 @@ Campaign Monitor lists the [Facebook subscribe form](http://www.campaignmonitor.
 
 The white-labelled version of the app can be accessed at https://apps.facebook.com/createsend/ and the Campaign Monitor branded version can be accessed at https://apps.facebook.com/campaignmonitor/. These apps are implemented as [Canvas Pages](https://developers.facebook.com/docs/appsonfacebook/tutorial/) and run in an iframe within the Facebook chrome.
 
-So the Sinatra app in this repository is the app which runs in the iframe. The same code is deployed to two different Heroku apps for the two different versions of the app. The white-labelled version of the app runs at https://csfbsub.heroku.com/ and the Campaign Monitor branded version of the app runs at https://cmfbsub.heroku.com/.
+So the Sinatra app in this repository is the app which runs in the iframe. The same code is deployed to two different Heroku apps for the two different versions of the app. The white-labelled version of the app runs at https://csfbsub.herokuapp.com/ and the Campaign Monitor branded version of the app runs at https://cmfbsub.herokuapp.com/.
 
 ## Developing
 
@@ -46,7 +46,7 @@ Which will show you something like:
 === devcmfbsub Config Vars
 APP_API_KEY:                  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 APP_CANVAS_NAME:              devcampaignmonitor
-APP_DOMAIN:                   devcmfbsub.heroku.com
+APP_DOMAIN:                   devcmfbsub.herokuapp.com
 APP_ID:                       111111111111111
 APP_NAME:                     devcmfbsub
 APP_SECRET:                   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -63,7 +63,7 @@ Then visit the _ldevcmfbsub_ Facebook app at http://apps.facebook.com/ldevcampai
 
 ### Deploying
 
-To be able to deploy the app, you will need to be a collaborator on each of the Heroku apps where the app is deployed. In addition to the two production versions of the app (https://apps.facebook.com/campaignmonitor/ and https://apps.facebook.com/createsend/), there is also a development version at https://apps.facebook.com/devcampaignmonitor/ which corresponds to the Heroku app at https://devcmfbsub.heroku.com/. You should always push and test your changes using the development app before pushing the production versions of the app.
+To be able to deploy the app, you will need to be a collaborator on each of the Heroku apps where the app is deployed. In addition to the two production versions of the app (https://apps.facebook.com/campaignmonitor/ and https://apps.facebook.com/createsend/), there is also a development version at https://apps.facebook.com/devcampaignmonitor/ which corresponds to the Heroku app at https://devcmfbsub.herokuapp.com/. You should always push and test your changes using the development app before pushing the production versions of the app.
 
 You'll need to set up git remotes to point to each version of the app on Heroku, which you can do like so:
 
