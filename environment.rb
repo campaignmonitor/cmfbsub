@@ -8,8 +8,6 @@ require 'sinatra' unless defined?(Sinatra)
 
 if development?
   require 'sinatra/reloader'
-  require 'dotenv'
-  Dotenv.load
 end
 
 configure do

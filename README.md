@@ -56,7 +56,7 @@ APP_SECRET:                   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 Finally, run the app locally (runs at [http://localhost:4567/](http://localhost:4567/)):
 
 ```
-bundle exec rake
+foreman start
 ```
 
 Then visit the _ldevcmfbsub_ Facebook app at http://apps.facebook.com/ldevcampaignmonitor/ for testing locally, which will load [http://localhost:4567/](http://localhost:4567/) in the iframe inside the Facebook chrome.
