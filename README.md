@@ -15,7 +15,7 @@ So the Sinatra app in this repository is the app which runs in the iframe. The s
 Firstly:
 
 ```
-git clone git@github.com:jdennes/cmfbsub.git && cd cmfbsub/
+git clone git@github.com:campaignmonitor/cmfbsub.git && cd cmfbsub/
 ```
 
 ### Working locally
