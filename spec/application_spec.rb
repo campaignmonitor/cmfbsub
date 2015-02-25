@@ -4,8 +4,7 @@ set :environment, :test
 
 describe "The Campaign Monitor Subscribe Form app" do
   let(:app) { Sinatra::Application }
-  let(:client_id) { ENV["GITHUB_CLIENT_ID"] }
-  let(:client_secret) { ENV["GITHUB_CLIENT_SECRET"] }
+  let(:user_id) { 7654321 }
 
   describe "GET /" do
     context "when there's no session for the user" do
@@ -22,7 +21,7 @@ describe "The Campaign Monitor Subscribe Form app" do
     context "when there's a session for the user but it doesn't match the current fb user" do
       it "clears the session and redirects to request authorisation" do
         get "/",
-          { "facebook" => { "user_id" => 7654321 } },
+          { "facebook" => { "user_id" => user_id } },
           { "rack.session" => { "fb_auth" => { "uid" => 1234567 } } }
 
         expect(last_request.env["rack.session"]["fb_auth"]).to be_nil
@@ -30,6 +29,16 @@ describe "The Campaign Monitor Subscribe Form app" do
         expect(last_response.status).to eq(302)
         expect(last_response.location).to eq("http://example.org/auth/facebook")
       end
+    end
+  end
+
+  describe "GET /ondeauth" do
+    it "clears the session and redirects to /" do
+      get "/ondeauth", { "facebook" => { "user_id" => user_id } }
+
+      accounts = Account.all(:user_id => user_id)
+      expect(accounts).to eq([])
+      expect(last_response.status).to eq(200)
     end
   end
 
