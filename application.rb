@@ -58,7 +58,7 @@ helpers do
 
     redirect '/auth/facebook' if session['fb_auth'].nil?
     # If we don't have the right user in the session, clear the session
-    if !session['fb_auth'].nil? and !params['facebook'].nil? and 
+    if !session['fb_auth'].nil? and !params['facebook'].nil? and
       session['fb_auth']['uid'] != params['facebook']['user_id']
 
       logger.info "Clearing the session and re-directing..."
@@ -84,11 +84,11 @@ helpers do
       {:index => 12, :name => "Dec"}
     ]
   end
-  
+
   def get_days
     (1..31)
   end
-  
+
   def get_years
     (1900..2048)
   end
@@ -283,11 +283,11 @@ post '/page/:page_id/?' do |page_id|
       @sf.save
       message = "Thanks, you successfully saved your subscribe form for #{@page.name}."
       return [200, { :status => "success", :message => message}.to_json]
-      rescue CreateSend::CreateSendError, CreateSend::ClientError, 
+      rescue CreateSend::CreateSendError, CreateSend::ClientError,
         CreateSend::ServerError, CreateSend::Unavailable => cse
         p "Error: #{cse}"
         # TODO: Be more helpful with errors...
-        return [200, { :status => "failure", 
+        return [200, { :status => "failure",
           :message => "Sorry, something went wrong while saving your subscribe form for #{@page.name}. Please try again."}.to_json]
     end
   end
@@ -332,7 +332,7 @@ post '/subscribe/:page_id/?' do |page_id|
 
     rescue Exception => e
       p "Error: #{e}" # TODO: Be more helpful with errors...
-      return [200, {:status => "error", 
+      return [200, {:status => "error",
         :message => "Sorry, there was a problem subscribing you to our list. Please try again."}.to_json]
   end
 end

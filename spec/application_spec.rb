@@ -8,9 +8,23 @@ describe "The Campaign Monitor Subscribe Form app" do
   let(:client_secret) { ENV["GITHUB_CLIENT_SECRET"] }
 
   describe "GET /" do
-    context "when the app is not authorised" do
+    context "when there's no session for the user" do
       it "redirects to request authorisation" do
         get "/"
+
+        expect(last_request.env["rack.session"]["fb_auth"]).to be_nil
+        expect(last_request.env["rack.session"]["fb_token"]).to be_nil
+        expect(last_response.status).to eq(302)
+        expect(last_response.location).to eq("http://example.org/auth/facebook")
+      end
+    end
+
+    context "when there's a session for the user but it doesn't match the current fb user" do
+      it "clears the session and redirects to request authorisation" do
+        get "/",
+          { "facebook" => { "user_id" => 7654321 } },
+          { "rack.session" => { "fb_auth" => { "uid" => 1234567 } } }
+
         expect(last_request.env["rack.session"]["fb_auth"]).to be_nil
         expect(last_request.env["rack.session"]["fb_token"]).to be_nil
         expect(last_response.status).to eq(302)
