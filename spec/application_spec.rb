@@ -33,9 +33,20 @@ describe "The Campaign Monitor Subscribe Form app" do
     end
   end
 
-  describe 'GET /auth/failure' do
+  describe "GET /auth/failure" do
     it "clears the session and redirects to /" do
       get "/auth/failure"
+
+      expect(last_request.env["rack.session"]["fb_auth"]).to be_nil
+      expect(last_request.env["rack.session"]["fb_token"]).to be_nil
+      expect(last_response.status).to eq(302)
+      expect(last_response.location).to eq("http://example.org/")
+    end
+  end
+
+  describe "GET /logout" do
+    it "clears the session and redirects to /" do
+      get "/logout"
 
       expect(last_request.env["rack.session"]["fb_auth"]).to be_nil
       expect(last_request.env["rack.session"]["fb_token"]).to be_nil
