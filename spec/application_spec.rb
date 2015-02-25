@@ -33,7 +33,7 @@ describe "The Campaign Monitor Subscribe Form app" do
   end
 
   describe "GET /ondeauth" do
-    it "clears the session and redirects to /" do
+    it "deletes any accounts associated with the fb user and responds with 200 OK" do
       get "/ondeauth", { "facebook" => { "user_id" => user_id } }
 
       accounts = Account.all(:user_id => user_id)
