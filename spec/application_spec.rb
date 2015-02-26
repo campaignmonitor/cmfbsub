@@ -4,7 +4,8 @@ set :environment, :test
 
 describe "The Campaign Monitor Subscribe Form app" do
   let(:app) { Sinatra::Application }
-  let(:user_id) { 7654321 }
+  let(:user_id) { "7654321" }
+  let(:fb_token) { "xxxx" }
 
   describe "GET /" do
     context "when there's no session for the user" do
@@ -22,12 +23,30 @@ describe "The Campaign Monitor Subscribe Form app" do
       it "clears the session and redirects to request authorisation" do
         get "/",
           { "facebook" => { "user_id" => user_id } },
-          { "rack.session" => { "fb_auth" => { "uid" => 1234567 } } }
+          { "rack.session" => { "fb_auth" => { "uid" => "1234567" } } }
 
         expect(last_request.env["rack.session"]["fb_auth"]).to be_nil
         expect(last_request.env["rack.session"]["fb_token"]).to be_nil
         expect(last_response.status).to eq(302)
         expect(last_response.location).to eq("http://example.org/auth/facebook")
+      end
+    end
+
+    context "when the user is successfully authenticated but hasn't authed with Campaign Monitor" do
+      before do
+        stub_request(:get, "https://graph.facebook.com/me?access_token=xxxx").
+          to_return(:status => 200, :body => "")
+      end
+
+      it "loads the main page, requesting that the user sign into Campaign Monitor" do
+        get "/",
+          { "facebook" => { "user_id" => user_id } },
+          { "rack.session" => { "fb_auth" => { "uid" => user_id }, "fb_token" => fb_token } }
+
+        expect(last_request.env["rack.session"]["fb_auth"]).to eq({ "uid" => user_id })
+        expect(last_request.env["rack.session"]["fb_token"]).to eq (fb_token)
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to include("Log into your account")
       end
     end
   end

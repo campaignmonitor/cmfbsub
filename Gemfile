@@ -18,6 +18,7 @@ gem "unicorn"
 group :development, :test do
   gem "dm-sqlite-adapter"
   gem "rspec"
+  gem "webmock"
 end
 
 group :production do

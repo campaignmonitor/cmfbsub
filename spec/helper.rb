@@ -6,6 +6,9 @@ ENV["APP_SECRET"] = "mytestsessionsecret"
 require "./application"
 require "rspec"
 require "rack/test"
+require "webmock/rspec"
+
+WebMock.disable_net_connect!
 
 RSpec.configure do |conf|
   conf.include Rack::Test::Methods
