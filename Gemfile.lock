@@ -81,6 +81,10 @@ GEM
     json (1.7.7)
     json_pure (1.7.5)
     kgio (2.8.0)
+    koala (1.11.1)
+      addressable
+      faraday
+      multi_json
     mogli (0.0.43)
       hashie (>= 1.1.0)
       httmultiparty (>= 0.3.6)
@@ -160,6 +164,7 @@ DEPENDENCIES
   dm-sqlite-adapter
   haml
   json
+  koala (~> 1.11)
   mogli (~> 0.0.36)
   newrelic_rpm
   oa-oauth (~> 0.3)

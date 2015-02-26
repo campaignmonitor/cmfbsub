@@ -1,10 +1,11 @@
-require 'rubygems'
-require 'bundler/setup'
-require 'sinatra'
-require './environment'
-require 'omniauth/oauth'
-require 'mogli'
-require 'createsend'
+require "rubygems"
+require "bundler/setup"
+require "sinatra"
+require "./environment"
+require "omniauth/oauth"
+require "mogli"
+require "koala"
+require "createsend"
 
 configure do
   require 'newrelic_rpm' if production?
@@ -19,6 +20,7 @@ configure do
     provider :facebook, ENV['APP_ID'], ENV['APP_SECRET'], {:iframe => true, :client_options => client_options, :scope => 'manage_pages,offline_access'}
   end
   OmniAuth.config.full_host = "https://apps.facebook.com/#{ENV['APP_CANVAS_NAME']}"
+  Koala.config.api_version = "v2.2"
 
   disable :protection
 end
