@@ -1,6 +1,6 @@
-# cmfbsub
+# Campaign Monitor Facebook Subscribe Forms
 
-A Sinatra app which allows Facebook users to add [Campaign Monitor](http://www.campaignmonitor.com/) subscribe forms to their Facebook Pages. Named _cmfbsub_ as some sort of mix between an acronym and an abbreviation for _Campaign Monitor Facebook Subscribe Forms_.
+A Facebook canvas application which allows Facebook users to add [Campaign Monitor](http://www.campaignmonitor.com/) subscribe forms to their Facebook Pages. Named _cmfbsub_ as some sort of mix between an acronym and an abbreviation for _Campaign Monitor Facebook Subscribe Forms_.
 
 ## How it works
 
