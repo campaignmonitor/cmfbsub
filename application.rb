@@ -3,7 +3,6 @@ require "bundler/setup"
 require "sinatra"
 require "./environment"
 require "omniauth/oauth"
-require "mogli"
 require "koala"
 require "createsend"
 
@@ -113,14 +112,30 @@ end
 def get_user(user_id)
   @user = nil
   if session["fb_token"]
-    @graph = Koala::Facebook::API.new session["fb_token"]
-    @graph.get_object user_id
+    graph = Koala::Facebook::API.new session["fb_token"]
+    @user = graph.get_object user_id
   end
   @user
 end
 
+def get_pages(user)
+  @pages = []
+  if user and session["fb_token"]
+    graph = Koala::Facebook::API.new session["fb_token"]
+    @pages = graph.get_connections user["id"], "accounts"
+  end
+  @pages
+end
+
 def get_page(page_id)
-  Mogli::Page.find(page_id, Mogli::Client.new(session['fb_token']))
+  graph = Koala::Facebook::API.new session["fb_token"]
+  @page = graph.get_object page_id
+  extra_fields = graph.get_object page_id, :fields => ["picture", "tabs"]
+
+  # TODO: Still need to populate @page correctly
+  # include "has_added_app", and "image_url"
+
+  @page
 end
 
 def get_form_by_page_id(page_id)
@@ -188,21 +203,21 @@ end
 get '/' do
   check_auth
 
-  @user = get_user("me")
-  @pages = @user ? @user.accounts : []
-  @account = @user ? Account.first(:user_id => @user.id) : nil
+  @user = get_user "me"
+  @pages = get_pages @user
+  @account = @user ? Account.first(:user_id => @user["id"]) : nil
   @clients = @account ? get_clients(@account.api_key) : []
   @saved_forms = get_saved_forms(@account)
   @js_data = @account ? {
-    :account => {:api_key => @account.api_key, :user_id => @user.id,
+    :account => {:api_key => @account.api_key, :user_id => @user["id"],
       :clients => @clients, :saved_forms => @saved_forms}}.to_json : ''
   haml :settings, :layout => false
 end
 
 get '/saved/:page_id/?' do |page_id|
-  @page = get_page(page_id)
-  @next_url = @page.has_added_app ? @page.link :
-    "http://www.facebook.com/add.php?api_key=#{ENV['APP_API_KEY']}&pages=1&page=#{@page.id}"
+  @page = get_page page_id
+  @next_url = @page["has_added_app"] ? @page["link"] :
+    "http://www.facebook.com/add.php?api_key=#{ENV["APP_API_KEY"]}&pages=1&page=#{@page["id"]}"
 
   haml :settings_saved, :layout => false
 end
@@ -212,10 +227,10 @@ post '/apikey/?' do
   result = get_api_key(params['site_url'], params['username'], params['password'])
   @user = get_user("me")
   if !result.nil? && @user
-    @account = Account.first_or_create({:api_key => result.ApiKey, :user_id => @user.id})
+    @account = Account.first_or_create({:api_key => result.ApiKey, :user_id => @user["id"]})
     @clients = @account ? get_clients(@account.api_key) : []
     [200, {:account => {
-      :api_key => @account.api_key, :user_id => @user.id,
+      :api_key => @account.api_key, :user_id => @user["id"],
         :clients => @clients}}.to_json]
   else
     [400, {:message => "Error getting API key..."}.to_json]
@@ -249,9 +264,9 @@ post '/page/:page_id/?' do |page_id|
   content_type 'application/json', :charset => 'utf-8'
 
   @user = get_user("me")
-  @account = Account.first(:api_key => params[:api_key], :user_id => @user.id)
+  @account = Account.first(:api_key => params[:api_key], :user_id => @user["id"])
   @sf = @account.forms.first(:page_id => page_id)
-  @page = get_page(page_id)
+  @page = get_page page_id
   if @sf
     @sf.list_id = params[:list_id]
     @sf.client_id = params[:client_id]
@@ -284,14 +299,14 @@ post '/page/:page_id/?' do |page_id|
         end
       end
       @sf.save
-      message = "Thanks, you successfully saved your subscribe form for #{@page.name}."
+      message = "Thanks, you successfully saved your subscribe form for #{@page["name"]}."
       return [200, { :status => "success", :message => message}.to_json]
       rescue CreateSend::CreateSendError, CreateSend::ClientError,
         CreateSend::ServerError, CreateSend::Unavailable => cse
         p "Error: #{cse}"
         # TODO: Be more helpful with errors...
         return [200, { :status => "failure",
-          :message => "Sorry, something went wrong while saving your subscribe form for #{@page.name}. Please try again."}.to_json]
+          :message => "Sorry, something went wrong while saving your subscribe form for #{@page["name"]}. Please try again."}.to_json]
     end
   end
 end

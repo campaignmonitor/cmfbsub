@@ -46,34 +46,34 @@
             %a Other Pages
           - @pages.each do |p|
             %div
-              .page{:id => "page-#{p.id}"}
+              .page{:id => "page-#{p["id"]}"}
                 %figure
-                  %img{:src => p.image_url}/
-                %h2="#{p.name}"
-                %p="#{p.category}"
+                  %img{:src => p["image_url"]}/
+                %h2="#{p["name"]}"
+                %p="#{p["category"]}"
               .prefs
                 .pref.arrowed
                   %label{:for => "clients"} Which will add subscribers to:
                   .wrapper
                     .clients
-                      %select{:id => "clients-#{p.id}"}
-                    %select{:style => "display:none", :class => "list", :id => "lists-#{p.id}"}
+                      %select{:id => "clients-#{p["id"]}"}
+                    %select{:style => "display:none", :class => "list", :id => "lists-#{p["id"]}"}
                 .pref.arrowed
-                  %form{:id => "messages-#{p.id}"}
-                    %label{:for => "intromessage-#{p.id}"} Intro message:
-                    %input{:type => :text, :id => "intromessage-#{p.id}", :class => 'required message', :name => "intromessage-#{p.id}", :maxlength => 250, :value => "Please enter your details to subscribe to our list."}
+                  %form{:id => "messages-#{p["id"]}"}
+                    %label{:for => "intromessage-#{p["id"]}"} Intro message:
+                    %input{:type => :text, :id => "intromessage-#{p["id"]}", :class => 'required message', :name => "intromessage-#{p["id"]}", :maxlength => 250, :value => "Please enter your details to subscribe to our list."}
                     %br/
-                    %label{:for => "thanksmessage-#{p.id}"} Thanks message:
-                    %input{:type => :text, :id => "thanksmessage-#{p.id}", :class => 'required message', :name => "thanksmessage-#{p.id}", :maxlength => 250, :value => "Thank you for subscribing to our list. You'll be hearing from us soon."}
+                    %label{:for => "thanksmessage-#{p["id"]}"} Thanks message:
+                    %input{:type => :text, :id => "thanksmessage-#{p["id"]}", :class => 'required message', :name => "thanksmessage-#{p["id"]}", :maxlength => 250, :value => "Thank you for subscribing to our list. You'll be hearing from us soon."}
                     %br/
                   %label The form will ask for:
-                  %fieldset{:id => "fields-#{p.id}"}
+                  %fieldset{:id => "fields-#{p["id"]}"}
                 .pref.save
                   %button.primary Save Form
         - else
           %h1{:class => "center"} Before we begin, you'll need to create a <a href="http://www.facebook.com/pages/create.php" target="_blank">Facebook Page</a>
           %a{:id => "page-create", :href => "http://www.facebook.com/pages/create.php", :target => "_blank"}
-          
+
       - else
         %p
           <fb:login-button show-faces="true"></fb:login-button>
