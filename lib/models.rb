@@ -1,6 +1,6 @@
 class Account
   include DataMapper::Resource
-  
+
   property :id, Serial
   property :api_key, String, :required => true, :key => true
   property :user_id, String, :required => true

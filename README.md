@@ -1,6 +1,6 @@
-# cmfbsub
+# Campaign Monitor Facebook Subscribe Forms
 
-A Sinatra app which allows Facebook users to add [Campaign Monitor](http://www.campaignmonitor.com/) subscribe forms to their Facebook Pages. Named _cmfbsub_ as some sort of mix between an acronym and an abbreviation for _Campaign Monitor Facebook Subscribe Forms_.
+A Facebook canvas application which allows Facebook users to add [Campaign Monitor](http://www.campaignmonitor.com/) subscribe forms to their Facebook Pages. Named _cmfbsub_ as some sort of mix between an acronym and an abbreviation for _Campaign Monitor Facebook Subscribe Forms_.
 
 ## How it works
 
@@ -12,15 +12,13 @@ So the Sinatra app in this repository is the app which runs in the iframe. The s
 
 ## Developing
 
-Firstly:
+Clone:
 
 ```
-git clone git@github.com:campaignmonitor/cmfbsub.git && cd cmfbsub/
+git clone https://github.com/campaignmonitor/cmfbsub.git && cd cmfbsub/
 ```
 
-### Working locally
-
-Install dependencies:
+Bundle:
 
 ```
 bundle install
@@ -53,7 +51,13 @@ APP_SECRET:                   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ...
 ```
 
-Finally, run the app locally (runs at [http://localhost:5000/](http://localhost:5000/)):
+Run the tests:
+
+```
+bundle exec rake
+```
+
+Run the app locally:
 
 ```
 foreman start
@@ -61,7 +65,7 @@ foreman start
 
 Then visit the _ldevcmfbsub_ Facebook app at http://apps.facebook.com/ldevcampaignmonitor/ for testing locally, which will load [http://localhost:5000/](http://localhost:5000/) in the iframe inside the Facebook chrome.
 
-### Deploying
+## Deploying
 
 To be able to deploy the app, you will need to be a collaborator on each of the Heroku apps where the app is deployed. In addition to the two production versions of the app (https://apps.facebook.com/campaignmonitor/ and https://apps.facebook.com/createsend/), there is also a development version at https://apps.facebook.com/devcampaignmonitor/ which corresponds to the Heroku app at https://devcmfbsub.herokuapp.com/. You should always push and test your changes using the development app before pushing the production versions of the app.
 
