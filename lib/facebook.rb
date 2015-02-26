@@ -13,7 +13,7 @@ module Rack
     def secret
       @options.fetch(:secret)
     end
-    
+
     def call(env)
       request = Rack::Request.new(env)
       if request.POST['signed_request']

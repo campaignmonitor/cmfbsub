@@ -34,7 +34,7 @@ describe "The Campaign Monitor Subscribe Form app" do
 
     context "when the user is successfully authenticated but hasn't authed with Campaign Monitor" do
       before do
-        stub_request(:get, "https://graph.facebook.com/me?access_token=xxxx").
+        stub_request(:get, "https://graph.facebook.com/v2.2/me?access_token=xxxx").
           to_return(:status => 200, :body => "")
       end
 

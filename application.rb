@@ -112,8 +112,9 @@ end
 
 def get_user(user_id)
   @user = nil
-  if session['fb_token']
-    @user = Mogli::User.find(user_id, Mogli::Client.new(session['fb_token']))
+  if session["fb_token"]
+    @graph = Koala::Facebook::API.new session["fb_token"]
+    @graph.get_object user_id
   end
   @user
 end
