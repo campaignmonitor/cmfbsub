@@ -7,18 +7,18 @@ require "koala"
 require "createsend"
 
 configure do
-  require 'newrelic_rpm' if production?
+  require "newrelic_rpm" if production?
   set :views, "#{File.dirname(__FILE__)}/views"
   enable :sessions
-  set :session_secret, ENV['APP_SECRET']
+  set :session_secret, ENV["APP_SECRET"]
   DataMapper.setup(:default, (ENV["DATABASE_URL"] || "sqlite3:///#{File.expand_path(File.dirname(__FILE__))}/#{Sinatra::Base.environment}.db"))
 
-  use Rack::Facebook, { :secret => ENV['APP_SECRET'] }
+  use Rack::Facebook, { :secret => ENV["APP_SECRET"] }
   use OmniAuth::Builder do
     client_options = production? ? {:ssl => {:ca_path => "/etc/ssl/certs"}} : {}
-    provider :facebook, ENV['APP_ID'], ENV['APP_SECRET'], {:iframe => true, :client_options => client_options, :scope => 'manage_pages,offline_access'}
+    provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"], {:iframe => true, :client_options => client_options, :scope => "manage_pages,offline_access"}
   end
-  OmniAuth.config.full_host = "https://apps.facebook.com/#{ENV['APP_CANVAS_NAME']}"
+  OmniAuth.config.full_host = "https://apps.facebook.com/#{ENV["APP_CANVAS_NAME"]}"
   Koala.config.api_version = "v2.2"
 
   disable :protection
@@ -34,7 +34,7 @@ helpers do
   end
 
   def white_label
-    return (ENV['APP_CANVAS_NAME'] =~ /createsend$/ ? true : false)
+    return (ENV["APP_CANVAS_NAME"] =~ /createsend$/ ? true : false)
   end
 
   def app_name
@@ -57,15 +57,15 @@ helpers do
     logger.info "Contents of params:"
     logger.info params
 
-    redirect '/auth/facebook' if session['fb_auth'].nil?
+    redirect "/auth/facebook" if session["fb_auth"].nil?
     # If we don't have the right user in the session, clear the session
-    if !session['fb_auth'].nil? and !params['facebook'].nil? and
-      session['fb_auth']['uid'] != params['facebook']['user_id']
+    if !session["fb_auth"].nil? and !params["facebook"].nil? and
+      session["fb_auth"]["uid"] != params["facebook"]["user_id"]
 
       logger.info "Clearing the session and re-directing..."
 
       clear_session
-      redirect '/auth/facebook'
+      redirect "/auth/facebook"
     end
   end
 
@@ -96,9 +96,9 @@ helpers do
 end
 
 before do
-  content_type :html, :charset => 'utf-8'
-  @js_conf = { :appId => ENV['APP_ID'], :canvasName => ENV['APP_CANVAS_NAME'],
-    :userIdOnServer => session['fb_token'] ? session['fb_auth']['uid'] : nil}.to_json
+  content_type :html, :charset => "utf-8"
+  @js_conf = { :appId => ENV["APP_ID"], :canvasName => ENV["APP_CANVAS_NAME"],
+    :userIdOnServer => session["fb_token"] ? session["fb_auth"]["uid"] : nil}.to_json
 end
 
 error do
@@ -199,7 +199,7 @@ def get_saved_forms(account)
   { :forms => @saved_forms, :fields => @form_fields }
 end
 
-get '/' do
+get "/" do
   check_auth
 
   @user = get_user "me"
@@ -209,11 +209,11 @@ get '/' do
   @saved_forms = get_saved_forms(@account)
   @js_data = @account ? {
     :account => {:api_key => @account.api_key, :user_id => @user["id"],
-      :clients => @clients, :saved_forms => @saved_forms}}.to_json : ''
+      :clients => @clients, :saved_forms => @saved_forms}}.to_json : ""
   haml :settings, :layout => false
 end
 
-get '/saved/:page_id/?' do |page_id|
+get "/saved/:page_id/?" do |page_id|
   @page = get_page page_id
   @next_url = @page["has_added_app"] ? @page["link"] :
     "http://www.facebook.com/add.php?api_key=#{ENV["APP_API_KEY"]}&pages=1&page=#{@page["id"]}"
@@ -221,9 +221,9 @@ get '/saved/:page_id/?' do |page_id|
   haml :settings_saved, :layout => false
 end
 
-post '/apikey/?' do
-  content_type 'application/json', :charset => 'utf-8'
-  result = get_api_key(params['site_url'], params['username'], params['password'])
+post "/apikey/?" do
+  content_type "application/json", :charset => "utf-8"
+  result = get_api_key(params["site_url"], params["username"], params["password"])
   @user = get_user("me")
   if !result.nil? && @user
     @account = Account.first_or_create({:api_key => result.ApiKey, :user_id => @user["id"]})
@@ -236,18 +236,18 @@ post '/apikey/?' do
   end
 end
 
-get '/clients/:api_key/?' do |api_key|
-  content_type 'application/json', :charset => 'utf-8'
+get "/clients/:api_key/?" do |api_key|
+  content_type "application/json", :charset => "utf-8"
   [200, get_clients(api_key).to_json]
 end
 
-get '/lists/:api_key/:client_id/?' do |api_key, client_id|
-  content_type 'application/json', :charset => 'utf-8'
+get "/lists/:api_key/:client_id/?" do |api_key, client_id|
+  content_type "application/json", :charset => "utf-8"
   [200, get_lists_for_client(api_key, client_id).to_json]
 end
 
-get '/customfields/:api_key/:list_id/?' do |api_key, list_id|
-  content_type 'application/json', :charset => 'utf-8'
+get "/customfields/:api_key/:list_id/?" do |api_key, list_id|
+  content_type "application/json", :charset => "utf-8"
   [200, get_custom_fields_for_list(api_key, list_id).to_json]
 end
 
@@ -258,9 +258,9 @@ def find_cm_custom_field(input, key)
   nil
 end
 
-post '/page/:page_id/?' do |page_id|
+post "/page/:page_id/?" do |page_id|
   check_auth
-  content_type 'application/json', :charset => 'utf-8'
+  content_type "application/json", :charset => "utf-8"
 
   @user = get_user("me")
   @account = Account.first(:api_key => params[:api_key], :user_id => @user["id"])
@@ -310,8 +310,8 @@ post '/page/:page_id/?' do |page_id|
   end
 end
 
-get '/tab/?' do
-  @page_id = params['facebook'] ? params['facebook']['page']['id'] : ''
+get "/tab/?" do
+  @page_id = params["facebook"] ? params["facebook"]["page"]["id"] : ""
   @sf = get_form_by_page_id(@page_id)
   if @sf
     @fields = @sf.custom_fields.all(:order => [:name.asc])
@@ -320,8 +320,8 @@ get '/tab/?' do
   haml :subscribe_form, :layout => false
 end
 
-post '/subscribe/:page_id/?' do |page_id|
-  content_type 'application/json', :charset => 'utf-8'
+post "/subscribe/:page_id/?" do |page_id|
+  content_type "application/json", :charset => "utf-8"
 
   @sf = get_form_by_page_id(page_id)
   begin
