@@ -355,47 +355,47 @@ post '/subscribe/:page_id/?' do |page_id|
   end
 end
 
-get '/ondeauth/?' do
-  fb = params['facebook']
-  if fb && fb['user_id']
-    @accounts = Account.all(:user_id => fb['user_id'])
+get "/ondeauth/?" do
+  fb = params["facebook"]
+  if fb && fb["user_id"]
+    @accounts = Account.all(:user_id => fb["user_id"])
     @accounts.destroy if @accounts
   end
   [200]
 end
 
-get '/auth/facebook/callback/?' do
-  session['fb_auth'] = request.env['omniauth.auth']
-  session['fb_auth'].delete('extra') if session['fb_auth']
-  session['fb_token'] = session['fb_auth']['credentials']['token']
+get "/auth/facebook/callback/?" do
+  session["fb_auth"] = request.env["omniauth.auth"]
+  session["fb_auth"].delete("extra") if session["fb_auth"]
+  session["fb_token"] = session["fb_auth"]["credentials"]["token"]
   logger.info "Redirecting from Facebook callback..."
   logger.info "Contents of session:"
   logger.info session
-  redirect '/'
+  redirect "/"
 end
 
-get '/auth/failure/?' do
+get "/auth/failure/?" do
   clear_session
-  redirect '/'
+  redirect "/"
 end
 
-get '/logout/?' do
+get "/logout/?" do
   clear_session
-  redirect '/'
+  redirect "/"
 end
 
 def clear_session
-  session['fb_auth'] = nil
-  session['fb_token'] = nil
+  session["fb_auth"] = nil
+  session["fb_token"] = nil
 end
 
-get '/privacy/?' do
+get "/privacy/?" do
   haml :privacy
 end
 
 %w(reset cm fb).each do |style|
   get "/#{style}.css" do
-    content_type :css, :charset => 'utf-8'
+    content_type :css, :charset => "utf-8"
     path = "public/scss/#{style}.scss"
     last_modified File.mtime(path)
     scss File.read(path)
