@@ -123,7 +123,10 @@ def get_pages(user)
   if user and session["fb_token"]
     graph = Koala::Facebook::API.new session["fb_token"]
     @pages = graph.get_connections user["id"], "accounts"
-    # TODO: Add "image_url" to page
+    @pages.each do |page|
+      picture = graph.get_object page["id"], :fields => ["picture"]
+      page["image_url"] = picture["picture"]["data"]["url"]
+    end
   end
   @pages
 end
