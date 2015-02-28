@@ -35,10 +35,6 @@ helpers do
     "/js/#{js}.js?" + File.mtime(File.join(settings.public_folder, "js", "#{js}.js")).to_i.to_s
   end
 
-  def att_friendly_key(key)
-    "cf-#{key[1..-2]}"
-  end
-
   def partial(name, locals={})
     haml "_#{name}".to_sym, :layout => false, :locals => locals
   end

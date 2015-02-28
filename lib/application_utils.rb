@@ -12,6 +12,11 @@ module ApplicationUtils
     end
   end
 
+  def att_friendly_key(key)
+    # If a custom field was named "website", its key would be "[website]"
+    "cf-#{key[1..-2]}"
+  end
+
   def get_months
     [
       {:index => 1, :name => "Jan"},

@@ -52,6 +52,12 @@ describe "ApplicationUtils" do
     end
   end
 
+  describe "#att_friendly_key" do
+    it "gets an attribute-friendly string to use as a custom field key" do
+      expect(utils.att_friendly_key("[my-field]")).to eq("cf-my-field")
+    end
+  end
+
   describe "#get_months" do
     it "gets a list of months" do
       expect(utils.get_months).to eq([
