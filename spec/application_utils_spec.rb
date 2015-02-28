@@ -8,10 +8,10 @@ describe "ApplicationUtils" do
   end
   let(:utils) { subject.new }
 
-  describe "#white_label" do
-    it "determines whether it's the whitelabel app based on canvas name" do
-      # Helper sets test canvas name to "testcampaignmonitor"
-      expect(utils.white_label).to eq(false)
+  describe "#white_label?" do
+    it "determines whether it's the white-label app based on its canvas name" do
+      # Test helper sets ENV["APP_CANVAS_NAME"] to "testcampaignmonitor"
+      expect(utils.white_label?).to eq(false)
     end
   end
 

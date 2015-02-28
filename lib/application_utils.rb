@@ -1,6 +1,6 @@
 module ApplicationUtils
 
-  def white_label
+  def white_label?
     !(ENV["APP_CANVAS_NAME"] =~ /createsend$/).nil?
   end
 

@@ -36,7 +36,7 @@ helpers do
   end
 
   def app_name
-    white_label ? "Subscribe Form" : "Campaign Monitor Subscribe Form"
+    white_label? ? "Subscribe Form" : "Campaign Monitor Subscribe Form"
   end
 
   def att_friendly_key(key)
