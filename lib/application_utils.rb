@@ -1,5 +1,9 @@
 module ApplicationUtils
 
+  def white_label
+    return (ENV["APP_CANVAS_NAME"] =~ /createsend$/ ? true : false)
+  end
+
   def get_months
     [
       {:index => 1, :name => "Jan"},
