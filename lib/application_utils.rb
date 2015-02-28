@@ -1,7 +1,7 @@
 module ApplicationUtils
 
   def white_label
-    return (ENV["APP_CANVAS_NAME"] =~ /createsend$/ ? true : false)
+    !(ENV["APP_CANVAS_NAME"] =~ /createsend$/).nil?
   end
 
   def get_months
