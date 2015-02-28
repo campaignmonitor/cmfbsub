@@ -4,6 +4,14 @@ module ApplicationUtils
     !(ENV["APP_CANVAS_NAME"] =~ /createsend$/).nil?
   end
 
+  def app_name
+    if white_label?
+      "Subscribe Form"
+    else
+      "Campaign Monitor Subscribe Form"
+    end
+  end
+
   def get_months
     [
       {:index => 1, :name => "Jan"},

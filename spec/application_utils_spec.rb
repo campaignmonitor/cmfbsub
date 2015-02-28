@@ -9,9 +9,46 @@ describe "ApplicationUtils" do
   let(:utils) { subject.new }
 
   describe "#white_label?" do
-    it "determines whether it's the white-label app based on its canvas name" do
-      # Test helper sets ENV["APP_CANVAS_NAME"] to "testcampaignmonitor"
-      expect(utils.white_label?).to eq(false)
+    context "when the white-label app is running" do
+      before do
+        allow(ENV).to receive(:[]).with("APP_CANVAS_NAME").and_return("createsend")
+      end
+
+      it "knows that the white-label app is runnning" do
+        expect(utils.white_label?).to eq(true)
+      end
+    end
+
+    context "when the non-white-label app is running" do
+      before do
+        allow(ENV).to receive(:[]).with("APP_CANVAS_NAME").and_return("campaignmonitor")
+      end
+
+      it "knows that the non-white-label app is runnning" do
+        expect(utils.white_label?).to eq(false)
+      end
+    end
+  end
+
+  describe "#app_name" do
+    context "when the white-label app is running" do
+      before do
+        allow(ENV).to receive(:[]).with("APP_CANVAS_NAME").and_return("createsend")
+      end
+
+      it "knows the name of the white-label app" do
+        expect(utils.app_name).to eq("Subscribe Form")
+      end
+    end
+
+    context "when the non-white-label app is running" do
+      before do
+        allow(ENV).to receive(:[]).with("APP_CANVAS_NAME").and_return("campaignmonitor")
+      end
+
+      it "knows the name of the non-white-label app" do
+        expect(utils.app_name).to eq("Campaign Monitor Subscribe Form")
+      end
     end
   end
 

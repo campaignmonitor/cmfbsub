@@ -35,10 +35,6 @@ helpers do
     "/js/#{js}.js?" + File.mtime(File.join(settings.public_folder, "js", "#{js}.js")).to_i.to_s
   end
 
-  def app_name
-    white_label? ? "Subscribe Form" : "Campaign Monitor Subscribe Form"
-  end
-
   def att_friendly_key(key)
     "cf-#{key[1..-2]}"
   end
