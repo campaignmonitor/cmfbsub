@@ -217,13 +217,6 @@ get "/customfields/:api_key/:list_id/?" do |api_key, list_id|
   [200, get_custom_fields_for_list(api_key, list_id).to_json]
 end
 
-def find_cm_custom_field(input, key)
-  input.each do |cf|
-    return cf if cf.Key == key
-  end
-  nil
-end
-
 post "/page/:page_id/?" do |page_id|
   check_auth
   content_type "application/json", :charset => "utf-8"
@@ -253,7 +246,7 @@ post "/page/:page_id/?" do |page_id|
         if i.start_with? "cf-"
           # Surrounding square brackets are deliberately stripped in field ID
           # see settings.haml. e.g. Field with key "[field]" has param id "cf-field".
-          cmcf = find_cm_custom_field(@custom_fields, "[#{i[3..-1]}]")
+          cmcf = find_cm_custom_field @custom_fields, "[#{i[3..-1]}]"
           if cmcf
             cf = CustomField.new(
               :name => cmcf.FieldName, :field_key => cmcf.Key,

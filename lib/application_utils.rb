@@ -17,6 +17,13 @@ module ApplicationUtils
     "cf-#{key[1..-2]}"
   end
 
+  def find_cm_custom_field(input, key)
+    input.each do |cf|
+      return cf if cf.Key == key
+    end
+    nil
+  end
+
   def get_months
     [
       {:index => 1, :name => "Jan"},

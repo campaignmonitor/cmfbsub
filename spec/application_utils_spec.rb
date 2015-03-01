@@ -58,6 +58,35 @@ describe "ApplicationUtils" do
     end
   end
 
+  describe "#find_cm_custom_field" do
+    before do
+      class TestCustomField
+        attr_accessor :Key
+        def initialize(key)
+          @Key = key
+        end
+      end
+    end
+
+    it "returns nil when found when the custom field isn't found" do
+      cm_custom_fields = [
+        TestCustomField.new("[first-field]"),
+        TestCustomField.new("[second-field]")
+      ]
+      result = utils.find_cm_custom_field cm_custom_fields, "[my-field]"
+      expect(result).to be_nil
+    end
+
+    it "returns the right custom field when found" do
+      cm_custom_fields = [
+        TestCustomField.new("[first-field]"),
+        TestCustomField.new("[my-field]")
+      ]
+      result = utils.find_cm_custom_field cm_custom_fields, "[my-field]"
+      expect(result.Key).to eq("[my-field]")
+    end
+  end
+
   describe "#get_months" do
     it "gets a list of months" do
       expect(utils.get_months).to eq([
