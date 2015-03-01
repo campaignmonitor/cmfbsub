@@ -49,6 +49,7 @@ describe "The Campaign Monitor Subscribe Form app" do
         expect(last_response.body).to include("Log into your account")
       end
     end
+
   end
 
   describe "GET /ondeauth" do
@@ -93,11 +94,22 @@ describe "The Campaign Monitor Subscribe Form app" do
   end
 
   describe "GET /nothingtoseehere" do
-    it "shows the app's 404 page" do
+    it "shows the app's 404 Not Found page" do
       get "/nothingtoseehere"
       expect(last_response.status).to eq(404)
       expect(last_response.body).to \
         include("We don't recognise that as part of Campaign Monitor Subscribe Form - sorry!")
+    end
+  end
+
+  describe "GET /boom" do
+    it "shows the app's 500 Server Error page" do
+      expect do
+        get "/boom"
+        expect(last_response.status).to eq(500)
+        expect(last_response.body).to \
+          include("We're really sorry that there's something wrong with Campaign Monitor Subscribe Form")
+      end.to raise_error
     end
   end
 

@@ -351,6 +351,10 @@ get "/privacy/?" do
   haml :privacy
 end
 
+get "/boom/?" do
+  raise
+end
+
 %w(reset cm fb).each do |style|
   get "/#{style}.css" do
     content_type :css, :charset => "utf-8"
