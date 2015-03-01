@@ -92,4 +92,13 @@ describe "The Campaign Monitor Subscribe Form app" do
     end
   end
 
+  describe "GET /nothingtoseehere" do
+    it "shows the app's 404 page" do
+      get "/nothingtoseehere"
+      expect(last_response.status).to eq(404)
+      expect(last_response.body).to \
+        include("We don't recognise that as part of Campaign Monitor Subscribe Form - sorry!")
+    end
+  end
+
 end
