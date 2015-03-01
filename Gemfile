@@ -19,6 +19,7 @@ group :development, :test do
   gem "dm-sqlite-adapter"
   gem "rspec"
   gem "webmock"
+  gem "simplecov"
 end
 
 group :production do

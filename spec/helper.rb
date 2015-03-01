@@ -1,3 +1,10 @@
+require "simplecov"
+
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+  SimpleCov::Formatter::HTMLFormatter,
+]
+SimpleCov.start
+
 ENV["APP_ID"] = "123456789"
 ENV["APP_API_KEY"] = "123456789"
 ENV["APP_CANVAS_NAME"] = "testcampaignmonitor"
