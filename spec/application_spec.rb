@@ -7,6 +7,7 @@ describe "The Campaign Monitor Subscribe Form app" do
   let(:app) { Sinatra::Application }
   let(:user_id) { "7654321" }
   let(:fb_token) { "xxxx" }
+  let(:cm_api_key) { "testapikey" }
 
   describe "GET /auth/facebook/callback?code=xyz" do
     let(:auth_hash) {
@@ -79,7 +80,44 @@ describe "The Campaign Monitor Subscribe Form app" do
         expect(last_response.body).to include("Log into your account")
       end
     end
+  end
 
+  describe "GET /clients/:api_key" do
+    context "when a call to the Campaign Monitor API succeeds" do
+      before do
+        stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/clients.json").
+          to_return(
+            :status => 200,
+            :body => "[{\"ClientID\":\"clientid\",\"Name\":\"client name\"}]",
+            :headers => { "Content-Type" => "application/json;charset=utf-8" })
+      end
+
+      it "gets the clients for the account matching the api key" do
+        get "/clients/#{cm_api_key}"
+
+        expect(last_response.status).to eq(200)
+        expect(last_response.content_type).to eq("application/json;charset=utf-8")
+        expect(last_response.body).to eq("[{\"ClientID\":\"clientid\",\"Name\":\"client name\"}]")
+      end
+    end
+
+    context "when a call to the Campaign Monitor API fails" do
+      before do
+        stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/clients.json").
+          to_return(
+            :status => 500,
+            :body => "[{\"Code\":\"500\",\"Message\":\"Sorry.\"}]",
+            :headers => { "Content-Type" => "application/json;charset=utf-8" })
+      end
+
+      it "gets an empty list" do
+        get "/clients/#{cm_api_key}"
+
+        expect(last_response.status).to eq(200)
+        expect(last_response.content_type).to eq("application/json;charset=utf-8")
+        expect(last_response.body).to eq("[]")
+      end
+    end
   end
 
   describe "GET /ondeauth" do

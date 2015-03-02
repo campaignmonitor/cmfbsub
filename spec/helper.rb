@@ -18,6 +18,6 @@ require "webmock/rspec"
 WebMock.disable_net_connect!
 
 RSpec.configure do |conf|
-  conf.include Rack::Test::Methods
   conf.color = true
+  conf.include Rack::Test::Methods
 end
