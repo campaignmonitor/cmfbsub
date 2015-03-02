@@ -3,6 +3,7 @@ require "simplecov"
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   SimpleCov::Formatter::HTMLFormatter,
 ]
+SimpleCov.add_filter "spec"
 SimpleCov.start
 
 ENV["APP_ID"] = "123456789"

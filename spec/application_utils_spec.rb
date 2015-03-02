@@ -1,7 +1,5 @@
 require "helper"
 
-set :environment, :test
-
 describe "ApplicationUtils" do
   subject do
     Class.new { include ApplicationUtils }
