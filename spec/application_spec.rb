@@ -1,11 +1,41 @@
 require "helper"
 
 set :environment, :test
+OmniAuth.config.test_mode = true
 
 describe "The Campaign Monitor Subscribe Form app" do
   let(:app) { Sinatra::Application }
   let(:user_id) { "7654321" }
   let(:fb_token) { "xxxx" }
+
+  describe "GET /auth/facebook/callback?code=xyz" do
+    let(:auth_hash) {
+      {
+        "provider" => "facebook",
+        "uid" => user_id,
+        "info" => {},
+        "credentials" => {
+          "token" => fb_token,
+          "expires_at" => "1321747205",
+          "expires" => "true"
+        },
+        "extra" => {}
+      }
+    }
+
+    before do
+      OmniAuth.config.mock_auth[:facebook] = OmniAuth::AuthHash.new(auth_hash)
+    end
+
+    it "stores the correct session values and redirects" do
+      get "/auth/facebook/callback"
+
+      expect(last_request.env["rack.session"]["fb_auth"]["uid"]).to eq(user_id)
+      expect(last_request.env["rack.session"]["fb_token"]).to eq (fb_token)
+      expect(last_response.status).to eq(302)
+      expect(last_response.location).to eq("http://example.org/")
+    end
+  end
 
   describe "GET /" do
     context "when there's no session for the user" do
