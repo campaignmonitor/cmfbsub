@@ -2,7 +2,7 @@ require "rubygems"
 require "bundler/setup"
 require "sinatra"
 require "./environment"
-require "omniauth/oauth"
+require "omniauth/facebook"
 require "koala"
 require "createsend"
 
@@ -15,8 +15,14 @@ configure do
 
   use Rack::Facebook, { :secret => ENV["APP_SECRET"] }
   use OmniAuth::Builder do
-    client_options = production? ? {:ssl => {:ca_path => "/etc/ssl/certs"}} : {}
-    provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"], {:iframe => true, :client_options => client_options, :scope => "manage_pages,offline_access"}
+    client_options = {
+      :site => "https://graph.facebook.com/v2.2",
+      :authorize_url => "https://www.facebook.com/v2.2/dialog/oauth"
+    }
+    client_options[:ssl] = { :ca_path => "/etc/ssl/certs"} if production?
+    provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"], {
+      :iframe => true, :client_options => client_options, :scope => "manage_pages,offline_access"
+    }
   end
   OmniAuth.config.full_host = "https://apps.facebook.com/#{ENV["APP_CANVAS_NAME"]}"
   Koala.config.api_version = "v2.2"

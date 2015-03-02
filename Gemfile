@@ -8,7 +8,7 @@ gem "sinatra", "1.3.3"
 gem "sinatra-reloader"
 gem "haml"
 gem "sass"
-gem "oa-oauth", "~> 0.3"
+gem 'omniauth-facebook', '~> 2.0'
 gem "yajl-ruby"
 gem "koala", "~> 1.11"
 gem "createsend", "~> 3.1"
