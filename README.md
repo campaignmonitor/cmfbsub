@@ -57,13 +57,46 @@ Run the tests:
 bundle exec rake
 ```
 
-Run the app locally:
+## Running the app locally
+
+To run the app locally:
 
 ```
 foreman start
 ```
 
-Then visit the _ldevcmfbsub_ Facebook app at http://apps.facebook.com/ldevcampaignmonitor/ for testing locally, which will load [http://localhost:5000/](http://localhost:5000/) in the iframe inside the Facebook chrome.
+That will start the app at [http://localhost:5000/](http://localhost:5000/), however you will need to set up a secure tunnel so that the app is available to run inside the Facebook `iframe` over HTTPS.
+
+Download and extract [ngrok](https://ngrok.com/download) somewhere. Then run:
+
+```
+./ngrok 5000
+```
+
+Then you'll see something similar to:
+
+```
+ngrok
+
+Tunnel Status        online
+Version              1.7/1.7
+Forwarding           http://3a4j20f9.ngrok.com -> 127.0.0.1:5000
+Forwarding           https://3a4j20f9.ngrok.com -> 127.0.0.1:5000
+Web Interface        127.0.0.1:4040
+# Conn               0
+Avg Conn Time        0.00ms
+```
+
+Your local app is then accessible over HTTPS at https://3a4j20f9.ngrok.com (the subdomain will be different). The last step is to visit the _ldevcmfbsub_ Facebook app to know where the app is running.
+
+On the main [settings page](https://developers.facebook.com/apps/195059907238783/settings/):
+- "Secure Canvas URL" should be: `https://3a4j20f9.ngrok.com/`
+- "Secure Page Tab URL" should be: `https://3a4j20f9.ngrok.com/tab/`
+
+On the [advanced settings page](https://developers.facebook.com/apps/195059907238783/settings/advanced/):
+- "Deauthorize Callback URL" should be: `https://3a4j20f9.ngrok.com/ondeauth`
+
+Then visit the _ldevcmfbsub_ Facebook app at http://apps.facebook.com/ldevcampaignmonitor/ for testing locally, which will load https://3a4j20f9.ngrok.com ([http://localhost:5000](http://localhost:5000)) in the `iframe` inside the Facebook chrome.
 
 ## Deploying
 
