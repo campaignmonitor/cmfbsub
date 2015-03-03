@@ -1,2 +1,3 @@
 public/js/handlebars* linguist-vendored
 public/js/jquery* linguist-vendored
+public/scss/reset* linguist-vendored
