@@ -88,7 +88,7 @@ describe "The Campaign Monitor Subscribe Form app" do
         stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/clients.json").
           to_return(
             :status => 200,
-            :body => "[{\"ClientID\":\"clientid\",\"Name\":\"client name\"}]",
+            :body => %Q[[{"ClientID":"clientid","Name":"client name"}]],
             :headers => { "Content-Type" => "application/json;charset=utf-8" })
       end
 
@@ -97,7 +97,7 @@ describe "The Campaign Monitor Subscribe Form app" do
 
         expect(last_response.status).to eq(200)
         expect(last_response.content_type).to eq("application/json;charset=utf-8")
-        expect(last_response.body).to eq("[{\"ClientID\":\"clientid\",\"Name\":\"client name\"}]")
+        expect(last_response.body).to eq(%Q[[{"ClientID":"clientid","Name":"client name"}]])
       end
     end
 
@@ -106,7 +106,7 @@ describe "The Campaign Monitor Subscribe Form app" do
         stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/clients.json").
           to_return(
             :status => 500,
-            :body => "[{\"Code\":\"500\",\"Message\":\"Sorry.\"}]",
+            :body => %Q[[{"Code":"500","Message":"Sorry."}]],
             :headers => { "Content-Type" => "application/json;charset=utf-8" })
       end
 
@@ -122,12 +122,13 @@ describe "The Campaign Monitor Subscribe Form app" do
 
   describe "GET /lists/:api_key/:client_id" do
     let(:client_id) { "43242343" }
+
     context "when a call to the Campaign Monitor API succeeds" do
       before do
         stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/clients/#{client_id}/lists.json").
           to_return(
             :status => 200,
-            :body => "[{\"ListID\":\"listid\",\"Name\":\"list name\"}]",
+            :body => %Q[[{"ListID":"listid","Name":"list name"}]],
             :headers => { "Content-Type" => "application/json;charset=utf-8" })
       end
 
@@ -136,7 +137,7 @@ describe "The Campaign Monitor Subscribe Form app" do
 
         expect(last_response.status).to eq(200)
         expect(last_response.content_type).to eq("application/json;charset=utf-8")
-        expect(last_response.body).to eq("[{\"ListID\":\"listid\",\"Name\":\"list name\"}]")
+        expect(last_response.body).to eq(%Q[[{"ListID":"listid","Name":"list name"}]])
       end
     end
 
@@ -145,12 +146,51 @@ describe "The Campaign Monitor Subscribe Form app" do
         stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/clients/#{client_id}/lists.json").
           to_return(
             :status => 500,
-            :body => "[{\"Code\":\"500\",\"Message\":\"Sorry.\"}]",
+            :body => %Q[[{"Code":"500","Message":"Sorry."}]],
             :headers => { "Content-Type" => "application/json;charset=utf-8" })
       end
 
       it "gets an empty list" do
         get "/lists/#{cm_api_key}/#{client_id}"
+
+        expect(last_response.status).to eq(200)
+        expect(last_response.content_type).to eq("application/json;charset=utf-8")
+        expect(last_response.body).to eq("[]")
+      end
+    end
+  end
+
+  describe "GET /customfields/:api_key/:list_id" do
+    let(:list_id) { "323231223" }
+    context "when a call to the Campaign Monitor API succeeds" do
+      before do
+        stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/lists/#{list_id}/customfields.json").
+          to_return(
+            :status => 200,
+            :body => %Q[[{"FieldName":"website","Key":"[website]","DataType":"Text","FieldOptions":[],"VisibleInPreferenceCenter":true}]],
+            :headers => { "Content-Type" => "application/json;charset=utf-8" })
+      end
+
+      it "gets the custom fields for the list" do
+        get "/customfields/#{cm_api_key}/#{list_id}"
+
+        expect(last_response.status).to eq(200)
+        expect(last_response.content_type).to eq("application/json;charset=utf-8")
+        expect(last_response.body).to eq(%Q[[{"FieldName":"website","Key":"[website]","DataType":"Text","FieldOptions":[],"VisibleInPreferenceCenter":true}]])
+      end
+    end
+
+    context "when a call to the Campaign Monitor API fails" do
+      before do
+        stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/lists/#{list_id}/customfields.json").
+          to_return(
+            :status => 500,
+            :body => %Q[[{"Code":"500","Message":"Sorry."}]],
+            :headers => { "Content-Type" => "application/json;charset=utf-8" })
+      end
+
+      it "gets an empty list" do
+        get "/customfields/#{cm_api_key}/#{list_id}"
 
         expect(last_response.status).to eq(200)
         expect(last_response.content_type).to eq("application/json;charset=utf-8")
