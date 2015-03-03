@@ -120,6 +120,45 @@ describe "The Campaign Monitor Subscribe Form app" do
     end
   end
 
+  describe "GET /lists/:api_key/:client_id" do
+    let(:client_id) { "43242343" }
+    context "when a call to the Campaign Monitor API succeeds" do
+      before do
+        stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/clients/#{client_id}/lists.json").
+          to_return(
+            :status => 200,
+            :body => "[{\"ListID\":\"listid\",\"Name\":\"list name\"}]",
+            :headers => { "Content-Type" => "application/json;charset=utf-8" })
+      end
+
+      it "gets the subscriber lists for the client" do
+        get "/lists/#{cm_api_key}/#{client_id}"
+
+        expect(last_response.status).to eq(200)
+        expect(last_response.content_type).to eq("application/json;charset=utf-8")
+        expect(last_response.body).to eq("[{\"ListID\":\"listid\",\"Name\":\"list name\"}]")
+      end
+    end
+
+    context "when a call to the Campaign Monitor API fails" do
+      before do
+        stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/clients/#{client_id}/lists.json").
+          to_return(
+            :status => 500,
+            :body => "[{\"Code\":\"500\",\"Message\":\"Sorry.\"}]",
+            :headers => { "Content-Type" => "application/json;charset=utf-8" })
+      end
+
+      it "gets an empty list" do
+        get "/lists/#{cm_api_key}/#{client_id}"
+
+        expect(last_response.status).to eq(200)
+        expect(last_response.content_type).to eq("application/json;charset=utf-8")
+        expect(last_response.body).to eq("[]")
+      end
+    end
+  end
+
   describe "GET /ondeauth" do
     it "deletes any accounts associated with the fb user and responds with 200 OK" do
       get "/ondeauth", { "facebook" => { "user_id" => user_id } }
