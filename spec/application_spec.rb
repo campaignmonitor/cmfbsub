@@ -98,6 +98,20 @@ describe "The Campaign Monitor Subscribe Form app" do
           include(%Q[top.location = "http://www.facebook.com/add.php?api_key=testapikey&pages=1&page=#{page_id}";])
       end
     end
+
+    context "when the user has added the app to the page" do
+      before do
+        stub_request(:get, "http://graph.facebook.com/v2.2/7687687687").
+          to_return(:status => 200, :body => %Q[{"id":"#{page_id}","has_added_app":true,"link":"https://www.facebook.com/pages/my-page/#{page_id}"}])
+      end
+      it "shows the settings saved page" do
+        get "/saved/#{page_id}"
+
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to \
+          include(%Q[top.location = "https://www.facebook.com/pages/my-page/#{page_id}";])
+      end
+    end
   end
 
   describe "GET /clients/:api_key" do
