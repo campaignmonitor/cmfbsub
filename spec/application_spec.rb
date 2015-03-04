@@ -82,6 +82,24 @@ describe "The Campaign Monitor Subscribe Form app" do
     end
   end
 
+  describe "GET /saved/:page_id" do
+    let(:page_id) { "7687687687" }
+
+    context "when the user has not added the app to the page" do
+      before do
+        stub_request(:get, "http://graph.facebook.com/v2.2/7687687687").
+          to_return(:status => 200, :body => %Q[{"id":"#{page_id}","has_added_app":false,"link":"https://www.facebook.com/pages/my-page/#{page_id}"}])
+      end
+      it "shows the settings saved page" do
+        get "/saved/#{page_id}"
+
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to \
+          include(%Q[top.location = "http://www.facebook.com/add.php?api_key=testapikey&pages=1&page=#{page_id}";])
+      end
+    end
+  end
+
   describe "GET /clients/:api_key" do
     context "when a call to the Campaign Monitor API succeeds" do
       before do

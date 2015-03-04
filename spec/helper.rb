@@ -7,7 +7,7 @@ SimpleCov.add_filter "spec"
 SimpleCov.start
 
 ENV["APP_ID"] = "123456789"
-ENV["APP_API_KEY"] = "123456789"
+ENV["APP_API_KEY"] = "testapikey"
 ENV["APP_CANVAS_NAME"] = "testcampaignmonitor"
 ENV["APP_SECRET"] = "mytestsessionsecret"
 
