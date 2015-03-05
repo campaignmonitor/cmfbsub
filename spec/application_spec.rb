@@ -148,6 +148,35 @@ describe "The Campaign Monitor Subscribe Form app" do
           eq(%Q[{"account":{"api_key":"#{cm_api_key}","user_id":"#{user_id}","clients":[{"ClientID":"clientid","Name":"client name"}]}}])
       end
     end
+
+    context "when the Campaign Monitor API key is not successfully retrieved" do
+      before do
+        stub_request(:get, "https://myusername:incorrectpassword@api.createsend.com/api/v3/apikey.json?SiteUrl=https://myaccount.createsend.com").
+          with(:headers => { "Content-Type" => "application/json; charset=utf-8" }).
+          to_return(:status => 400,
+            :headers => { "Content-Type" => "application/json; charset=utf-8" },
+            :body => %Q[{ "Code": 123, "Message": "Invalid username/password" }])
+        stub_request(:get, "https://graph.facebook.com/v2.2/me?access_token=xxxx").
+          to_return(:status => 200, :body => %Q[{"id":"#{user_id}"}])
+      end
+
+      it "" do
+        post "/apikey", {
+          "site_url" => "https://myaccount.createsend.com",
+          "username" => "myusername",
+          "password" => "incorrectpassword"
+        }, {
+          "rack.session" => {
+            "fb_auth" => { "uid" => user_id }, "fb_token" => fb_token
+          }
+        }
+
+        expect(last_response.status).to eq(400)
+        expect(last_response.content_type).to eq("application/json;charset=utf-8")
+        expect(last_response.body).to \
+          eq(%Q[{"message":"Error getting API key..."}])
+      end
+    end
   end
 
   describe "GET /clients/:api_key" do
