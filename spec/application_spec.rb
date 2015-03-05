@@ -296,6 +296,17 @@ describe "The Campaign Monitor Subscribe Form app" do
     end
   end
 
+  describe "GET /tab" do
+    context "when the page hasn't had a subscribe form set up" do
+      it "shows that the page hasn't had a subscribe form set up yet" do
+        get "/tab"
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to \
+          include("This page hasn't had a subscribe form set up yet")
+      end
+    end
+  end
+
   describe "GET /ondeauth" do
     it "deletes any accounts associated with the fb user and responds with 200 OK" do
       get "/ondeauth", { "facebook" => { "user_id" => user_id } }
