@@ -297,12 +297,40 @@ describe "The Campaign Monitor Subscribe Form app" do
   end
 
   describe "GET /tab" do
-    context "when the page hasn't had a subscribe form set up" do
+    context "when a page hasn't had a subscribe form set up" do
       it "shows that the page hasn't had a subscribe form set up yet" do
         get "/tab"
         expect(last_response.status).to eq(200)
         expect(last_response.body).to \
           include("This page hasn't had a subscribe form set up yet")
+      end
+    end
+
+    context "when a page has had a subscribe form set up" do
+      let(:page_id) { "7687687687" }
+      let(:client_id) { "testclientid" }
+      let(:list_id) { "testlistid" }
+      let(:account) {
+        Account.first_or_create(:api_key => cm_api_key, :user_id => user_id)
+      }
+      let(:form) {
+        Form.first_or_create(
+          :account => account, :page_id => page_id, :client_id => client_id,
+          :list_id => list_id, :intro_message => "Intro message!",
+          :thanks_message => "Thanks!", :include_name => true)
+      }
+
+      before do
+        account.save
+        form.save
+      end
+
+      it "shows the saved subscribe form" do
+        get "/tab",
+          { "facebook" => { "user_id" => user_id, "page" => { "id" => page_id } } }
+
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to include(form.intro_message)
       end
     end
   end
