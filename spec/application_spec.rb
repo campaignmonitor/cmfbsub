@@ -131,7 +131,7 @@ describe "The Campaign Monitor Subscribe Form app" do
             :headers => { "Content-Type" => "application/json;charset=utf-8" })
       end
 
-      it "" do
+      it "returns a json payload containing account details" do
         post "/apikey", {
           "site_url" => "https://myaccount.createsend.com",
           "username" => "myusername",
@@ -160,7 +160,7 @@ describe "The Campaign Monitor Subscribe Form app" do
           to_return(:status => 200, :body => %Q[{"id":"#{user_id}"}])
       end
 
-      it "" do
+      it "returns a json payload containing an error message" do
         post "/apikey", {
           "site_url" => "https://myaccount.createsend.com",
           "username" => "myusername",
