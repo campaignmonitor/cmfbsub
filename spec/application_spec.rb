@@ -357,4 +357,27 @@ describe "The Campaign Monitor Subscribe Form app" do
     end
   end
 
+  describe "GET /reset.css" do
+    it "serves the reset.css stylesheet" do
+      get "/reset.css"
+      expect(last_response.status).to eq(200)
+      expect(last_response.content_type).to eq("text/css;charset=utf-8")
+    end
+  end
+
+  describe "GET /cm.css" do
+    it "serves the cm.css stylesheet" do
+      get "/cm.css"
+      expect(last_response.status).to eq(200)
+      expect(last_response.content_type).to eq("text/css;charset=utf-8")
+    end
+  end
+
+  describe "GET /fb.css" do
+    it "serves the fb.css stylesheet" do
+      get "/fb.css"
+      expect(last_response.status).to eq(200)
+      expect(last_response.content_type).to eq("text/css;charset=utf-8")
+    end
+  end
 end
