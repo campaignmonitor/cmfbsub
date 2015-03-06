@@ -321,6 +321,7 @@ describe "The Campaign Monitor Subscribe Form app" do
       }
 
       before do
+        # I'm not sure why this is needed, DataMapper...
         account.save
         form.save
       end
@@ -331,6 +332,49 @@ describe "The Campaign Monitor Subscribe Form app" do
 
         expect(last_response.status).to eq(200)
         expect(last_response.body).to include(form.intro_message)
+      end
+    end
+  end
+
+  describe "POST /subscribe/:page_id" do
+    context "when someone subscribes successfully" do
+      let(:page_id) { "7687687687" }
+      let(:client_id) { "testclientid" }
+      let(:list_id) { "testlistid" }
+      let(:account) {
+        Account.first_or_create(:api_key => cm_api_key, :user_id => user_id)
+      }
+      let(:form) {
+        Form.first_or_create(
+          :account => account, :page_id => page_id, :client_id => client_id,
+          :list_id => list_id, :intro_message => "Intro message!",
+          :thanks_message => "Thanks!", :include_name => true)
+      }
+
+      before do
+        # I'm not sure why this is needed, DataMapper...
+        account.save
+        form.save
+
+        stub_request(:post, "https://testapikey:x@api.createsend.com/api/v3/subscribers/testlistid.json").
+          with(
+            :body => %Q[{"EmailAddress":"test@example.com","Name":"test subscriber","CustomFields":[{"Key":"[website]","Value":"https://example.com/"}],"Resubscribe":true,"RestartSubscriptionBasedAutoresponders":false}],
+            :headers => { "Content-Type" => "application/json; charset=utf-8" }).
+          to_return(:status => 200, :body => "test@example.com")
+      end
+
+      it "returns a json payload containing the success message" do
+        post "/subscribe/#{page_id}", {
+            "facebook" => { "user_id" => user_id, "page" => { "id" => page_id } },
+            "name" => "test subscriber",
+            "email" => "test@example.com",
+            "cf-website" => "https://example.com/"
+          }
+
+        expect(last_response.status).to eq(200)
+        expect(last_response.content_type).to eq("application/json;charset=utf-8")
+        expect(last_response.body).to \
+          eq(%Q[{"status":"success","message":"#{form.thanks_message}"}])
       end
     end
   end
