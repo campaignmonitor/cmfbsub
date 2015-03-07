@@ -203,7 +203,7 @@ describe "The Campaign Monitor Subscribe Form app" do
         stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/clients.json").
           to_return(
             :status => 500,
-            :body => %Q[[{"Code":"500","Message":"Sorry."}]],
+            :body => %Q[[{"Code": 500,"Message":"Sorry."}]],
             :headers => { "Content-Type" => "application/json;charset=utf-8" })
       end
 
@@ -243,7 +243,7 @@ describe "The Campaign Monitor Subscribe Form app" do
         stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/clients/#{client_id}/lists.json").
           to_return(
             :status => 500,
-            :body => %Q[[{"Code":"500","Message":"Sorry."}]],
+            :body => %Q[[{"Code": 500,"Message":"Sorry."}]],
             :headers => { "Content-Type" => "application/json;charset=utf-8" })
       end
 
@@ -282,7 +282,7 @@ describe "The Campaign Monitor Subscribe Form app" do
         stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/lists/#{list_id}/customfields.json").
           to_return(
             :status => 500,
-            :body => %Q[[{"Code":"500","Message":"Sorry."}]],
+            :body => %Q[[{"Code": 500,"Message":"Sorry."}]],
             :headers => { "Content-Type" => "application/json;charset=utf-8" })
       end
 
@@ -376,6 +376,50 @@ describe "The Campaign Monitor Subscribe Form app" do
         expect(last_response.content_type).to eq("application/json;charset=utf-8")
         expect(last_response.body).to \
           eq(%Q[{"status":"success","message":"#{form.thanks_message}"}])
+      end
+    end
+
+    context "when subscribing fails" do
+      let(:page_id) { "7687687687" }
+      let(:client_id) { "testclientid" }
+      let(:list_id) { "testlistid" }
+      let(:account) {
+        Account.first_or_create(:api_key => cm_api_key, :user_id => user_id)
+      }
+      let(:form) {
+        Form.first_or_create(
+          :account => account, :page_id => page_id, :client_id => client_id,
+          :list_id => list_id, :intro_message => "Intro message!",
+          :thanks_message => "Thanks!", :include_name => true)
+      }
+
+      before do
+        # I'm not sure why this is needed, DataMapper...
+        account.save
+        form.save
+
+        stub_request(:post, "https://testapikey:x@api.createsend.com/api/v3/subscribers/testlistid.json").
+          with(
+            :body => %Q[{"EmailAddress":"not an email address","Name":"test subscriber","CustomFields":[{"Key":"[website]","Value":"https://example.com/"}],"Resubscribe":true,"RestartSubscriptionBasedAutoresponders":false}],
+            :headers => { "Content-Type" => "application/json; charset=utf-8" }).
+          to_return(:status => 400,
+            :headers => { "Content-Type" => "application/json; charset=utf-8" },
+            :body => %Q[{ "Code": 1, "Message": "Invalid email address" }])
+
+      end
+
+      it "returns a json payload containing the error details" do
+        post "/subscribe/#{page_id}", {
+            "facebook" => { "user_id" => user_id, "page" => { "id" => page_id } },
+            "name" => "test subscriber",
+            "email" => "not an email address",
+            "cf-website" => "https://example.com/"
+          }
+
+        expect(last_response.status).to eq(200)
+        expect(last_response.content_type).to eq("application/json;charset=utf-8")
+        expect(last_response.body).to \
+          eq(%Q[{"status":"error","message":"Sorry, there was a problem subscribing you to our list. Please try again."}])
       end
     end
   end
