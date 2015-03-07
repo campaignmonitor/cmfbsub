@@ -119,7 +119,7 @@ def get_api_key(site_url, username, password)
     cs = CreateSend::CreateSend.new
     @result = cs.apikey site_url, username, password
     rescue Exception => e
-      p "Error: #{e}"
+      logger.info "Error: #{e}"
       @result = nil
   end
   @result
@@ -131,7 +131,7 @@ def get_clients(api_key)
     cs = CreateSend::CreateSend.new({:api_key => api_key})
     @result = cs.clients
     rescue Exception => e
-      p "Error: #{e}"
+      logger.info "Error: #{e}"
       @result = []
   end
   @result
@@ -142,7 +142,7 @@ def get_lists_for_client(api_key, client_id)
   begin
     @result = CreateSend::Client.new({:api_key => api_key}, client_id).lists
     rescue Exception => e
-      p "Error: #{e}"
+      logger.info "Error: #{e}"
       @result = []
   end
   @result
@@ -153,7 +153,7 @@ def get_custom_fields_for_list(api_key, list_id)
   begin
     @result = CreateSend::List.new({:api_key => api_key}, list_id).custom_fields
     rescue Exception => e
-      p "Error: #{e}"
+      logger.info "Error: #{e}"
       @result = []
   end
   @result
@@ -267,8 +267,7 @@ post "/page/:page_id/?" do |page_id|
       return [200, { :status => "success", :message => message}.to_json]
       rescue CreateSend::CreateSendError, CreateSend::ClientError,
         CreateSend::ServerError, CreateSend::Unavailable => cse
-        p "Error: #{cse}"
-        # TODO: Be more helpful with errors...
+        logger.info "Error: #{cse}"
         return [200, { :status => "failure",
           :message => "Sorry, something went wrong while saving your subscribe form for #{@page["name"]}. Please try again."}.to_json]
     end
@@ -313,7 +312,7 @@ post "/subscribe/:page_id/?" do |page_id|
     return [200, {:status => "success", :message => @sf.thanks_message}.to_json]
 
     rescue Exception => e
-      p "Error: #{e}" # TODO: Be more helpful with errors...
+      logger.info "Error: #{e}"
       return [200, {:status => "error",
         :message => "Sorry, there was a problem subscribing you to our list. Please try again."}.to_json]
   end
