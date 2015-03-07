@@ -358,7 +358,7 @@ describe "The Campaign Monitor Subscribe Form app" do
 
         stub_request(:post, "https://testapikey:x@api.createsend.com/api/v3/subscribers/testlistid.json").
           with(
-            :body => %Q[{"EmailAddress":"test@example.com","Name":"test subscriber","CustomFields":[{"Key":"[website]","Value":"https://example.com/"}],"Resubscribe":true,"RestartSubscriptionBasedAutoresponders":false}],
+            :body => %Q[{"EmailAddress":"test@example.com","Name":"test subscriber","CustomFields":[{"Key":"[website]","Value":"https://example.com/"},{"Key":"[multiselect]","Value":"one"},{"Key":"[multiselect]","Value":"three"}],"Resubscribe":true,"RestartSubscriptionBasedAutoresponders":false}],
             :headers => { "Content-Type" => "application/json; charset=utf-8" }).
           to_return(:status => 200, :body => "test@example.com")
       end
@@ -368,7 +368,8 @@ describe "The Campaign Monitor Subscribe Form app" do
             "facebook" => { "user_id" => user_id, "page" => { "id" => page_id } },
             "name" => "test subscriber",
             "email" => "test@example.com",
-            "cf-website" => "https://example.com/"
+            "cf-website" => "https://example.com/",
+            "cf-multiselect" => [ "one", "three" ]
           }
 
         expect(last_response.status).to eq(200)
