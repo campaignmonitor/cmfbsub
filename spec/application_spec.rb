@@ -9,6 +9,10 @@ describe "The Campaign Monitor Subscribe Form app" do
   let(:fb_token) { "xxxx" }
   let(:cm_api_key) { "testapikey" }
 
+  before do
+    DataMapper.auto_migrate!
+  end
+
   describe "GET /auth/facebook/callback?code=xyz" do
     let(:auth_hash) {
       {
@@ -303,7 +307,7 @@ describe "The Campaign Monitor Subscribe Form app" do
       let(:client_id) { "testclientid" }
       let(:list_id) { "testlistid" }
       let(:account) {
-        Account.first_or_create(:api_key => cm_api_key, :user_id => user_id)
+        Account.create(:api_key => cm_api_key, :user_id => user_id)
       }
       let(:intro_message) { "Intro message!" }
       let(:thanks_message) { "Thanks!" }
@@ -311,12 +315,16 @@ describe "The Campaign Monitor Subscribe Form app" do
 
       before do
         account.save
-        Form.all { |f| f.destroy }
 
         stub_request(:get, "https://graph.facebook.com/v2.2/me?access_token=xxxx").
           to_return(:status => 200, :body => %Q[{"id":"#{user_id}"}])
         stub_request(:get, "https://graph.facebook.com/v2.2/7687687687?access_token=xxxx").
           to_return(:status => 200, :body => %Q[{"id":"#{page_id}","name":"#{page_name}","has_added_app":true,"link":"https://www.facebook.com/pages/my-page/#{page_id}"}])
+        stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/lists/#{list_id}/customfields.json").
+          to_return(
+            :status => 200,
+            :body => %Q[[{"FieldName":"website","Key":"[website]","DataType":"Text","FieldOptions":[],"VisibleInPreferenceCenter":true}]],
+            :headers => { "Content-Type" => "application/json;charset=utf-8" })
       end
 
       it "saves the form and returns a json payload containing the success message" do
@@ -324,7 +332,7 @@ describe "The Campaign Monitor Subscribe Form app" do
           { "facebook" => { "user_id" => user_id },
             "api_key" => cm_api_key, "list_id" => list_id, "client_id" => client_id,
             "intro_message" => intro_message, "thanks_message" => thanks_message,
-            "include_name" => true
+            "include_name" => include_name
           },
           { "rack.session" => { "fb_auth" => { "uid" => user_id }, "fb_token" => fb_token } }
 
@@ -339,8 +347,59 @@ describe "The Campaign Monitor Subscribe Form app" do
     end
 
     context "when saving an existing subscribe form for a page" do
+      let(:page_id) { "7687687687" }
+      let(:page_name) { "test page" }
+      let(:client_id) { "testclientid" }
+      let(:list_id) { "testlistid" }
+      let(:account) {
+        Account.create(:api_key => cm_api_key, :user_id => user_id)
+      }
+      let(:form) {
+        Form.create(
+          :account => account, :page_id => page_id, :client_id => client_id,
+          :list_id => list_id, :intro_message => "Intro message!",
+          :thanks_message => "Thanks!", :include_name => true)
+      }
+      let(:intro_message) { "New intro message!" }
+      let(:thanks_message) { "Thank you." }
+      let(:include_name) { false }
+
+      before do
+        account.save
+        form.save
+
+        stub_request(:get, "https://graph.facebook.com/v2.2/me?access_token=xxxx").
+          to_return(:status => 200, :body => %Q[{"id":"#{user_id}"}])
+        stub_request(:get, "https://graph.facebook.com/v2.2/7687687687?access_token=xxxx").
+          to_return(:status => 200, :body => %Q[{"id":"#{page_id}","name":"#{page_name}","has_added_app":true,"link":"https://www.facebook.com/pages/my-page/#{page_id}"}])
+        stub_request(:get, "https://testapikey:x@api.createsend.com/api/v3/lists/#{list_id}/customfields.json").
+          to_return(
+            :status => 200,
+            :body => %Q[[{"FieldName":"multiselect","Key":"[multiselect]","DataType":"MultiSelectMany","FieldOptions":["one","two","three"],"VisibleInPreferenceCenter":true}]],
+            :headers => { "Content-Type" => "application/json;charset=utf-8" })
+      end
+
       it "saves the form and returns a json payload containing the success message" do
-        # TODO: Add implementation
+        post "/page/#{page_id}",
+          { "facebook" => { "user_id" => user_id },
+            "api_key" => cm_api_key, "list_id" => list_id, "client_id" => client_id,
+            "intro_message" => intro_message, "thanks_message" => thanks_message,
+            "include_name" => include_name, "cf-multiselect" => "checked"
+          },
+          { "rack.session" => { "fb_auth" => { "uid" => user_id }, "fb_token" => fb_token } }
+
+        form = account.forms.first(:page_id => page_id)
+        fields = form.custom_fields
+        expect(form.intro_message).to eq(intro_message)
+        expect(form.thanks_message).to eq(thanks_message)
+        expect(form.include_name).to eq(include_name)
+        expect(fields.first.name).to eq("multiselect")
+        expect(fields.first.field_key).to eq("[multiselect]")
+        expect(fields.first.data_type).to eq("MultiSelectMany")
+        expect(fields.first.field_options).to eq("one^two^three")
+        expect(last_response.status).to eq(200)
+        expect(last_response.content_type).to eq("application/json;charset=utf-8")
+        expect(last_response.body).to eq(%Q[{"status":"success","message":"Thanks, you successfully saved your subscribe form for #{page_name}."}])
       end
     end
 
@@ -366,17 +425,16 @@ describe "The Campaign Monitor Subscribe Form app" do
       let(:client_id) { "testclientid" }
       let(:list_id) { "testlistid" }
       let(:account) {
-        Account.first_or_create(:api_key => cm_api_key, :user_id => user_id)
+        Account.create(:api_key => cm_api_key, :user_id => user_id)
       }
       let(:form) {
-        Form.first_or_create(
+        Form.create(
           :account => account, :page_id => page_id, :client_id => client_id,
           :list_id => list_id, :intro_message => "Intro message!",
           :thanks_message => "Thanks!", :include_name => true)
       }
 
       before do
-        # I'm not sure why this is needed, DataMapper...
         account.save
         form.save
       end
@@ -397,17 +455,16 @@ describe "The Campaign Monitor Subscribe Form app" do
       let(:client_id) { "testclientid" }
       let(:list_id) { "testlistid" }
       let(:account) {
-        Account.first_or_create(:api_key => cm_api_key, :user_id => user_id)
+        Account.create(:api_key => cm_api_key, :user_id => user_id)
       }
       let(:form) {
-        Form.first_or_create(
+        Form.create(
           :account => account, :page_id => page_id, :client_id => client_id,
           :list_id => list_id, :intro_message => "Intro message!",
           :thanks_message => "Thanks!", :include_name => true)
       }
 
       before do
-        # I'm not sure why this is needed, DataMapper...
         account.save
         form.save
 
@@ -439,17 +496,16 @@ describe "The Campaign Monitor Subscribe Form app" do
       let(:client_id) { "testclientid" }
       let(:list_id) { "testlistid" }
       let(:account) {
-        Account.first_or_create(:api_key => cm_api_key, :user_id => user_id)
+        Account.create(:api_key => cm_api_key, :user_id => user_id)
       }
       let(:form) {
-        Form.first_or_create(
+        Form.create(
           :account => account, :page_id => page_id, :client_id => client_id,
           :list_id => list_id, :intro_message => "Intro message!",
           :thanks_message => "Thanks!", :include_name => true)
       }
 
       before do
-        # I'm not sure why this is needed, DataMapper...
         account.save
         form.save
 
