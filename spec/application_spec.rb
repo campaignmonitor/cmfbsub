@@ -332,8 +332,6 @@ describe "The Campaign Monitor Subscribe Form app" do
         expect(form.intro_message).to eq(intro_message)
         expect(form.thanks_message).to eq(thanks_message)
         expect(form.include_name).to eq(include_name)
-        expect(last_request.env["rack.session"]["fb_auth"]).to eq({ "uid" => user_id })
-        expect(last_request.env["rack.session"]["fb_token"]).to eq (fb_token)
         expect(last_response.status).to eq(200)
         expect(last_response.content_type).to eq("application/json;charset=utf-8")
         expect(last_response.body).to eq(%Q[{"status":"success","message":"Thanks, you successfully saved your subscribe form for #{page_name}."}])
