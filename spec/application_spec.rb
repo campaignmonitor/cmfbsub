@@ -402,12 +402,6 @@ describe "The Campaign Monitor Subscribe Form app" do
         expect(last_response.body).to eq(%Q[{"status":"success","message":"Thanks, you successfully saved your subscribe form for #{page_name}."}])
       end
     end
-
-    context "when saving a subscribe form fails" do
-      it "returns a json payload containing the error message" do
-        # TODO: Add implementation
-      end
-    end
   end
 
   describe "GET /tab" do

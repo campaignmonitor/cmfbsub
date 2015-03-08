@@ -265,9 +265,9 @@ post "/page/:page_id/?" do |page_id|
       @sf.save
       message = "Thanks, you successfully saved your subscribe form for #{@page["name"]}."
       return [200, { :status => "success", :message => message}.to_json]
-      rescue CreateSend::CreateSendError, CreateSend::ClientError,
-        CreateSend::ServerError, CreateSend::Unavailable => cse
-        logger.info "Error: #{cse}"
+
+      rescue Exception => e
+        logger.info "Error: #{e}"
         return [200, { :status => "failure",
           :message => "Sorry, something went wrong while saving your subscribe form for #{@page["name"]}. Please try again."}.to_json]
     end
