@@ -67,7 +67,7 @@ describe "The Campaign Monitor Subscribe Form app" do
       end
     end
 
-    context "when the user is successfully authenticated but hasn't authed with Campaign Monitor" do
+    context "when the user is successfully authenticated but doesn't have a saved account" do
       before do
         stub_request(:get, "https://graph.facebook.com/v2.2/me?access_token=xxxx").
           to_return(:status => 200, :body => "")
@@ -82,6 +82,74 @@ describe "The Campaign Monitor Subscribe Form app" do
         expect(last_request.env["rack.session"]["fb_token"]).to eq (fb_token)
         expect(last_response.status).to eq(200)
         expect(last_response.body).to include("Log into your account")
+      end
+    end
+
+    context "when the user is successfully authenticated and has a saved account" do
+      let(:page_id) { "7687687687" }
+      let(:page_name) { "test page" }
+      let(:client_id) { "testclientid" }
+      let(:list_id) { "testlistid" }
+      let(:account) {
+        Account.create(:api_key => cm_api_key, :user_id => user_id)
+      }
+      let(:form) {
+        Form.create(
+          :account => account, :page_id => page_id, :client_id => client_id,
+          :list_id => list_id, :intro_message => "Intro message!",
+          :thanks_message => "Thanks!", :include_name => true)
+      }
+
+      before do
+        account.save
+        form.save
+
+        stub_request(:get, "https://graph.facebook.com/v2.2/me?access_token=xxxx").
+          to_return(:status => 200, :body => %Q[{"id":"#{user_id}"}])
+        pages_response = <<-PAGES_RESPONSE
+        {
+          "data": [
+            {
+              "access_token": "testpageaccesstoken",
+              "category": "Internet/software",
+              "name": "#{page_name}",
+              "id": "#{page_id}",
+              "perms": [ "ADMINISTER", "EDIT_PROFILE", "CREATE_CONTENT",
+                "MODERATE_CONTENT", "CREATE_ADS", "BASIC_ADMIN"
+              ]
+            }
+          ],
+          "paging": {
+            "cursors": { "before": "before", "after": "after" }
+          }
+        }
+        PAGES_RESPONSE
+        stub_request(:get, "https://graph.facebook.com/v2.2/#{user_id}/accounts?access_token=#{fb_token}").
+          to_return(:status => 200, :body => pages_response)
+        page_fields_response = <<-FIELDS_RESPONSE
+        {
+          "picture": {
+            "data": {
+              "is_silhouette": false,
+              "url": "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xfa1/v/t1.0-1/c13.0.50.50/p50x50/blah_n.jpg?oh=blah&oe=5578EF5D&__gda__=blah"
+            }
+          },
+          "id": "#{page_id}"
+        }
+        FIELDS_RESPONSE
+        stub_request(:get, "https://graph.facebook.com/v2.2/#{page_id}?access_token=#{fb_token}&fields=picture").
+          to_return(:status => 200, :body => page_fields_response)
+      end
+
+      it "loads the main page with the user's saved details" do
+        get "/",
+          { "facebook" => { "user_id" => user_id } },
+          { "rack.session" => { "fb_auth" => { "uid" => user_id }, "fb_token" => fb_token } }
+
+        expect(last_request.env["rack.session"]["fb_auth"]).to eq({ "uid" => user_id })
+        expect(last_request.env["rack.session"]["fb_token"]).to eq (fb_token)
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to include(page_name)
       end
     end
   end
