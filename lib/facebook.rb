@@ -20,7 +20,9 @@ module Rack
         env["REQUEST_METHOD"] = "GET"
         signed_request = request.POST.delete("signed_request")
         unless signed_request.nil?
-          signature, signed_params = signed_request.split('.')
+          # See https://developers.facebook.com/docs/facebook-login/using-login-with-games#parsingsr
+          # for details of how the signed_request is structured
+          signature, signed_params = signed_request.split(".")
           unless signed_request_is_valid?(secret, signature, signed_params)
             return Rack::Response.new(["Invalid signature"], 400).finish
           end
