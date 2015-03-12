@@ -6,9 +6,9 @@ A Facebook canvas application which allows Facebook users to add [Campaign Monit
 
 Campaign Monitor lists the [Facebook subscribe form](http://www.campaignmonitor.com/integrations/facebook-subscribe-form/) in its list of integrations, where you can find a brief summary of what the app does. The app is available as either a white-labelled version named _Subscribe Form_, or as a Campaign Monitor branded version named _Campaign Monitor Subscribe Form_.
 
-The white-labelled version of the app can be accessed at https://apps.facebook.com/createsend/ and the Campaign Monitor branded version can be accessed at https://apps.facebook.com/campaignmonitor/. These apps are implemented as [Canvas Pages](https://developers.facebook.com/docs/appsonfacebook/tutorial/) and run in an iframe within the Facebook chrome.
+The white-labelled version of the app can be accessed at https://apps.facebook.com/createsend/ and the Campaign Monitor branded version can be accessed at https://apps.facebook.com/campaignmonitor/. These apps are implemented as [Canvas Pages](https://developers.facebook.com/docs/appsonfacebook/tutorial/) and run in an `iframe` within the Facebook chrome.
 
-So the Sinatra app in this repository is the app which runs in the iframe. The same code is deployed to two different Heroku apps for the two different versions of the app. The white-labelled version of the app runs at https://csfbsub.herokuapp.com/ and the Campaign Monitor branded version of the app runs at https://cmfbsub.herokuapp.com/.
+The Sinatra application in this repository is what runs in the `iframe`. The same code is deployed to two different Heroku apps for the two different versions of the app. The white-labelled version of the app runs at https://csfbsub.herokuapp.com/ and the Campaign Monitor branded version of the app runs at https://cmfbsub.herokuapp.com/.
 
 ## Developing
 
@@ -87,7 +87,7 @@ Web Interface        127.0.0.1:4040
 Avg Conn Time        0.00ms
 ```
 
-Your local app is then accessible over HTTPS at https://3a4j20f9.ngrok.com (the subdomain will be different). The last step is to visit the _ldevcmfbsub_ Facebook app to know where the app is running.
+Your local app is then accessible over HTTPS at https://3a4j20f9.ngrok.com (the subdomain will be different). The last step is to visit the _ldevcmfbsub_ Facebook app to modify the required settings and let the Facebook app know where our local application is running.
 
 On the main [settings page](https://developers.facebook.com/apps/195059907238783/settings/):
 - "Secure Canvas URL" should be: `https://3a4j20f9.ngrok.com/`
