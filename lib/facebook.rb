@@ -1,6 +1,6 @@
-require 'openssl'
-require 'base64'
-require 'yajl'
+require "openssl"
+require "base64"
+require "yajl"
 
 module Rack
   # Custom middleware for a Facebook canvas app
@@ -13,21 +13,23 @@ module Rack
     def secret
       @options.fetch(:secret)
     end
-    
+
     def call(env)
       request = Rack::Request.new(env)
-      if request.POST['signed_request']
-        env["REQUEST_METHOD"] = 'GET'
-        signed_request = request.POST.delete('signed_request')
+      if request.POST["signed_request"]
+        env["REQUEST_METHOD"] = "GET"
+        signed_request = request.POST.delete("signed_request")
         unless signed_request.nil?
-          signature, signed_params = signed_request.split('.')
+          # See https://developers.facebook.com/docs/facebook-login/using-login-with-games#parsingsr
+          # for details of how the signed_request is structured
+          signature, signed_params = signed_request.split(".")
           unless signed_request_is_valid?(secret, signature, signed_params)
             return Rack::Response.new(["Invalid signature"], 400).finish
           end
           signed_params = Yajl::Parser.new.parse(base64_url_decode(signed_params))
-          request.POST['facebook'] = {}
+          request.POST["facebook"] = {}
           signed_params.each do |k,v|
-            request.POST['facebook'][k] = v
+            request.POST["facebook"][k] = v
           end
         end
       end
@@ -37,7 +39,7 @@ module Rack
     private
       def signed_request_is_valid?(secret, signature, params)
         signature = base64_url_decode(signature)
-        expected_signature = OpenSSL::HMAC.digest('SHA256', secret, params.tr("-_", "+/"))
+        expected_signature = OpenSSL::HMAC.digest("SHA256", secret, params.tr("-_", "+/"))
         return signature == expected_signature
       end
 

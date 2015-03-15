@@ -2,23 +2,24 @@ source "https://rubygems.org"
 ruby "1.9.3"
 
 gem "rake"
+gem "multi_json", "~> 1.3"
 gem "rack", "~> 1.3"
 gem "sinatra", "1.3.3"
 gem "sinatra-reloader"
 gem "haml"
 gem "sass"
-gem "oa-oauth", "~> 0.3"
+gem "omniauth-facebook", "~> 2.0"
 gem "yajl-ruby"
-gem "mogli", "~> 0.0.36"
+gem "koala", "~> 1.11"
 gem "createsend", "~> 3.1"
 gem "data_mapper"
-gem "json"
 gem "unicorn"
 
 group :development, :test do
   gem "dm-sqlite-adapter"
   gem "rspec"
   gem "webmock"
+  gem "simplecov", :require => false
 end
 
 group :production do
