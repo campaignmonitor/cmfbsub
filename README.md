@@ -32,7 +32,7 @@ Create a `.env` file based on `.env.example`:
 cp .env.example .env
 ```
 
-Edit `.env` to include the config settings found on the _Local Dev Campaign Monitor Subscribe_ [admin page](https://developers.facebook.com/apps/195059907238783). You might like to reference the config settings for the development app _devcmfbsub_ on Heroku:
+Edit `.env` to include the config settings found on the _Local Dev Campaign Monitor Subscribe_ [admin page](https://developers.facebook.com/apps/195059907238783). You might like to reference the config settings for the development app _devcmfbsub_ on Heroku (you'll need access to the Heroku app):
 
 ```
 heroku config --app devcmfbsub
