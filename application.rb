@@ -110,7 +110,7 @@ def get_page(page_id)
 end
 
 def get_form_by_page_id(page_id)
-  Form.first(:page_id => page_id)
+  Form.first(:page_id => page_id, :order => [ :id.desc ])
 end
 
 def get_api_key(site_url, username, password)
