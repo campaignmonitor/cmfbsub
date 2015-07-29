@@ -11,7 +11,7 @@ configure do
   set :views, "#{File.dirname(__FILE__)}/views"
   enable :sessions
   set :session_secret, ENV["APP_SECRET"]
-  DataMapper.setup(:default, (ENV["DATABASE_URL"] || "sqlite3:///#{File.expand_path(File.dirname(__FILE__))}/#{Sinatra::Base.environment}.db"))
+  DataMapper.setup(:default, (ENV["DATABASE_URL"] || "postgres://ruhbwztujwectk:9IApX5zJEe4Uhjnwp-9uGRqVWE@ec2-54-197-237-120.compute-1.amazonaws.com:5432/denssqf8sk6qch"))
 
   use Rack::Facebook, { :secret => ENV["APP_SECRET"] }
   use OmniAuth::Builder do
