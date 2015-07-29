@@ -111,3 +111,9 @@ git remote add csfbsub git@heroku.com:csfbsub.git
 ```
 
 So, you would now push to `devcmfbsub` to deploy the development version of the app, and push to `cmfbsub` and `csfbsub` to deploy both the Campaign Monitor branded and white-label versions of the app.
+
+## This stuff should be green
+
+[![Build Status](https://travis-ci.org/campaignmonitor/cmfbsub.svg)][travis]
+
+[travis]: https://travis-ci.org/campaignmonitor/cmfbsub
