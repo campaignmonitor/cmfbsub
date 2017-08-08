@@ -21,7 +21,7 @@ configure do
     }
     client_options[:ssl] = { :ca_path => "/etc/ssl/certs"} if production?
     provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"], {
-      :iframe => true, :client_options => client_options, :scope => "manage_pages,offline_access"
+      :iframe => true, :client_options => client_options, :scope => "manage_pages"
     }
   end
   OmniAuth.config.full_host = "https://apps.facebook.com/#{ENV["APP_CANVAS_NAME"]}"
