@@ -16,8 +16,8 @@ configure do
   use Rack::Facebook, { :secret => ENV["APP_SECRET"] }
   use OmniAuth::Builder do
     client_options = {
-      :site => "https://graph.facebook.com/v2.10",
-      :authorize_url => "https://www.facebook.com/v2.10/dialog/oauth"
+      :site => "https://graph.facebook.com/v2.2",
+      :authorize_url => "https://www.facebook.com/v2.2/dialog/oauth"
     }
     client_options[:ssl] = { :ca_path => "/etc/ssl/certs"} if production?
     provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"], {
