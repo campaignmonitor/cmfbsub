@@ -12,6 +12,10 @@ The Sinatra application in this repository is what runs in the `iframe`. The sam
 
 ## Developing
 
+1. Get added as a developer on FB by an existing admin with access to the production and development apps.
+2. Get admin privileges for the prod and dev apps in Heroku.
+
+The Unix based OS is recommended for Ruby development, as it makes everything easier to install and configure for this application.  
 Clone:
 
 ```
@@ -112,7 +116,7 @@ git remote add csfbsub git@heroku.com:csfbsub.git
 
 So, you would now push to `devcmfbsub` to deploy the development version of the app, and push to `cmfbsub` and `csfbsub` to deploy both the Campaign Monitor branded and white-label versions of the app.
 
-To deploy directly to Heroku:
+In the alternative, to deploy directly to Heroku:
 First, you need to install the Heroku CLI.
 
 To get a list of remotes - 
