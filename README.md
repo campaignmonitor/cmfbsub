@@ -87,7 +87,7 @@ Web Interface        127.0.0.1:4040
 Avg Conn Time        0.00ms
 ```
 
-Your local app is then accessible over HTTPS at https://3a4j20f9.ngrok.com (the subdomain will be different). The last step is to visit the _ldevcmfbsub_ Facebook app to modify the required settings and let the Facebook app know where our local application is running.
+Your local app is then accessible over HTTPS at https://3a4j20f9.ngrok.com (the subdomain will be different). The last step is to visit the _devcmfbsub_ Facebook app to modify the required settings and let the Facebook app know where our local application is running.
 
 On the main [settings page](https://developers.facebook.com/apps/195059907238783/settings/):
 - "Secure Canvas URL" should be: `https://3a4j20f9.ngrok.com/`
@@ -112,6 +112,21 @@ git remote add csfbsub git@heroku.com:csfbsub.git
 
 So, you would now push to `devcmfbsub` to deploy the development version of the app, and push to `cmfbsub` and `csfbsub` to deploy both the Campaign Monitor branded and white-label versions of the app.
 
+To deploy directly to Heroku:
+First, you need to install the Heroku CLI.
+
+To get a list of remotes - 
+```
+git remote -v
+```
+then, for example if you want to connect to dvcmfbsub:
+```
+heroku git:remote -a devcmfbsub
+```
+you can then push directly to Heroku:
+```
+git push heroku master
+```
 ## This stuff should be green
 
 [![Build Status](https://travis-ci.org/campaignmonitor/cmfbsub.svg)][travis]
