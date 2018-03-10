@@ -63,7 +63,7 @@ bundle exec rake
 
 ## Running the app locally
 
-To run the app locally:
+To run the app locally, install foreman with `gem install foreman`:
 
 ```
 foreman start
@@ -74,7 +74,7 @@ That will start the app at [http://localhost:5000/](http://localhost:5000/), how
 Download and extract [ngrok](https://ngrok.com/download) somewhere. Then run:
 
 ```
-./ngrok 5000
+./ngrok http 5000
 ```
 
 Then you'll see something similar to:
