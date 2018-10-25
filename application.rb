@@ -307,6 +307,8 @@ post "/subscribe/:page_id/?" do |page_id|
         end
       end
     end
+    USER_AGENT_STRING = "createsend-fb-ruby-#{CreateSend::VERSION}-#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}-#{RUBY_PLATFORM}"
+    CreateSend::CreateSend.user_agent USER_AGENT_STRING    
     CreateSend::Subscriber.add({:api_key => @sf.account.api_key}, @sf.list_id,
       params[:email].strip, name, custom_fields, true)
     return [200, {:status => "success", :message => @sf.thanks_message}.to_json]
