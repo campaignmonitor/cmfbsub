@@ -3,7 +3,7 @@ ruby "2.2.2"
 
 gem "rake"
 gem "multi_json", "~> 1.3"
-gem "rack", "~> 2.0.0"
+gem "rack", "~> 2.2.13"
 gem "rack-test"
 gem "sinatra", "2.0.1"
 gem "sinatra-reloader"
