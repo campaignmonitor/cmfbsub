@@ -1,18 +1,20 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.5.2)
-      public_suffix (>= 2.0.2, < 4.0)
+    addressable (2.8.8)
+      public_suffix (>= 2.0.2, < 8.0)
     backports (3.11.1)
     bcrypt (3.1.11)
     bcrypt-ruby (3.1.5)
       bcrypt (>= 3.1.3)
+    bigdecimal (3.3.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
-    createsend (3.4.0)
-      hashie (>= 1.2, < 3)
-      httparty (~> 0.10)
-      json
+    createsend (4.1.2)
+      hashie (~> 3.0)
+      httparty (~> 0.14)
+      json (>= 1.0)
+    csv (3.3.5)
     data_mapper (1.2.0)
       dm-aggregates (~> 1.2.0)
       dm-constraints (~> 1.2.0)
@@ -25,7 +27,7 @@ GEM
       dm-validations (~> 1.2.0)
     data_objects (0.10.17)
       addressable (~> 2.1)
-    diff-lcs (1.3)
+    diff-lcs (1.6.2)
     dm-aggregates (1.2.0)
       dm-core (~> 1.2.0)
     dm-constraints (1.2.0)
@@ -72,12 +74,15 @@ GEM
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
     ffi (1.9.23)
-    haml (5.0.4)
-      temple (>= 0.8.0)
+    haml (6.4.0)
+      temple (>= 0.8.2)
+      thor
       tilt
     hashdiff (0.3.7)
-    hashie (2.1.2)
-    httparty (0.16.0)
+    hashie (3.6.0)
+    httparty (0.24.0)
+      csv
+      mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     json (1.8.6)
     json_pure (1.8.6)
@@ -87,8 +92,10 @@ GEM
       addressable
       faraday
       multi_json
+    mini_mime (1.1.5)
     multi_json (1.13.1)
-    multi_xml (0.6.0)
+    multi_xml (0.7.1)
+      bigdecimal (~> 3.1)
     multipart-post (2.0.0)
     mustermann (1.0.2)
     newrelic_rpm (4.8.0.341)
@@ -107,14 +114,14 @@ GEM
       oauth2 (~> 1.1)
       omniauth (~> 1.2)
     pg (1.0.0)
-    public_suffix (3.0.2)
-    rack (2.0.4)
+    public_suffix (6.0.2)
+    rack (2.0.9.4)
     rack-protection (2.0.1)
       rack
     rack-test (0.8.3)
       rack (>= 1.0, < 3)
     raindrops (0.19.0)
-    rake (12.3.0)
+    rake (13.3.1)
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
@@ -132,13 +139,13 @@ GEM
       rspec-support (~> 3.7.0)
     rspec-support (3.7.1)
     safe_yaml (1.0.4)
-    sass (3.5.5)
+    sass (3.7.4)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
-    simplecov (0.15.1)
-      docile (~> 1.1.0)
+    simplecov (0.17.1)
+      docile (~> 1.1)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
@@ -157,9 +164,10 @@ GEM
     sinatra-reloader (1.0)
       sinatra-contrib
     stringex (1.5.1)
-    temple (0.8.0)
+    temple (0.10.4)
+    thor (1.4.0)
     tilt (2.0.8)
-    unicorn (5.4.0)
+    unicorn (6.1.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
     uuidtools (2.1.5)
@@ -173,7 +181,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  createsend (~> 3.1)
+  createsend (~> 4.0, >= 4.0.0)
   data_mapper
   dm-postgres-adapter
   dm-sqlite-adapter
@@ -199,4 +207,4 @@ RUBY VERSION
    ruby 2.2.2p95
 
 BUNDLED WITH
-   1.16.1
+   2.3.27
