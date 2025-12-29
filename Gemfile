@@ -12,7 +12,7 @@ gem "sass"
 gem "omniauth-facebook", "~> 4.0"
 gem "yajl-ruby", "~> 1.3.1"
 gem "koala", "~> 1.11"
-gem "createsend", "~> 3.1"
+gem "createsend", "~> 4.0", ">= 4.0.0"
 gem "data_mapper"
 gem "unicorn"
 
